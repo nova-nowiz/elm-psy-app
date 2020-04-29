@@ -151,7 +151,7 @@ view model =
 
 patientRow : Patient -> Element Msg
 patientRow patient =
-    row [ spacing 50 ]
+    row []
         [ tableField patient.prenom
         , tableField patient.nom
         , tableField <| String.fromInt patient.numero_rue
@@ -171,7 +171,7 @@ patientRow patient =
 
 tableField : String -> Element Msg
 tableField data =
-    el [ centerX, centerY, Border.width 1 ] (text data)
+    el [ centerX, centerY, padding 25, Border.width 1 ] (text data)
 
 
 errorToString : Graphql.Http.Error parsedData -> String
