@@ -14300,35 +14300,84 @@ var $mdgriffith$elm_ui$Element$row = F2(
 						attrs))),
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
+var $mdgriffith$elm_ui$Internal$Model$SpacingStyle = F3(
+	function (a, b, c) {
+		return {$: 'SpacingStyle', a: a, b: b, c: c};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$spacing = $mdgriffith$elm_ui$Internal$Flag$flag(3);
+var $mdgriffith$elm_ui$Internal$Model$spacingName = F2(
+	function (x, y) {
+		return 'spacing-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y)));
+	});
+var $mdgriffith$elm_ui$Element$spacing = function (x) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$spacing,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$SpacingStyle,
+			A2($mdgriffith$elm_ui$Internal$Model$spacingName, x, x),
+			x,
+			x));
+};
 var $mdgriffith$elm_ui$Internal$Model$Text = function (a) {
 	return {$: 'Text', a: a};
 };
 var $mdgriffith$elm_ui$Element$text = function (content) {
 	return $mdgriffith$elm_ui$Internal$Model$Text(content);
 };
+var $mdgriffith$elm_ui$Internal$Model$BorderWidth = F5(
+	function (a, b, c, d, e) {
+		return {$: 'BorderWidth', a: a, b: b, c: c, d: d, e: e};
+	});
+var $mdgriffith$elm_ui$Element$Border$width = function (v) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$borderWidth,
+		A5(
+			$mdgriffith$elm_ui$Internal$Model$BorderWidth,
+			'b-' + $elm$core$String$fromInt(v),
+			v,
+			v,
+			v,
+			v));
+};
+var $author$project$Main$tableField = function (data) {
+	return A2(
+		$mdgriffith$elm_ui$Element$el,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$centerX,
+				$mdgriffith$elm_ui$Element$centerY,
+				$mdgriffith$elm_ui$Element$Border$width(1)
+			]),
+		$mdgriffith$elm_ui$Element$text(data));
+};
 var $author$project$Main$patientRow = function (patient) {
 	return A2(
 		$mdgriffith$elm_ui$Element$row,
-		_List_Nil,
 		_List_fromArray(
 			[
-				$mdgriffith$elm_ui$Element$text(patient.prenom),
-				$mdgriffith$elm_ui$Element$text(patient.nom),
-				$mdgriffith$elm_ui$Element$text(
+				$mdgriffith$elm_ui$Element$spacing(50)
+			]),
+		_List_fromArray(
+			[
+				$author$project$Main$tableField(patient.prenom),
+				$author$project$Main$tableField(patient.nom),
+				$author$project$Main$tableField(
 				$elm$core$String$fromInt(patient.numero_rue)),
-				$mdgriffith$elm_ui$Element$text(patient.rue),
-				$mdgriffith$elm_ui$Element$text(
+				$author$project$Main$tableField(patient.rue),
+				$author$project$Main$tableField(
 				$elm$core$String$fromInt(patient.code_postal)),
-				$mdgriffith$elm_ui$Element$text(patient.ville),
-				$mdgriffith$elm_ui$Element$text(patient.pays),
-				$mdgriffith$elm_ui$Element$text(
+				$author$project$Main$tableField(patient.ville),
+				$author$project$Main$tableField(patient.pays),
+				$author$project$Main$tableField(
 				function () {
 					var _v0 = patient.date_de_naissance;
 					var date = _v0.a;
 					return date;
 				}()),
-				$mdgriffith$elm_ui$Element$text(patient.genre),
-				$mdgriffith$elm_ui$Element$text(patient.moyen_de_decouverte)
+				$author$project$Main$tableField(patient.genre),
+				$author$project$Main$tableField(patient.moyen_de_decouverte)
 			]));
 };
 var $author$project$Main$view = function (model) {
@@ -14376,7 +14425,12 @@ var $author$project$Main$view = function (model) {
 					_List_Nil,
 					A2(
 						$mdgriffith$elm_ui$Element$column,
-						_List_Nil,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$centerX,
+								$mdgriffith$elm_ui$Element$centerY,
+								$mdgriffith$elm_ui$Element$spacing(80)
+							]),
 						A2($elm$core$List$map, $author$project$Main$patientRow, response)));
 			default:
 				var error = _v1.a;

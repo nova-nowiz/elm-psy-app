@@ -134,7 +134,7 @@ view model =
 
                 Success response ->
                     layout [] <|
-                        column []
+                        column [ centerX, centerY, spacing 80 ]
                             (response
                                 |> List.map
                                     patientRow
@@ -151,22 +151,27 @@ view model =
 
 patientRow : Patient -> Element Msg
 patientRow patient =
-    row []
-        [ text patient.prenom
-        , text patient.nom
-        , text <| String.fromInt patient.numero_rue
-        , text patient.rue
-        , text <| String.fromInt patient.code_postal
-        , text patient.ville
-        , text patient.pays
-        , text
+    row [ spacing 50 ]
+        [ tableField patient.prenom
+        , tableField patient.nom
+        , tableField <| String.fromInt patient.numero_rue
+        , tableField patient.rue
+        , tableField <| String.fromInt patient.code_postal
+        , tableField patient.ville
+        , tableField patient.pays
+        , tableField
             (case patient.date_de_naissance of
                 Date date ->
                     date
             )
-        , text patient.genre
-        , text patient.moyen_de_decouverte
+        , tableField patient.genre
+        , tableField patient.moyen_de_decouverte
         ]
+
+
+tableField : String -> Element Msg
+tableField data =
+    el [ centerX, centerY, Border.width 1 ] (text data)
 
 
 errorToString : Graphql.Http.Error parsedData -> String
