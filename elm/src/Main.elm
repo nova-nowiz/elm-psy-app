@@ -1,11 +1,26 @@
 module Main exposing (..)
 
+import Api.Object.Agenda as APIAgenda
+import Api.Object.Consultation as APIConsultation
+import Api.Object.Patient as APIPatient
+import Api.Object.Profession as APIProfession
+import Api.Query as Query exposing (..)
+import Api.Scalar exposing (..)
 import Browser
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
+import Element exposing (..)
+import Element.Background as Background
+import Element.Border as Border
+import Element.Font as Font
+import Element.Input as Input
+import Element.Region as Region
+import Graphql.Http exposing (HttpError(..))
+import Graphql.Http.GraphqlError
+import Graphql.Operation exposing (RootQuery)
+import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
+import Html exposing (Html)
 import Http
 import Json.Decode exposing (Decoder, field, string)
+import RemoteData exposing (RemoteData(..))
 
 
 
@@ -26,14 +41,19 @@ main =
 
 
 type Model
-    = Failure
-    | Loading
-    | Success String
+    = Login
+    | LoggedIn LoggedInModel
+
+
+type alias LoggedInModel =
+    { graphqlData : GraphQLData }
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Loading, getRandomCatGif )
+    ( Login
+    , Cmd.none
+    )
 
 
 
@@ -41,23 +61,39 @@ init _ =
 
 
 type Msg
-    = MorePlease
-    | GotGif (Result Http.Error String)
+    = GetPatients
+    | GotResponse GraphQLData
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        MorePlease ->
-            ( Loading, getRandomCatGif )
+    case model of
+        Login ->
+            case msg of
+                GetPatients ->
+                    ( LoggedIn { graphqlData = Loading }, makeRequest )
 
-        GotGif result ->
-            case result of
-                Ok url ->
-                    ( Success url, Cmd.none )
+                GotResponse _ ->
+                    ( model, Cmd.none )
 
-                Err _ ->
-                    ( Failure, Cmd.none )
+        LoggedIn data ->
+            case msg of
+                GetPatients ->
+                    ( LoggedIn { data | graphqlData = Loading }, makeRequest )
+
+                GotResponse graphQLData ->
+                    case graphQLData of
+                        NotAsked ->
+                            ( model, Cmd.none )
+
+                        Loading ->
+                            ( model, Cmd.none )
+
+                        Success response ->
+                            ( LoggedIn { data | graphqlData = graphQLData }, Cmd.none )
+
+                        Failure error ->
+                            ( LoggedIn { data | graphqlData = graphQLData }, Cmd.none )
 
 
 
@@ -75,43 +111,142 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ h2 [] [ text "Random Cats" ]
-        , viewGif model
+    case model of
+        Login ->
+            layout [] <|
+                el [ centerX, centerY ]
+                    (Input.button
+                        []
+                        { label = text "Request", onPress = Just GetPatients }
+                    )
+
+        LoggedIn data ->
+            case data.graphqlData of
+                NotAsked ->
+                    layout [] <|
+                        el [ centerX, centerY ]
+                            (text "The request was not made :/")
+
+                Loading ->
+                    layout [] <|
+                        el [ centerX, centerY ]
+                            (text "CHARGING MA LAYZOOOOOO")
+
+                Success response ->
+                    layout [] <|
+                        column []
+                            (response
+                                |> List.map
+                                    patientRow
+                            )
+
+                Failure error ->
+                    layout [] <|
+                        el [ centerX, centerY ]
+                            (error
+                                |> errorToString
+                                |> text
+                            )
+
+
+patientRow : Patient -> Element Msg
+patientRow patient =
+    row []
+        [ text patient.prenom
+        , text patient.nom
+        , text <| String.fromInt patient.numero_rue
+        , text patient.rue
+        , text <| String.fromInt patient.code_postal
+        , text patient.ville
+        , text patient.pays
+        , text
+            (case patient.date_de_naissance of
+                Date date ->
+                    date
+            )
+        , text patient.genre
+        , text patient.moyen_de_decouverte
         ]
 
 
-viewGif : Model -> Html Msg
-viewGif model =
-    case model of
-        Failure ->
-            div []
-                [ text "I could not load a random cat for some reason. "
-                , button [ onClick MorePlease ] [ text "Try Again!" ]
-                ]
+errorToString : Graphql.Http.Error parsedData -> String
+errorToString errorData =
+    case errorData of
+        Graphql.Http.GraphqlError _ graphqlErrors ->
+            graphqlErrors
+                |> List.map graphqlErrorToString
+                |> String.join "\n"
 
-        Loading ->
-            text "Loading..."
+        Graphql.Http.HttpError httpError ->
+            case httpError of
+                BadUrl error ->
+                    error
 
-        Success url ->
-            div []
-                [ button [ onClick MorePlease, style "display" "block" ] [ text "More Please!" ]
-                , img [ src url ] []
-                ]
+                Timeout ->
+                    "There was a timeout"
 
+                NetworkError ->
+                    "There was a network error"
 
+                BadStatus metadata error ->
+                    error
 
--- HTTP
-
-
-getRandomCatGif : Cmd Msg
-getRandomCatGif =
-    Http.get
-        { url = "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=cat"
-        , expect = Http.expectJson GotGif gifDecoder
-        }
+                BadPayload jsonDecodeError ->
+                    "There was a bad payload"
 
 
-gifDecoder : Decoder String
-gifDecoder =
-    field "data" (field "image_url" string)
+graphqlErrorToString : Graphql.Http.GraphqlError.GraphqlError -> String
+graphqlErrorToString error =
+    error.message
+
+
+
+-- GRAPHQL
+
+
+type alias Response =
+    List Patient
+
+
+type alias Patient =
+    { prenom : String
+    , nom : String
+    , numero_rue : Int
+    , rue : String
+    , code_postal : Int
+    , ville : String
+    , pays : String
+    , date_de_naissance : Date
+    , genre : String
+    , moyen_de_decouverte : String
+    }
+
+
+type alias GraphQLData =
+    RemoteData (Graphql.Http.Error Response) Response
+
+
+getPatients =
+    Query.patient identity
+        -- Patient is the type alias and thus the constructor of a record
+        -- it will thus take all of these parameters as input
+        (SelectionSet.succeed Patient
+            |> with APIPatient.prenom
+            |> with APIPatient.nom
+            |> with APIPatient.numero_rue
+            |> with APIPatient.rue
+            |> with APIPatient.code_postal
+            |> with APIPatient.ville
+            |> with APIPatient.pays
+            |> with APIPatient.date_de_naissance
+            |> with APIPatient.genre
+            |> with APIPatient.moyen_de_decouverte
+        )
+
+
+makeRequest : Cmd Msg
+makeRequest =
+    getPatients
+        |> Graphql.Http.queryRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
+        |> Graphql.Http.withHeader "x-hasura-admin-secret" "Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU"
+        |> Graphql.Http.send (RemoteData.fromResult >> GotResponse)
