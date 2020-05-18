@@ -246,7 +246,7 @@ view model =
                 Loading ->
                     layout [] <|
                         el [ centerX, centerY ]
-                            (text "CHARGING MA LAYZOOOOOO")
+                            (text "A proper expression")
 
                 Success response ->
                     successView response data.textInputs
