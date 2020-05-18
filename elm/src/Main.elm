@@ -412,7 +412,7 @@ patientTable response =
 
 tableField : String -> Element Msg
 tableField data =
-    el [ centerX, centerY, padding 25, Border.width 1 ] (text data)
+    el [ centerX, centerY, Border.width 1 ] (text data)
 
 
 failureView : Graphql.Http.Error parsedData -> Html Msg
