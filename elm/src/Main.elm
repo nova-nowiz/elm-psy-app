@@ -258,28 +258,27 @@ view model =
 successView : List Patient -> TextInputs -> Html Msg
 successView response textInputs =
     layout [] <|
-        column [ centerX, centerY, spacing 80 ]
-            (patientTable response
-                ++ [ row []
-                        [ textInput Prenom textInputs
-                        , textInput Nom textInputs
-                        , textInput Numero_de_rue textInputs
-                        , textInput Rue textInputs
-                        , textInput Code_postal textInputs
-                        , textInput Ville textInputs
-                        , textInput Pays textInputs
-                        , textInput Date_de_naissance textInputs
-                        , textInput Genre textInputs
-                        , textInput Moyen_de_decouverte textInputs
-                        ]
-                   , Input.button [ centerX, centerY ]
-                        { label =
-                            el [ padding 30, Border.width 1, Border.rounded 5 ]
-                                (text "Add a new Patient")
-                        , onPress = Just AddPatient
-                        }
-                   ]
-            )
+        column [ centerX, centerY ]
+            [ patientTable response
+            , row []
+                [ textInput Prenom textInputs
+                , textInput Nom textInputs
+                , textInput Numero_de_rue textInputs
+                , textInput Rue textInputs
+                , textInput Code_postal textInputs
+                , textInput Ville textInputs
+                , textInput Pays textInputs
+                , textInput Date_de_naissance textInputs
+                , textInput Genre textInputs
+                , textInput Moyen_de_decouverte textInputs
+                ]
+            , Input.button [ centerX, centerY ]
+                { label =
+                    el [ padding 30, Border.width 1, Border.rounded 5 ]
+                        (text "Add a new Patient")
+                , onPress = Just AddPatient
+                }
+            ]
 
 
 textInput : CurrentInput -> TextInputs -> Element Msg
@@ -360,45 +359,55 @@ currentInputToString currentInput =
             "Moyen de découverte"
 
 
-patientTable : List Patient -> List (Element Msg)
+patientTable : List Patient -> Element Msg
 patientTable response =
-    [ row []
-        [ tableField "Prenom"
-        , tableField "Nom"
-        , tableField "Numéro"
-        , tableField "Rue"
-        , tableField "Code postal"
-        , tableField "Ville"
-        , tableField "Pays"
-        , tableField "Date de naissance"
-        , tableField "Genre"
-        , tableField "Moyen de découverte"
-        ]
-    ]
-        ++ (response
-                |> List.map
-                    patientRow
-           )
-
-
-patientRow : Patient -> Element Msg
-patientRow patient =
-    row []
-        [ tableField patient.prenom
-        , tableField patient.nom
-        , tableField <| String.fromInt patient.numero_rue
-        , tableField patient.rue
-        , tableField <| String.fromInt patient.code_postal
-        , tableField patient.ville
-        , tableField patient.pays
-        , tableField
-            (case patient.date_de_naissance of
-                Date date ->
-                    date
-            )
-        , tableField patient.genre
-        , tableField patient.moyen_de_decouverte
-        ]
+    table []
+        { data = response
+        , columns =
+            [ { header = tableField "Prénom"
+              , width = fill
+              , view = \patient -> tableField patient.prenom
+              }
+            , { header = tableField "Nom"
+              , width = fill
+              , view = \patient -> tableField patient.nom
+              }
+            , { header = tableField "Numéro de rue"
+              , width = fill
+              , view = \patient -> tableField <| String.fromInt patient.numero_rue
+              }
+            , { header = tableField "Code postal"
+              , width = fill
+              , view = \patient -> tableField <| String.fromInt patient.code_postal
+              }
+            , { header = tableField "Ville"
+              , width = fill
+              , view = \patient -> tableField patient.ville
+              }
+            , { header = tableField "Pays"
+              , width = fill
+              , view = \patient -> tableField patient.pays
+              }
+            , { header = tableField "Date de naissance"
+              , width = fill
+              , view =
+                    \patient ->
+                        tableField
+                            (case patient.date_de_naissance of
+                                Date date ->
+                                    date
+                            )
+              }
+            , { header = tableField "Genre"
+              , width = fill
+              , view = \patient -> tableField patient.genre
+              }
+            , { header = tableField "Moyen de découverte"
+              , width = fill
+              , view = \patient -> tableField patient.moyen_de_decouverte
+              }
+            ]
+        }
 
 
 tableField : String -> Element Msg

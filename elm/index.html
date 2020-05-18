@@ -15077,25 +15077,238 @@ var $mdgriffith$elm_ui$Element$padding = function (x) {
 			x,
 			x));
 };
-var $mdgriffith$elm_ui$Internal$Model$AsRow = {$: 'AsRow'};
-var $mdgriffith$elm_ui$Internal$Model$asRow = $mdgriffith$elm_ui$Internal$Model$AsRow;
-var $mdgriffith$elm_ui$Element$row = F2(
-	function (attrs, children) {
+var $mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
+	return {$: 'Fill', a: a};
+};
+var $mdgriffith$elm_ui$Element$fill = $mdgriffith$elm_ui$Internal$Model$Fill(1);
+var $mdgriffith$elm_ui$Element$InternalColumn = function (a) {
+	return {$: 'InternalColumn', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Model$Empty = {$: 'Empty'};
+var $mdgriffith$elm_ui$Internal$Model$GridPosition = function (a) {
+	return {$: 'GridPosition', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Model$GridTemplateStyle = function (a) {
+	return {$: 'GridTemplateStyle', a: a};
+};
+var $elm$core$List$all = F2(
+	function (isOkay, list) {
+		return !A2(
+			$elm$core$List$any,
+			A2($elm$core$Basics$composeL, $elm$core$Basics$not, isOkay),
+			list);
+	});
+var $mdgriffith$elm_ui$Internal$Model$AsGrid = {$: 'AsGrid'};
+var $mdgriffith$elm_ui$Internal$Model$asGrid = $mdgriffith$elm_ui$Internal$Model$AsGrid;
+var $mdgriffith$elm_ui$Internal$Model$getSpacing = F2(
+	function (attrs, _default) {
+		return A2(
+			$elm$core$Maybe$withDefault,
+			_default,
+			A3(
+				$elm$core$List$foldr,
+				F2(
+					function (attr, acc) {
+						if (acc.$ === 'Just') {
+							var x = acc.a;
+							return $elm$core$Maybe$Just(x);
+						} else {
+							if ((attr.$ === 'StyleClass') && (attr.b.$ === 'SpacingStyle')) {
+								var _v2 = attr.b;
+								var x = _v2.b;
+								var y = _v2.c;
+								return $elm$core$Maybe$Just(
+									_Utils_Tuple2(x, y));
+							} else {
+								return $elm$core$Maybe$Nothing;
+							}
+						}
+					}),
+				$elm$core$Maybe$Nothing,
+				attrs));
+	});
+var $mdgriffith$elm_ui$Internal$Flag$gridPosition = $mdgriffith$elm_ui$Internal$Flag$flag(35);
+var $mdgriffith$elm_ui$Internal$Flag$gridTemplate = $mdgriffith$elm_ui$Internal$Flag$flag(34);
+var $mdgriffith$elm_ui$Internal$Model$Px = function (a) {
+	return {$: 'Px', a: a};
+};
+var $mdgriffith$elm_ui$Element$px = $mdgriffith$elm_ui$Internal$Model$Px;
+var $elm$core$List$repeatHelp = F3(
+	function (result, n, value) {
+		repeatHelp:
+		while (true) {
+			if (n <= 0) {
+				return result;
+			} else {
+				var $temp$result = A2($elm$core$List$cons, value, result),
+					$temp$n = n - 1,
+					$temp$value = value;
+				result = $temp$result;
+				n = $temp$n;
+				value = $temp$value;
+				continue repeatHelp;
+			}
+		}
+	});
+var $elm$core$List$repeat = F2(
+	function (n, value) {
+		return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
+	});
+var $mdgriffith$elm_ui$Element$tableHelper = F2(
+	function (attrs, config) {
+		var onGrid = F3(
+			function (rowLevel, columnLevel, elem) {
+				return A4(
+					$mdgriffith$elm_ui$Internal$Model$element,
+					$mdgriffith$elm_ui$Internal$Model$asEl,
+					$mdgriffith$elm_ui$Internal$Model$div,
+					_List_fromArray(
+						[
+							A2(
+							$mdgriffith$elm_ui$Internal$Model$StyleClass,
+							$mdgriffith$elm_ui$Internal$Flag$gridPosition,
+							$mdgriffith$elm_ui$Internal$Model$GridPosition(
+								{col: columnLevel, height: 1, row: rowLevel, width: 1}))
+						]),
+					$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+						_List_fromArray(
+							[elem])));
+			});
+		var columnWidth = function (col) {
+			if (col.$ === 'InternalIndexedColumn') {
+				var colConfig = col.a;
+				return colConfig.width;
+			} else {
+				var colConfig = col.a;
+				return colConfig.width;
+			}
+		};
+		var columnHeader = function (col) {
+			if (col.$ === 'InternalIndexedColumn') {
+				var colConfig = col.a;
+				return colConfig.header;
+			} else {
+				var colConfig = col.a;
+				return colConfig.header;
+			}
+		};
+		var maybeHeaders = function (headers) {
+			return A2(
+				$elm$core$List$all,
+				$elm$core$Basics$eq($mdgriffith$elm_ui$Internal$Model$Empty),
+				headers) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
+				A2(
+					$elm$core$List$indexedMap,
+					F2(
+						function (col, header) {
+							return A3(onGrid, 1, col + 1, header);
+						}),
+					headers));
+		}(
+			A2($elm$core$List$map, columnHeader, config.columns));
+		var add = F3(
+			function (cell, columnConfig, cursor) {
+				if (columnConfig.$ === 'InternalIndexedColumn') {
+					var col = columnConfig.a;
+					return _Utils_update(
+						cursor,
+						{
+							column: cursor.column + 1,
+							elements: A2(
+								$elm$core$List$cons,
+								A3(
+									onGrid,
+									cursor.row,
+									cursor.column,
+									A2(
+										col.view,
+										_Utils_eq(maybeHeaders, $elm$core$Maybe$Nothing) ? (cursor.row - 1) : (cursor.row - 2),
+										cell)),
+								cursor.elements)
+						});
+				} else {
+					var col = columnConfig.a;
+					return {
+						column: cursor.column + 1,
+						elements: A2(
+							$elm$core$List$cons,
+							A3(
+								onGrid,
+								cursor.row,
+								cursor.column,
+								col.view(cell)),
+							cursor.elements),
+						row: cursor.row
+					};
+				}
+			});
+		var build = F3(
+			function (columns, rowData, cursor) {
+				var newCursor = A3(
+					$elm$core$List$foldl,
+					add(rowData),
+					cursor,
+					columns);
+				return {column: 1, elements: newCursor.elements, row: cursor.row + 1};
+			});
+		var children = A3(
+			$elm$core$List$foldl,
+			build(config.columns),
+			{
+				column: 1,
+				elements: _List_Nil,
+				row: _Utils_eq(maybeHeaders, $elm$core$Maybe$Nothing) ? 1 : 2
+			},
+			config.data);
+		var _v0 = A2(
+			$mdgriffith$elm_ui$Internal$Model$getSpacing,
+			attrs,
+			_Utils_Tuple2(0, 0));
+		var sX = _v0.a;
+		var sY = _v0.b;
+		var template = A2(
+			$mdgriffith$elm_ui$Internal$Model$StyleClass,
+			$mdgriffith$elm_ui$Internal$Flag$gridTemplate,
+			$mdgriffith$elm_ui$Internal$Model$GridTemplateStyle(
+				{
+					columns: A2($elm$core$List$map, columnWidth, config.columns),
+					rows: A2(
+						$elm$core$List$repeat,
+						$elm$core$List$length(config.data),
+						$mdgriffith$elm_ui$Internal$Model$Content),
+					spacing: _Utils_Tuple2(
+						$mdgriffith$elm_ui$Element$px(sX),
+						$mdgriffith$elm_ui$Element$px(sY))
+				}));
 		return A4(
 			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asRow,
+			$mdgriffith$elm_ui$Internal$Model$asGrid,
 			$mdgriffith$elm_ui$Internal$Model$div,
 			A2(
 				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentLeft + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentCenterY)),
-				A2(
-					$elm$core$List$cons,
-					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-					A2(
-						$elm$core$List$cons,
-						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-						attrs))),
-			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+				A2($elm$core$List$cons, template, attrs)),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+				function () {
+					if (maybeHeaders.$ === 'Nothing') {
+						return children.elements;
+					} else {
+						var renderedHeaders = maybeHeaders.a;
+						return _Utils_ap(
+							renderedHeaders,
+							$elm$core$List$reverse(children.elements));
+					}
+				}()));
+	});
+var $mdgriffith$elm_ui$Element$table = F2(
+	function (attrs, config) {
+		return A2(
+			$mdgriffith$elm_ui$Element$tableHelper,
+			attrs,
+			{
+				columns: A2($elm$core$List$map, $mdgriffith$elm_ui$Element$InternalColumn, config.columns),
+				data: config.data
+			});
 	});
 var $mdgriffith$elm_ui$Internal$Model$BorderWidth = F5(
 	function (a, b, c, d, e) {
@@ -15125,53 +15338,86 @@ var $author$project$Main$tableField = function (data) {
 			]),
 		$mdgriffith$elm_ui$Element$text(data));
 };
-var $author$project$Main$patientRow = function (patient) {
-	return A2(
-		$mdgriffith$elm_ui$Element$row,
-		_List_Nil,
-		_List_fromArray(
-			[
-				$author$project$Main$tableField(patient.prenom),
-				$author$project$Main$tableField(patient.nom),
-				$author$project$Main$tableField(
-				$elm$core$String$fromInt(patient.numero_rue)),
-				$author$project$Main$tableField(patient.rue),
-				$author$project$Main$tableField(
-				$elm$core$String$fromInt(patient.code_postal)),
-				$author$project$Main$tableField(patient.ville),
-				$author$project$Main$tableField(patient.pays),
-				$author$project$Main$tableField(
-				function () {
-					var _v0 = patient.date_de_naissance;
-					var date = _v0.a;
-					return date;
-				}()),
-				$author$project$Main$tableField(patient.genre),
-				$author$project$Main$tableField(patient.moyen_de_decouverte)
-			]));
-};
 var $author$project$Main$patientTable = function (response) {
-	return _Utils_ap(
-		_List_fromArray(
-			[
-				A2(
-				$mdgriffith$elm_ui$Element$row,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$author$project$Main$tableField('Prenom'),
-						$author$project$Main$tableField('Nom'),
-						$author$project$Main$tableField('Numéro'),
-						$author$project$Main$tableField('Rue'),
-						$author$project$Main$tableField('Code postal'),
-						$author$project$Main$tableField('Ville'),
-						$author$project$Main$tableField('Pays'),
-						$author$project$Main$tableField('Date de naissance'),
-						$author$project$Main$tableField('Genre'),
-						$author$project$Main$tableField('Moyen de découverte')
-					]))
-			]),
-		A2($elm$core$List$map, $author$project$Main$patientRow, response));
+	return A2(
+		$mdgriffith$elm_ui$Element$table,
+		_List_Nil,
+		{
+			columns: _List_fromArray(
+				[
+					{
+					header: $author$project$Main$tableField('Prénom'),
+					view: function (patient) {
+						return $author$project$Main$tableField(patient.prenom);
+					},
+					width: $mdgriffith$elm_ui$Element$fill
+				},
+					{
+					header: $author$project$Main$tableField('Nom'),
+					view: function (patient) {
+						return $author$project$Main$tableField(patient.nom);
+					},
+					width: $mdgriffith$elm_ui$Element$fill
+				},
+					{
+					header: $author$project$Main$tableField('Numéro de rue'),
+					view: function (patient) {
+						return $author$project$Main$tableField(
+							$elm$core$String$fromInt(patient.numero_rue));
+					},
+					width: $mdgriffith$elm_ui$Element$fill
+				},
+					{
+					header: $author$project$Main$tableField('Code postal'),
+					view: function (patient) {
+						return $author$project$Main$tableField(
+							$elm$core$String$fromInt(patient.code_postal));
+					},
+					width: $mdgriffith$elm_ui$Element$fill
+				},
+					{
+					header: $author$project$Main$tableField('Ville'),
+					view: function (patient) {
+						return $author$project$Main$tableField(patient.ville);
+					},
+					width: $mdgriffith$elm_ui$Element$fill
+				},
+					{
+					header: $author$project$Main$tableField('Pays'),
+					view: function (patient) {
+						return $author$project$Main$tableField(patient.pays);
+					},
+					width: $mdgriffith$elm_ui$Element$fill
+				},
+					{
+					header: $author$project$Main$tableField('Date de naissance'),
+					view: function (patient) {
+						return $author$project$Main$tableField(
+							function () {
+								var _v0 = patient.date_de_naissance;
+								var date = _v0.a;
+								return date;
+							}());
+					},
+					width: $mdgriffith$elm_ui$Element$fill
+				},
+					{
+					header: $author$project$Main$tableField('Genre'),
+					view: function (patient) {
+						return $author$project$Main$tableField(patient.genre);
+					},
+					width: $mdgriffith$elm_ui$Element$fill
+				},
+					{
+					header: $author$project$Main$tableField('Moyen de découverte'),
+					view: function (patient) {
+						return $author$project$Main$tableField(patient.moyen_de_decouverte);
+					},
+					width: $mdgriffith$elm_ui$Element$fill
+				}
+				]),
+			data: response
+		});
 };
 var $mdgriffith$elm_ui$Internal$Flag$borderRound = $mdgriffith$elm_ui$Internal$Flag$flag(17);
 var $mdgriffith$elm_ui$Element$Border$rounded = function (radius) {
@@ -15184,25 +15430,26 @@ var $mdgriffith$elm_ui$Element$Border$rounded = function (radius) {
 			'border-radius',
 			$elm$core$String$fromInt(radius) + 'px'));
 };
-var $mdgriffith$elm_ui$Internal$Model$SpacingStyle = F3(
-	function (a, b, c) {
-		return {$: 'SpacingStyle', a: a, b: b, c: c};
+var $mdgriffith$elm_ui$Internal$Model$AsRow = {$: 'AsRow'};
+var $mdgriffith$elm_ui$Internal$Model$asRow = $mdgriffith$elm_ui$Internal$Model$AsRow;
+var $mdgriffith$elm_ui$Element$row = F2(
+	function (attrs, children) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asRow,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentLeft + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentCenterY)),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+						attrs))),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
-var $mdgriffith$elm_ui$Internal$Flag$spacing = $mdgriffith$elm_ui$Internal$Flag$flag(3);
-var $mdgriffith$elm_ui$Internal$Model$spacingName = F2(
-	function (x, y) {
-		return 'spacing-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y)));
-	});
-var $mdgriffith$elm_ui$Element$spacing = function (x) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$spacing,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$SpacingStyle,
-			A2($mdgriffith$elm_ui$Internal$Model$spacingName, x, x),
-			x,
-			x));
-};
 var $author$project$Main$Type = F2(
 	function (a, b) {
 		return {$: 'Type', a: a, b: b};
@@ -15448,10 +15695,25 @@ var $mdgriffith$elm_ui$Element$paddingXY = F2(
 				x));
 	});
 var $mdgriffith$elm_ui$Element$Input$defaultTextPadding = A2($mdgriffith$elm_ui$Element$paddingXY, 12, 12);
-var $mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
-	return {$: 'Fill', a: a};
+var $mdgriffith$elm_ui$Internal$Model$SpacingStyle = F3(
+	function (a, b, c) {
+		return {$: 'SpacingStyle', a: a, b: b, c: c};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$spacing = $mdgriffith$elm_ui$Internal$Flag$flag(3);
+var $mdgriffith$elm_ui$Internal$Model$spacingName = F2(
+	function (x, y) {
+		return 'spacing-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y)));
+	});
+var $mdgriffith$elm_ui$Element$spacing = function (x) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$spacing,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$SpacingStyle,
+			A2($mdgriffith$elm_ui$Internal$Model$spacingName, x, x),
+			x,
+			x));
 };
-var $mdgriffith$elm_ui$Element$fill = $mdgriffith$elm_ui$Internal$Model$Fill(1);
 var $mdgriffith$elm_ui$Element$Input$white = A3($mdgriffith$elm_ui$Element$rgb, 1, 1, 1);
 var $mdgriffith$elm_ui$Element$Input$defaultTextBoxStyle = _List_fromArray(
 	[
@@ -16212,48 +16474,43 @@ var $author$project$Main$successView = F2(
 			A2(
 				$mdgriffith$elm_ui$Element$column,
 				_List_fromArray(
+					[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+				_List_fromArray(
 					[
-						$mdgriffith$elm_ui$Element$centerX,
-						$mdgriffith$elm_ui$Element$centerY,
-						$mdgriffith$elm_ui$Element$spacing(80)
-					]),
-				_Utils_ap(
-					$author$project$Main$patientTable(response),
-					_List_fromArray(
-						[
-							A2(
-							$mdgriffith$elm_ui$Element$row,
-							_List_Nil,
-							_List_fromArray(
-								[
-									A2($author$project$Main$textInput, $author$project$Main$Prenom, textInputs),
-									A2($author$project$Main$textInput, $author$project$Main$Nom, textInputs),
-									A2($author$project$Main$textInput, $author$project$Main$Numero_de_rue, textInputs),
-									A2($author$project$Main$textInput, $author$project$Main$Rue, textInputs),
-									A2($author$project$Main$textInput, $author$project$Main$Code_postal, textInputs),
-									A2($author$project$Main$textInput, $author$project$Main$Ville, textInputs),
-									A2($author$project$Main$textInput, $author$project$Main$Pays, textInputs),
-									A2($author$project$Main$textInput, $author$project$Main$Date_de_naissance, textInputs),
-									A2($author$project$Main$textInput, $author$project$Main$Genre, textInputs),
-									A2($author$project$Main$textInput, $author$project$Main$Moyen_de_decouverte, textInputs)
-								])),
-							A2(
-							$mdgriffith$elm_ui$Element$Input$button,
-							_List_fromArray(
-								[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-							{
-								label: A2(
-									$mdgriffith$elm_ui$Element$el,
-									_List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$padding(30),
-											$mdgriffith$elm_ui$Element$Border$width(1),
-											$mdgriffith$elm_ui$Element$Border$rounded(5)
-										]),
-									$mdgriffith$elm_ui$Element$text('Add a new Patient')),
-								onPress: $elm$core$Maybe$Just($author$project$Main$AddPatient)
-							})
-						]))));
+						$author$project$Main$patientTable(response),
+						A2(
+						$mdgriffith$elm_ui$Element$row,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2($author$project$Main$textInput, $author$project$Main$Prenom, textInputs),
+								A2($author$project$Main$textInput, $author$project$Main$Nom, textInputs),
+								A2($author$project$Main$textInput, $author$project$Main$Numero_de_rue, textInputs),
+								A2($author$project$Main$textInput, $author$project$Main$Rue, textInputs),
+								A2($author$project$Main$textInput, $author$project$Main$Code_postal, textInputs),
+								A2($author$project$Main$textInput, $author$project$Main$Ville, textInputs),
+								A2($author$project$Main$textInput, $author$project$Main$Pays, textInputs),
+								A2($author$project$Main$textInput, $author$project$Main$Date_de_naissance, textInputs),
+								A2($author$project$Main$textInput, $author$project$Main$Genre, textInputs),
+								A2($author$project$Main$textInput, $author$project$Main$Moyen_de_decouverte, textInputs)
+							])),
+						A2(
+						$mdgriffith$elm_ui$Element$Input$button,
+						_List_fromArray(
+							[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+						{
+							label: A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$padding(30),
+										$mdgriffith$elm_ui$Element$Border$width(1),
+										$mdgriffith$elm_ui$Element$Border$rounded(5)
+									]),
+								$mdgriffith$elm_ui$Element$text('Add a new Patient')),
+							onPress: $elm$core$Maybe$Just($author$project$Main$AddPatient)
+						})
+					])));
 	});
 var $author$project$Main$view = function (model) {
 	if (model.$ === 'Login') {
