@@ -361,7 +361,7 @@ currentInputToString currentInput =
 
 patientTable : List Patient -> Element Msg
 patientTable response =
-    table []
+    table [ centerX, centerY ]
         { data = response
         , columns =
             [ { header = tableField "Prénom"
@@ -412,7 +412,7 @@ patientTable response =
 
 tableField : String -> Element Msg
 tableField data =
-    el [ centerX, centerY, Border.width 1 ] (text data)
+    el [ centerX, centerY, padding 25, Border.width 1 ] (text data)
 
 
 failureView : Graphql.Http.Error parsedData -> Html Msg
