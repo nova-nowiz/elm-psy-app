@@ -6,6 +6,7 @@
     "elm-version": "0.19.1",
     "dependencies": {
         "direct": {
+            "ccapndave/focus": "3.0.0",
             "dillonkearns/elm-graphql": "5.0.0",
             "elm/browser": "1.0.2",
             "elm/core": "1.0.5",
