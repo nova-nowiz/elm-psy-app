@@ -258,9 +258,9 @@ view model =
 successView : List Patient -> TextInputs -> Html Msg
 successView response textInputs =
     layout [] <|
-        column [ centerX, centerY ]
+        column [ centerX, centerY, spacing 30 ]
             [ patientTable response
-            , row []
+            , row [ width fill ]
                 [ textInput Prenom textInputs
                 , textInput Nom textInputs
                 , textInput Numero_de_rue textInputs
