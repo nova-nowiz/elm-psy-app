@@ -16397,8 +16397,17 @@ var $author$project$Main$textInput = F4(
 				text: formtext
 			});
 	});
-var $author$project$Main$successView = F2(
-	function (response, form) {
+var $author$project$Main$successView = F3(
+	function (response, form, addPatientData) {
+		var error = function () {
+			if (addPatientData.$ === 'Failure') {
+				var graphqlError = addPatientData.a;
+				return $mdgriffith$elm_ui$Element$text(
+					$author$project$Main$errorToString(graphqlError));
+			} else {
+				return $mdgriffith$elm_ui$Element$text('');
+			}
+		}();
 		return A2(
 			$mdgriffith$elm_ui$Element$layout,
 			_List_Nil,
@@ -16447,7 +16456,12 @@ var $author$project$Main$successView = F2(
 									]),
 								$mdgriffith$elm_ui$Element$text('Add a new Patient')),
 							onPress: $elm$core$Maybe$Just($author$project$Main$AddPatient)
-						})
+						}),
+						A2(
+						$mdgriffith$elm_ui$Element$el,
+						_List_fromArray(
+							[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+						error)
 					])));
 	});
 var $author$project$Main$view = function (model) {
@@ -16477,7 +16491,7 @@ var $author$project$Main$view = function (model) {
 					$mdgriffith$elm_ui$Element$text('A proper expression')));
 		case 'Success':
 			var response = _v0.a;
-			return A2($author$project$Main$successView, response, data.form);
+			return A3($author$project$Main$successView, response, data.form, data.addPatientData);
 		default:
 			var error = _v0.a;
 			return $author$project$Main$failureView(error);

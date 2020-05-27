@@ -224,14 +224,25 @@ view model =
                     (text "A proper expression")
 
         Success response ->
-            successView response data.form
+            successView response data.form data.addPatientData
 
         Failure error ->
             failureView error
 
 
-successView : List Patient -> Form -> Html Msg
-successView response form =
+successView : List Patient -> Form -> AddPatientData -> Html Msg
+successView response form addPatientData =
+    let
+        error =
+            case addPatientData of
+                Failure graphqlError ->
+                    graphqlError
+                        |> errorToString
+                        |> text
+
+                _ ->
+                    text ""
+    in
     layout [] <|
         column [ centerX, centerY, spacing 30 ]
             [ patientTable response
@@ -253,6 +264,8 @@ successView response form =
                         (text "Add a new Patient")
                 , onPress = Just AddPatient
                 }
+            , el [ centerX, centerY ]
+                error
             ]
 
 
