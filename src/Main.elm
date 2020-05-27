@@ -126,16 +126,7 @@ update msg model =
                     , getPatientsRequest
                     )
 
-                GetPatientsResponse _ ->
-                    ( model, Cmd.none )
-
-                Type input text ->
-                    ( model, Cmd.none )
-
-                AddPatient ->
-                    ( model, Cmd.none )
-
-                AddPatientResponse addPatientData ->
+                _ ->
                     ( model, Cmd.none )
 
         LoggedIn data ->
