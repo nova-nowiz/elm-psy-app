@@ -15367,6 +15367,13 @@ var $author$project$Main$patientTable = function (response) {
 					width: $mdgriffith$elm_ui$Element$fill
 				},
 					{
+					header: $author$project$Main$tableField('Rue'),
+					view: function (patient) {
+						return $author$project$Main$tableField(patient.rue);
+					},
+					width: $mdgriffith$elm_ui$Element$fill
+				},
+					{
 					header: $author$project$Main$tableField('Code postal'),
 					view: function (patient) {
 						return $author$project$Main$tableField(

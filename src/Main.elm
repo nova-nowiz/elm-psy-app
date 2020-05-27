@@ -301,6 +301,10 @@ patientTable response =
               , width = fill
               , view = \patient -> tableField <| String.fromInt patient.numero_rue
               }
+            , { header = tableField "Rue"
+              , width = fill
+              , view = \patient -> tableField patient.rue
+              }
             , { header = tableField "Code postal"
               , width = fill
               , view = \patient -> tableField <| String.fromInt patient.code_postal
