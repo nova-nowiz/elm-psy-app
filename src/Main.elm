@@ -50,6 +50,7 @@ type Model
 type alias RawModel =
     { getPatientsData : GetPatientsData
     , addPatientData : AddPatientData
+    , deletePatientData : DeletePatientData
     , form : Form
     }
 
@@ -93,6 +94,7 @@ init _ =
     ( Model
         { getPatientsData = Loading
         , addPatientData = NotAsked
+        , deletePatientData = NotAsked
         , form = emptyForm
         }
     , getPatientsRequest
@@ -106,7 +108,9 @@ init _ =
 type Msg
     = GetPatientsResponse GetPatientsData
     | AddPatientResponse AddPatientData
+    | DeletePatientResponse DeletePatientData
     | AddPatient
+    | DeletePatient Patient
       -- Form Inputs
     | EnteredPrenom String
     | EnteredNom String
@@ -162,8 +166,30 @@ update msg model =
                 Failure error ->
                     ( Model { data | addPatientData = addPatientData }, Cmd.none )
 
+        DeletePatientResponse deletePatientData ->
+            case deletePatientData of
+                NotAsked ->
+                    ( model, Cmd.none )
+
+                Loading ->
+                    ( model, Cmd.none )
+
+                Success response ->
+                    case response of
+                        Just patients ->
+                            ( Model { data | deletePatientData = deletePatientData, getPatientsData = Success patients }, Cmd.none )
+
+                        Nothing ->
+                            ( Model { data | deletePatientData = deletePatientData }, Cmd.none )
+
+                Failure error ->
+                    ( Model { data | deletePatientData = deletePatientData }, Cmd.none )
+
         AddPatient ->
             ( model, addPatientRequest data.form )
+
+        DeletePatient patient ->
+            ( model, deletePatientRequest patient )
 
         EnteredPrenom text ->
             updateForm (\form -> { form | prenom = text }) data
@@ -251,7 +277,7 @@ successView response form addPatientData =
     layout [] <|
         column [ centerX, centerY, spacing 30 ]
             [ patientTable response
-            , row [ width fill ]
+            , row [ width fill, padding 10 ]
                 [ textInput EnteredPrenom form.prenom "Prénom" "Prénom"
                 , textInput EnteredNom form.nom "Nom" "Nom"
                 , textInput EnteredNumero_de_rue form.numero_de_rue "Numéro de rue" "Numéro de rue"
@@ -276,7 +302,7 @@ successView response form addPatientData =
 
 textInput : (String -> Msg) -> String -> String -> String -> Element Msg
 textInput msg formtext placeholder label =
-    Input.text [ padding 10 ]
+    Input.text [ spacing 10 ]
         { onChange = msg
         , text = formtext
         , placeholder = Just (Input.placeholder [] (text placeholder))
@@ -334,6 +360,15 @@ patientTable response =
             , { header = tableField "Moyen de découverte"
               , width = fill
               , view = \patient -> tableField patient.moyen_de_decouverte
+              }
+            , { header = tableField "Supprimer patient"
+              , width = fill
+              , view =
+                    \patient ->
+                        Input.button []
+                            { onPress = Just (DeletePatient patient)
+                            , label = el [ centerX, centerY ] (text "X")
+                            }
               }
             ]
         }
@@ -483,6 +518,51 @@ addPatient form =
 addPatientRequest : Form -> Cmd Msg
 addPatientRequest form =
     addPatient form
+        |> Graphql.Http.mutationRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
+        |> Graphql.Http.withHeader "x-hasura-admin-secret" "Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU"
+        |> Graphql.Http.send (RemoteData.fromResult >> AddPatientResponse)
+
+
+type alias DeletePatientData =
+    RemoteData (Graphql.Http.Error (Maybe (List Patient))) (Maybe (List Patient))
+
+
+deletePatient : Patient -> SelectionSet (Maybe (List Patient)) RootMutation
+deletePatient patient =
+    let
+        reqArgs : DeletePatientRequiredArguments
+        reqArgs =
+            DeletePatientRequiredArguments
+                (buildPatient_bool_exp
+                    (\record ->
+                        { record
+                            | code_postal = Present (buildInt_comparison_exp (\r -> { r | eq_ = Present patient.code_postal }))
+                            , date_de_naissance = Present (buildDate_comparison_exp (\r -> { r | eq_ = Present patient.date_de_naissance }))
+                            , genre = Present (buildString_comparison_exp (\r -> { r | eq_ = Present patient.genre }))
+                            , moyen_de_decouverte = Present (buildString_comparison_exp (\r -> { r | eq_ = Present patient.moyen_de_decouverte }))
+                            , nom = Present (buildString_comparison_exp (\r -> { r | eq_ = Present patient.nom }))
+                            , numero_rue = Present (buildInt_comparison_exp (\r -> { r | eq_ = Present patient.numero_rue }))
+                            , pays = Present (buildString_comparison_exp (\r -> { r | eq_ = Present patient.pays }))
+                            , prenom = Present (buildString_comparison_exp (\r -> { r | eq_ = Present patient.prenom }))
+                            , rue = Present (buildString_comparison_exp (\r -> { r | eq_ = Present patient.rue }))
+                            , ville = Present (buildString_comparison_exp (\r -> { r | eq_ = Present patient.ville }))
+                        }
+                    )
+                )
+    in
+    Mutation.delete_Patient
+        reqArgs
+        getPatientsMutation
+
+
+
+-- Patient is the type alias and thus the constructor of a record
+-- it will thus take all of these parameters as input
+
+
+deletePatientRequest : Patient -> Cmd Msg
+deletePatientRequest patient =
+    deletePatient patient
         |> Graphql.Http.mutationRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
         |> Graphql.Http.withHeader "x-hasura-admin-secret" "Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU"
         |> Graphql.Http.send (RemoteData.fromResult >> AddPatientResponse)
