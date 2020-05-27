@@ -15631,7 +15631,10 @@ var $author$project$Main$patientTable = function (response) {
 					view: function (patient) {
 						return A2(
 							$mdgriffith$elm_ui$Element$Input$button,
-							_List_Nil,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$Border$width(1)
+								]),
 							{
 								label: A2(
 									$mdgriffith$elm_ui$Element$el,
@@ -15639,8 +15642,7 @@ var $author$project$Main$patientTable = function (response) {
 										[
 											$mdgriffith$elm_ui$Element$centerX,
 											$mdgriffith$elm_ui$Element$centerY,
-											$mdgriffith$elm_ui$Element$padding(25),
-											$mdgriffith$elm_ui$Element$Border$width(1)
+											$mdgriffith$elm_ui$Element$padding(25)
 										]),
 									$mdgriffith$elm_ui$Element$text('X')),
 								onPress: $elm$core$Maybe$Just(

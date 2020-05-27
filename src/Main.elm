@@ -365,9 +365,9 @@ patientTable response =
               , width = fill
               , view =
                     \patient ->
-                        Input.button []
+                        Input.button [ Border.width 1 ]
                             { onPress = Just (DeletePatient patient)
-                            , label = el [ centerX, centerY, padding 25, Border.width 1 ] (text "X")
+                            , label = el [ centerX, centerY, padding 25 ] (text "X")
                             }
               }
             ]
