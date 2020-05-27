@@ -8989,6 +8989,9 @@ var $author$project$Main$addPatientRequest = function (form) {
 				'https://bdd-psy-app.herokuapp.com/v1/graphql',
 				$author$project$Main$addPatient(form))));
 };
+var $author$project$Main$DeletePatientResponse = function (a) {
+	return {$: 'DeletePatientResponse', a: a};
+};
 var $author$project$Api$Mutation$DeletePatientRequiredArguments = function (where_) {
 	return {where_: where_};
 };
@@ -9132,7 +9135,7 @@ var $author$project$Main$deletePatient = function (patient) {
 var $author$project$Main$deletePatientRequest = function (patient) {
 	return A2(
 		$dillonkearns$elm_graphql$Graphql$Http$send,
-		A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Main$AddPatientResponse),
+		A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Main$DeletePatientResponse),
 		A3(
 			$dillonkearns$elm_graphql$Graphql$Http$withHeader,
 			'x-hasura-admin-secret',

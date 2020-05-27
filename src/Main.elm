@@ -565,4 +565,4 @@ deletePatientRequest patient =
     deletePatient patient
         |> Graphql.Http.mutationRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
         |> Graphql.Http.withHeader "x-hasura-admin-secret" "Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU"
-        |> Graphql.Http.send (RemoteData.fromResult >> AddPatientResponse)
+        |> Graphql.Http.send (RemoteData.fromResult >> DeletePatientResponse)
