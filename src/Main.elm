@@ -276,7 +276,7 @@ successView response form addPatientData =
 
 textInput : (String -> Msg) -> String -> String -> String -> Element Msg
 textInput msg formtext placeholder label =
-    Input.text []
+    Input.text [ padding 10 ]
         { onChange = msg
         , text = formtext
         , placeholder = Just (Input.placeholder [] (text placeholder))
@@ -286,7 +286,7 @@ textInput msg formtext placeholder label =
 
 patientTable : List Patient -> Element Msg
 patientTable response =
-    table [ centerX, centerY ]
+    table [ centerX, centerY, padding 10 ]
         { data = response
         , columns =
             [ { header = tableField "Prénom"
