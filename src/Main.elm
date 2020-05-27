@@ -152,7 +152,12 @@ update msg model =
                     ( model, Cmd.none )
 
                 Success response ->
-                    ( Model { data | addPatientData = addPatientData }, Cmd.none )
+                    case response of
+                        Just patients ->
+                            ( Model { data | addPatientData = addPatientData, getPatientsData = Success patients }, Cmd.none )
+
+                        Nothing ->
+                            ( Model { data | addPatientData = addPatientData }, Cmd.none )
 
                 Failure error ->
                     ( Model { data | addPatientData = addPatientData }, Cmd.none )

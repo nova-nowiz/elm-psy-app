@@ -9042,12 +9042,25 @@ var $author$project$Main$update = F2(
 						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 					case 'Success':
 						var response = addPatientData.a;
-						return _Utils_Tuple2(
-							$author$project$Main$Model(
-								_Utils_update(
-									data,
-									{addPatientData: addPatientData})),
-							$elm$core$Platform$Cmd$none);
+						if (response.$ === 'Just') {
+							var patients = response.a;
+							return _Utils_Tuple2(
+								$author$project$Main$Model(
+									_Utils_update(
+										data,
+										{
+											addPatientData: addPatientData,
+											getPatientsData: $krisajenkins$remotedata$RemoteData$Success(patients)
+										})),
+								$elm$core$Platform$Cmd$none);
+						} else {
+							return _Utils_Tuple2(
+								$author$project$Main$Model(
+									_Utils_update(
+										data,
+										{addPatientData: addPatientData})),
+								$elm$core$Platform$Cmd$none);
+						}
 					default:
 						var error = addPatientData.a;
 						return _Utils_Tuple2(
