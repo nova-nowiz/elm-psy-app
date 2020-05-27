@@ -44,18 +44,17 @@ main =
 
 
 type Model
-    = Login
-    | LoggedIn LoggedInModel
+    = Model RawModel
 
 
-type alias LoggedInModel =
+type alias RawModel =
     { getPatientsData : GetPatientsData
     , addPatientData : AddPatientData
-    , textInputs : TextInputs
+    , form : Form
     }
 
 
-type alias TextInputs =
+type alias Form =
     { prenom : String
     , nom : String
     , numero_de_rue : String
@@ -69,10 +68,34 @@ type alias TextInputs =
     }
 
 
+emptyForm : Form
+emptyForm =
+    { prenom = ""
+    , nom = ""
+    , numero_de_rue = ""
+    , rue = ""
+    , code_postal = ""
+    , ville = ""
+    , pays = ""
+    , date_de_naissance = ""
+    , genre = ""
+    , moyen_de_decouverte = ""
+    }
+
+
+updateForm : (Form -> Form) -> RawModel -> ( Model, Cmd Msg )
+updateForm transform data =
+    ( Model { data | form = transform data.form }, Cmd.none )
+
+
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Login
-    , Cmd.none
+    ( Model
+        { getPatientsData = Loading
+        , addPatientData = NotAsked
+        , form = emptyForm
+        }
+    , getPatientsRequest
     )
 
 
@@ -81,126 +104,91 @@ init _ =
 
 
 type Msg
-    = GetPatients
-    | GetPatientsResponse GetPatientsData
+    = GetPatientsResponse GetPatientsData
     | AddPatientResponse AddPatientData
-    | Type CurrentInput String
     | AddPatient
-
-
-type CurrentInput
-    = Prenom
-    | Nom
-    | Numero_de_rue
-    | Rue
-    | Code_postal
-    | Ville
-    | Pays
-    | Date_de_naissance
-    | Genre
-    | Moyen_de_decouverte
+      -- Form Inputs
+    | EnteredPrenom String
+    | EnteredNom String
+    | EnteredNumero_de_rue String
+    | EnteredRue String
+    | EnteredCode_postal String
+    | EnteredVille String
+    | EnteredPays String
+    | EnteredDate_de_naissance String
+    | EnteredGenre String
+    | EnteredMoyen_de_decouverte String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case model of
-        Login ->
-            case msg of
-                GetPatients ->
-                    ( LoggedIn
-                        { getPatientsData = Loading
-                        , addPatientData = NotAsked
-                        , textInputs =
-                            { prenom = ""
-                            , nom = ""
-                            , numero_de_rue = ""
-                            , rue = ""
-                            , code_postal = ""
-                            , ville = ""
-                            , pays = ""
-                            , date_de_naissance = ""
-                            , genre = ""
-                            , moyen_de_decouverte = ""
-                            }
-                        }
-                    , getPatientsRequest
-                    )
-
-                _ ->
+    let
+        data =
+            case model of
+                Model datamodel ->
+                    datamodel
+    in
+    case msg of
+        GetPatientsResponse getPatientsData ->
+            case getPatientsData of
+                NotAsked ->
                     ( model, Cmd.none )
 
-        LoggedIn data ->
-            case msg of
-                GetPatients ->
-                    ( LoggedIn { data | getPatientsData = Loading }, getPatientsRequest )
+                Loading ->
+                    ( model, Cmd.none )
 
-                GetPatientsResponse getPatientsData ->
-                    case getPatientsData of
-                        NotAsked ->
-                            ( model, Cmd.none )
+                Success response ->
+                    ( Model { data | getPatientsData = getPatientsData }, Cmd.none )
 
-                        Loading ->
-                            ( model, Cmd.none )
+                Failure error ->
+                    ( Model { data | getPatientsData = getPatientsData }, Cmd.none )
 
-                        Success response ->
-                            ( LoggedIn { data | getPatientsData = getPatientsData }, Cmd.none )
+        AddPatientResponse addPatientData ->
+            case addPatientData of
+                NotAsked ->
+                    ( model, Cmd.none )
 
-                        Failure error ->
-                            ( LoggedIn { data | getPatientsData = getPatientsData }, Cmd.none )
+                Loading ->
+                    ( model, Cmd.none )
 
-                AddPatientResponse addPatientData ->
-                    case addPatientData of
-                        NotAsked ->
-                            ( model, Cmd.none )
+                Success response ->
+                    ( Model { data | addPatientData = addPatientData }, Cmd.none )
 
-                        Loading ->
-                            ( model, Cmd.none )
+                Failure error ->
+                    ( Model { data | addPatientData = addPatientData }, Cmd.none )
 
-                        Success response ->
-                            ( LoggedIn { data | addPatientData = addPatientData }, Cmd.none )
+        AddPatient ->
+            ( model, addPatientRequest data.form )
 
-                        Failure error ->
-                            ( LoggedIn { data | addPatientData = addPatientData }, Cmd.none )
+        EnteredPrenom text ->
+            updateForm (\form -> { form | prenom = text }) data
 
-                Type input text ->
-                    textInputsUpdate data input text data.textInputs
+        EnteredNom text ->
+            updateForm (\form -> { form | nom = text }) data
 
-                AddPatient ->
-                    ( model, addPatientRequest data.textInputs )
+        EnteredNumero_de_rue text ->
+            updateForm (\form -> { form | numero_de_rue = text }) data
 
+        EnteredRue text ->
+            updateForm (\form -> { form | rue = text }) data
 
-textInputsUpdate : LoggedInModel -> CurrentInput -> String -> TextInputs -> ( Model, Cmd Msg )
-textInputsUpdate data input text textInputs =
-    case input of
-        Prenom ->
-            ( LoggedIn { data | textInputs = { textInputs | prenom = text } }, Cmd.none )
+        EnteredCode_postal text ->
+            updateForm (\form -> { form | code_postal = text }) data
 
-        Nom ->
-            ( LoggedIn { data | textInputs = { textInputs | nom = text } }, Cmd.none )
+        EnteredVille text ->
+            updateForm (\form -> { form | ville = text }) data
 
-        Numero_de_rue ->
-            ( LoggedIn { data | textInputs = { textInputs | numero_de_rue = text } }, Cmd.none )
+        EnteredPays text ->
+            updateForm (\form -> { form | pays = text }) data
 
-        Rue ->
-            ( LoggedIn { data | textInputs = { textInputs | rue = text } }, Cmd.none )
+        EnteredDate_de_naissance text ->
+            updateForm (\form -> { form | date_de_naissance = text }) data
 
-        Code_postal ->
-            ( LoggedIn { data | textInputs = { textInputs | code_postal = text } }, Cmd.none )
+        EnteredGenre text ->
+            updateForm (\form -> { form | genre = text }) data
 
-        Ville ->
-            ( LoggedIn { data | textInputs = { textInputs | ville = text } }, Cmd.none )
-
-        Pays ->
-            ( LoggedIn { data | textInputs = { textInputs | pays = text } }, Cmd.none )
-
-        Date_de_naissance ->
-            ( LoggedIn { data | textInputs = { textInputs | date_de_naissance = text } }, Cmd.none )
-
-        Genre ->
-            ( LoggedIn { data | textInputs = { textInputs | genre = text } }, Cmd.none )
-
-        Moyen_de_decouverte ->
-            ( LoggedIn { data | textInputs = { textInputs | moyen_de_decouverte = text } }, Cmd.none )
+        EnteredMoyen_de_decouverte text ->
+            updateForm (\form -> { form | moyen_de_decouverte = text }) data
 
 
 
@@ -218,50 +206,46 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    case model of
-        Login ->
+    let
+        data =
+            case model of
+                Model datamodel ->
+                    datamodel
+    in
+    case data.getPatientsData of
+        NotAsked ->
             layout [] <|
                 el [ centerX, centerY ]
-                    (Input.button
-                        []
-                        { label = text "Request", onPress = Just GetPatients }
-                    )
+                    (text "The request was not made :/")
 
-        LoggedIn data ->
-            case data.getPatientsData of
-                NotAsked ->
-                    layout [] <|
-                        el [ centerX, centerY ]
-                            (text "The request was not made :/")
+        Loading ->
+            layout [] <|
+                el [ centerX, centerY ]
+                    (text "A proper expression")
 
-                Loading ->
-                    layout [] <|
-                        el [ centerX, centerY ]
-                            (text "A proper expression")
+        Success response ->
+            successView response data.form
 
-                Success response ->
-                    successView response data.textInputs
-
-                Failure error ->
-                    failureView error
+        Failure error ->
+            failureView error
 
 
-successView : List Patient -> TextInputs -> Html Msg
-successView response textInputs =
+successView : List Patient -> Form -> Html Msg
+successView response form =
     layout [] <|
         column [ centerX, centerY, spacing 30 ]
             [ patientTable response
             , row [ width fill ]
-                [ textInput Prenom textInputs
-                , textInput Nom textInputs
-                , textInput Numero_de_rue textInputs
-                , textInput Rue textInputs
-                , textInput Code_postal textInputs
-                , textInput Ville textInputs
-                , textInput Pays textInputs
-                , textInput Date_de_naissance textInputs
-                , textInput Genre textInputs
-                , textInput Moyen_de_decouverte textInputs
+                [ textInput EnteredPrenom form.prenom "Prénom" "Prénom"
+                , textInput EnteredNom form.nom "Nom" "Nom"
+                , textInput EnteredNumero_de_rue form.numero_de_rue "Numéro de rue" "Numéro de rue"
+                , textInput EnteredRue form.rue "Rue" "Rue"
+                , textInput EnteredCode_postal form.code_postal "Code postal" "Code postal"
+                , textInput EnteredVille form.ville "Ville" "Ville"
+                , textInput EnteredPays form.pays "Pays" "Pays"
+                , textInput EnteredDate_de_naissance form.date_de_naissance "Date de naissance" "Date de naissance"
+                , textInput EnteredGenre form.genre "Genre" "Genre"
+                , textInput EnteredMoyen_de_decouverte form.moyen_de_decouverte "Moyen de découverte" "Moyen de découverte"
                 ]
             , Input.button [ centerX, centerY ]
                 { label =
@@ -272,82 +256,14 @@ successView response textInputs =
             ]
 
 
-textInput : CurrentInput -> TextInputs -> Element Msg
-textInput currentInput textInputs =
+textInput : (String -> Msg) -> String -> String -> String -> Element Msg
+textInput msg formtext placeholder label =
     Input.text []
-        { onChange = Type currentInput
-        , text = currentInputString currentInput textInputs
-        , placeholder = Just (Input.placeholder [] (text <| currentInputToString currentInput))
-        , label = Input.labelAbove [] (text <| currentInputToString currentInput)
+        { onChange = msg
+        , text = formtext
+        , placeholder = Just (Input.placeholder [] (text placeholder))
+        , label = Input.labelAbove [] (text label)
         }
-
-
-currentInputString : CurrentInput -> TextInputs -> String
-currentInputString currentInput textInputs =
-    case currentInput of
-        Prenom ->
-            textInputs.prenom
-
-        Nom ->
-            textInputs.nom
-
-        Numero_de_rue ->
-            textInputs.numero_de_rue
-
-        Rue ->
-            textInputs.rue
-
-        Code_postal ->
-            textInputs.code_postal
-
-        Ville ->
-            textInputs.ville
-
-        Pays ->
-            textInputs.pays
-
-        Date_de_naissance ->
-            textInputs.date_de_naissance
-
-        Genre ->
-            textInputs.genre
-
-        Moyen_de_decouverte ->
-            textInputs.moyen_de_decouverte
-
-
-currentInputToString : CurrentInput -> String
-currentInputToString currentInput =
-    case currentInput of
-        Prenom ->
-            "Prénom"
-
-        Nom ->
-            "Nom"
-
-        Numero_de_rue ->
-            "Numéro de rue"
-
-        Rue ->
-            "Rue"
-
-        Code_postal ->
-            "Code Postal"
-
-        Ville ->
-            "Ville"
-
-        Pays ->
-            "Pays"
-
-        Date_de_naissance ->
-            "Date de naissance"
-
-        Genre ->
-            "Genre"
-
-        Moyen_de_decouverte ->
-            "Moyen de découverte"
 
 
 patientTable : List Patient -> Element Msg
@@ -508,23 +424,23 @@ getPatientsMutation =
     Api.Object.Patient_mutation_response.returning getPatient
 
 
-addPatient : TextInputs -> SelectionSet (Maybe (List Patient)) RootMutation
-addPatient textInputs =
+addPatient : Form -> SelectionSet (Maybe (List Patient)) RootMutation
+addPatient form =
     let
         patientinsert =
             { consultations = Absent
             , patient_Professions = Absent
-            , code_postal = Present (String.toInt textInputs.code_postal |> Maybe.withDefault 0)
-            , date_de_naissance = Present (Date textInputs.date_de_naissance)
-            , genre = Present textInputs.genre
+            , code_postal = Present (String.toInt form.code_postal |> Maybe.withDefault 0)
+            , date_de_naissance = Present (Date form.date_de_naissance)
+            , genre = Present form.genre
             , id_patient = Absent
-            , moyen_de_decouverte = Present textInputs.moyen_de_decouverte
-            , nom = Present textInputs.nom
-            , numero_rue = Present (String.toInt textInputs.numero_de_rue |> Maybe.withDefault 0)
-            , pays = Present textInputs.pays
-            , prenom = Present textInputs.prenom
-            , rue = Present textInputs.rue
-            , ville = Present textInputs.ville
+            , moyen_de_decouverte = Present form.moyen_de_decouverte
+            , nom = Present form.nom
+            , numero_rue = Present (String.toInt form.numero_de_rue |> Maybe.withDefault 0)
+            , pays = Present form.pays
+            , prenom = Present form.prenom
+            , rue = Present form.rue
+            , ville = Present form.ville
             }
 
         reqArgs : InsertPatientRequiredArguments
@@ -542,9 +458,9 @@ addPatient textInputs =
 -- it will thus take all of these parameters as input
 
 
-addPatientRequest : TextInputs -> Cmd Msg
-addPatientRequest textInputs =
-    addPatient textInputs
+addPatientRequest : Form -> Cmd Msg
+addPatientRequest form =
+    addPatient form
         |> Graphql.Http.mutationRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
         |> Graphql.Http.withHeader "x-hasura-admin-secret" "Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU"
         |> Graphql.Http.send (RemoteData.fromResult >> AddPatientResponse)
