@@ -9145,8 +9145,50 @@ var $author$project$Main$deletePatientRequest = function (patient) {
 				'https://bdd-psy-app.herokuapp.com/v1/graphql',
 				$author$project$Main$deletePatient(patient))));
 };
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $elm$core$List$any = F2(
+	function (isOkay, list) {
+		any:
+		while (true) {
+			if (!list.b) {
+				return false;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (isOkay(x)) {
+					return true;
+				} else {
+					var $temp$isOkay = isOkay,
+						$temp$list = xs;
+					isOkay = $temp$isOkay;
+					list = $temp$list;
+					continue any;
+				}
+			}
+		}
+	});
+var $elm$core$List$member = F2(
+	function (x, xs) {
+		return A2(
+			$elm$core$List$any,
+			function (a) {
+				return _Utils_eq(a, x);
+			},
+			xs);
+	});
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $elm$core$Basics$not = _Basics_not;
 var $author$project$Main$updateForm = F2(
 	function (transform, data) {
 		return _Utils_Tuple2(
@@ -9206,7 +9248,17 @@ var $author$project$Main$update = F2(
 										data,
 										{
 											addPatientData: addPatientData,
-											getPatientsData: $krisajenkins$remotedata$RemoteData$Success(patients)
+											getPatientsData: function () {
+												var _v4 = data.getPatientsData;
+												if (_v4.$ === 'Success') {
+													var patientsdata = _v4.a;
+													return $krisajenkins$remotedata$RemoteData$Success(
+														_Utils_ap(patientsdata, patients));
+												} else {
+													var meh = _v4;
+													return meh;
+												}
+											}()
 										})),
 								$elm$core$Platform$Cmd$none);
 						} else {
@@ -9243,7 +9295,22 @@ var $author$project$Main$update = F2(
 										data,
 										{
 											deletePatientData: deletePatientData,
-											getPatientsData: $krisajenkins$remotedata$RemoteData$Success(patients)
+											getPatientsData: function () {
+												var _v7 = data.getPatientsData;
+												if (_v7.$ === 'Success') {
+													var patientdata = _v7.a;
+													return $krisajenkins$remotedata$RemoteData$Success(
+														A2(
+															$elm$core$List$filter,
+															function (patient) {
+																return !A2($elm$core$List$member, patient, patients);
+															},
+															patientdata));
+												} else {
+													var meh = _v7;
+													return meh;
+												}
+											}()
 										})),
 								$elm$core$Platform$Cmd$none);
 						} else {
@@ -11870,27 +11937,6 @@ var $elm$json$Json$Encode$list = F2(
 				_Json_emptyArray(_Utils_Tuple0),
 				entries));
 	});
-var $elm$core$List$any = F2(
-	function (isOkay, list) {
-		any:
-		while (true) {
-			if (!list.b) {
-				return false;
-			} else {
-				var x = list.a;
-				var xs = list.b;
-				if (isOkay(x)) {
-					return true;
-				} else {
-					var $temp$isOkay = isOkay,
-						$temp$list = xs;
-					isOkay = $temp$isOkay;
-					list = $temp$list;
-					continue any;
-				}
-			}
-		}
-	});
 var $mdgriffith$elm_ui$Internal$Model$fontName = function (font) {
 	switch (font.$) {
 		case 'Serif':
@@ -12616,17 +12662,6 @@ var $mdgriffith$elm_ui$Internal$Model$adjust = F3(
 	function (size, height, vertical) {
 		return {height: height / size, size: size, vertical: vertical};
 	});
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
 var $elm$core$List$maximum = function (list) {
 	if (list.b) {
 		var x = list.a;
@@ -12931,7 +12966,6 @@ var $elm$virtual_dom$VirtualDom$keyedNode = function (tag) {
 	return _VirtualDom_keyedNode(
 		_VirtualDom_noScript(tag));
 };
-var $elm$core$Basics$not = _Basics_not;
 var $elm$html$Html$p = _VirtualDom_node('p');
 var $mdgriffith$elm_ui$Internal$Flag$present = F2(
 	function (myFlag, _v0) {
@@ -16691,7 +16725,7 @@ var $author$project$Main$successView = F3(
 								A4($author$project$Main$textInput, $author$project$Main$EnteredCode_postal, form.code_postal, 'Code postal', 'Code postal'),
 								A4($author$project$Main$textInput, $author$project$Main$EnteredVille, form.ville, 'Ville', 'Ville'),
 								A4($author$project$Main$textInput, $author$project$Main$EnteredPays, form.pays, 'Pays', 'Pays'),
-								A4($author$project$Main$textInput, $author$project$Main$EnteredDate_de_naissance, form.date_de_naissance, 'Date de naissance', 'Date de naissance'),
+								A4($author$project$Main$textInput, $author$project$Main$EnteredDate_de_naissance, form.date_de_naissance, 'YYYY-MM-DD', 'Date de naissance'),
 								A4($author$project$Main$textInput, $author$project$Main$EnteredGenre, form.genre, 'Genre', 'Genre'),
 								A4($author$project$Main$textInput, $author$project$Main$EnteredMoyen_de_decouverte, form.moyen_de_decouverte, 'Moyen de découverte', 'Moyen de découverte')
 							])),

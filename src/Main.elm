@@ -158,7 +158,19 @@ update msg model =
                 Success response ->
                     case response of
                         Just patients ->
-                            ( Model { data | addPatientData = addPatientData, getPatientsData = Success patients }, Cmd.none )
+                            ( Model
+                                { data
+                                    | addPatientData = addPatientData
+                                    , getPatientsData =
+                                        case data.getPatientsData of
+                                            Success patientsdata ->
+                                                Success (patientsdata ++ patients)
+
+                                            meh ->
+                                                meh
+                                }
+                            , Cmd.none
+                            )
 
                         Nothing ->
                             ( Model { data | addPatientData = addPatientData }, Cmd.none )
@@ -177,7 +189,19 @@ update msg model =
                 Success response ->
                     case response of
                         Just patients ->
-                            ( Model { data | deletePatientData = deletePatientData, getPatientsData = Success patients }, Cmd.none )
+                            ( Model
+                                { data
+                                    | deletePatientData = deletePatientData
+                                    , getPatientsData =
+                                        case data.getPatientsData of
+                                            Success patientdata ->
+                                                Success (List.filter (\patient -> not (List.member patient patients)) patientdata)
+
+                                            meh ->
+                                                meh
+                                }
+                            , Cmd.none
+                            )
 
                         Nothing ->
                             ( Model { data | deletePatientData = deletePatientData }, Cmd.none )
@@ -285,7 +309,7 @@ successView response form addPatientData =
                 , textInput EnteredCode_postal form.code_postal "Code postal" "Code postal"
                 , textInput EnteredVille form.ville "Ville" "Ville"
                 , textInput EnteredPays form.pays "Pays" "Pays"
-                , textInput EnteredDate_de_naissance form.date_de_naissance "Date de naissance" "Date de naissance"
+                , textInput EnteredDate_de_naissance form.date_de_naissance "YYYY-MM-DD" "Date de naissance"
                 , textInput EnteredGenre form.genre "Genre" "Genre"
                 , textInput EnteredMoyen_de_decouverte form.moyen_de_decouverte "Moyen de découverte" "Moyen de découverte"
                 ]
