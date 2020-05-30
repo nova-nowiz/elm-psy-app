@@ -299,9 +299,11 @@ successView response form addPatientData =
     in
     layout [] <|
         column [ centerX, centerY] --behind form
-            [toHtml (image 960 500 "starry-night.jpg")
-            ,Element.el [ Font.color (rgb255 111 144 166), Font.size (80), centerX, padding 50]
-            (Element.text "Votre liste de patients")
+            [ row[ centerX,padding 50]
+                [image [ width (fill |> maximum 80)] {src ="logo.png", description = "logo"}
+                ,el [ Font.color (rgb255 111 144 166), Font.size (80)] (text "Votre liste de patients")
+                ,image [ width (fill |> maximum 80)] {src ="logo.png", description = "logo"}
+                ]
             , patientTable response
             , row [ width fill, padding 30,spacing 5 ] --form
                 [ textInput EnteredPrenom form.prenom "Prénom" "Prénom"
