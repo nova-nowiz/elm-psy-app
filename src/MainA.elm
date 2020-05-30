@@ -3,8 +3,8 @@ module Main exposing (..)
 import Api.InputObject exposing (..)
 import Api.Mutation as Mutation exposing (..)
 import Api.Object exposing (..)
-import Api.Object.Profession
-import Api.Object.Profession_mutation_response
+import Api.Object.Agenda
+import Api.Object.Agenda_mutation_response
 import Api.Query as Query exposing (..)
 import Api.Scalar exposing (..)
 import Api.ScalarCodecs
@@ -48,20 +48,22 @@ type Model
 
 
 type alias RawModel =
-    { getProfessionData : GetProfessionData
-    , addProfessionData : AddProfessionData
+    { getAgendaData : GetAgendaData
+    , addAgendaData : AddAgendaData
     , form : Form
     }
 
 
 type alias Form =
-    { profession : String
+    { date : String
+    , heure : String
     }
 
 
 emptyForm : Form
 emptyForm =
-    { profession = ""
+    { date = ""
+    , heure = ""
     }
 
 
@@ -73,11 +75,11 @@ updateForm transform data =
 init : () -> ( Model, Cmd Msg )
 init _ =
     ( Model
-        { getProfessionData = Loading
-        , addProfessionData = NotAsked
+        { getAgendaData = Loading
+        , addAgendaData = NotAsked
         , form = emptyForm
         }
-    , getProfessionRequest
+    , getAgendaRequest
     )
 
 
@@ -86,11 +88,12 @@ init _ =
 
 
 type Msg
-    = GetProfessionResponse GetProfessionData
-    | AddProfessionResponse AddProfessionData
-    | AddProfession
+    = GetAgendaResponse GetAgendaData
+    | AddAgendaResponse AddAgendaData
+    | AddAgenda
       -- Form Inputs
     | EnteredDate String
+    | EnteredHeure String
 
 
 
@@ -103,8 +106,8 @@ update msg model =
                     datamodel
     in
     case msg of
-        GetProfessionResponse getProfessionData ->
-            case getProfessionData of
+        GetAgendaResponse getAgendaData ->
+            case getAgendaData of
                 NotAsked ->
                     ( model, Cmd.none )
 
@@ -112,13 +115,13 @@ update msg model =
                     ( model, Cmd.none )
 
                 Success response ->
-                    ( Model { data | getProfessionData = getProfessionData }, Cmd.none )
+                    ( Model { data | getAgendaData = getAgendaData }, Cmd.none )
 
                 Failure error ->
-                    ( Model { data | getProfessionData = getProfessionData }, Cmd.none )
+                    ( Model { data | getAgendaData = getAgendaData }, Cmd.none )
 
-        AddProfessionResponse addProfessionData ->
-            case addProfessionData of
+        AddAgendaResponse addAgendaData ->
+            case addAgendaData of
                 NotAsked ->
                     ( model, Cmd.none )
 
@@ -126,16 +129,19 @@ update msg model =
                     ( model, Cmd.none )
 
                 Success response ->
-                    ( Model { data | addProfessionData = addProfessionData }, Cmd.none )
+                    ( Model { data | addAgendaData = addAgendaData }, Cmd.none )
 
                 Failure error ->
-                    ( Model { data | addProfessionData = addProfessionData }, Cmd.none )
+                    ( Model { data | addAgendaData = addAgendaData }, Cmd.none )
 
-        AddProfession ->
-            ( model, addProfessionRequest data.form )
+        AddAgenda ->
+            ( model, addAgendaRequest data.form )
 
         EnteredDate text ->
-            updateForm (\form -> { form | profession = text }) data
+            updateForm (\form -> { form | date = text }) data
+
+        EnteredHeure text ->
+            updateForm (\form -> { form | heure = text }) data
 
 
 
@@ -159,7 +165,7 @@ view model =
                 Model datamodel ->
                     datamodel
     in
-    case data.getProfessionData of
+    case data.getAgendaData of
         NotAsked ->
             layout [] <|
                 el [ centerX, centerY ]
@@ -177,26 +183,20 @@ view model =
             failureView error
 
 
-successView : List Profession -> Form -> Html Msg
+successView : List Agenda -> Form -> Html Msg
 successView response form =
     layout [] <|
-        column [ centerX, centerY, Background.color (rgb255 214 217 216), height fill, width fill]
-            [ row[ centerX,padding 50]
-                [image [ width (fill |> maximum 80)] {src ="logo.png", description = "logo"}
-                ,el [ Font.color (rgb255 111 144 166), Font.size (80)] (text "Votre liste de professions")
-                ,image [ width (fill |> maximum 80)] {src ="logo.png", description = "logo"}
-                ]
-            , professionTable response
-            , row [ centerX, padding 30 ]
-                [ textInput EnteredDate form.profession "Profession" "Profession"
+        column [ centerX, centerY, spacing 30 ]
+            [ agendaTable response
+            , row [ width fill ]
+                [ textInput EnteredDate form.date "Prénom" "Prénom"
+                , textInput EnteredHeure form.heure "Nom" "Nom"
                 ]
             , Input.button [ centerX, centerY ]
                 { label =
-                    el [ padding 30,  Border.rounded 5, Background.color (rgb255 111 144 166) 
-                        ,mouseOver [Background.color (rgb255 140 179 196)],
-                        Element.focused [ Background.color (rgb255 24 52 61), Font.color(rgb255 214 217 216)]]
-                        (text "Ajouter une profession")
-                , onPress = Just AddProfession
+                    el [ padding 30, Border.width 1, Border.rounded 5 ]
+                        (text "Add a new Agenda")
+                , onPress = Just AddAgenda
                 }
             ]
 
@@ -211,14 +211,18 @@ textInput msg formtext placeholder label =
         }
 
 
-professionTable : List Profession -> Element Msg
-professionTable response =
-    table [ centerX, centerY, padding 30, Background.color (rgb255  111 144 166)] 
+agendaTable : List Agenda -> Element Msg
+agendaTable response =
+    table [ centerX, centerY ]
         { data = response
         , columns =
-            [ { header = tableField "Profession"
+            [ { header = tableField "Date"
               , width = fill
-              , view = \profession -> tableField profession.profession
+              , view = \agenda -> tableField agenda.date
+              }
+            , { header = tableField "Heure"
+              , width = fill
+              , view = \agenda -> tableField agenda.heure
               }
             ]
         }
@@ -226,8 +230,7 @@ professionTable response =
 
 tableField : String -> Element Msg
 tableField data =
-    el [ centerX, centerY, padding 23, Border.width 1, Background.color (rgb255 140 179 196) 
-    ,Border.color(rgb255 24 52 61) ] (text data)
+    el [ centerX, centerY, padding 25, Border.width 1 ] (text data)
 
 
 failureView : Graphql.Http.Error parsedData -> Html Msg
@@ -275,72 +278,75 @@ graphqlErrorToString error =
 -- GRAPHQL
 
 
-type alias Profession =
-    { profession : String
+type alias Agenda =
+    { date : String
+    , heure : String
     }
 
 
-type alias GetProfessionData =
-    RemoteData (Graphql.Http.Error (List Profession)) (List Profession)
+type alias GetAgendaData =
+    RemoteData (Graphql.Http.Error (List Agenda)) (List Agenda)
 
 
-getProfession : SelectionSet Profession Api.Object.Profession
-getProfession =
-    -- Profession is the type alias and thus the constructor of a record
+getAgenda : SelectionSet Agenda Api.Object.Agenda
+getAgenda =
+    -- Agenda is the type alias and thus the constructor of a record
     -- it will thus take all of these parameters as input
-    SelectionSet.succeed Profession
-        |> with Api.Object.Profession.profession
+    SelectionSet.succeed Agenda
+        |> with Api.Object.Agenda.date
+        |> with Api.Object.Agenda.heure
 
 
-getProfessionQuery : SelectionSet (List Profession) RootQuery
-getProfessionQuery =
-    Query.profession identity getProfession
+getAgendaQuery : SelectionSet (List Agenda) RootQuery
+getAgendaQuery =
+    Query.agenda identity getAgenda
 
 
-getProfessionRequest : Cmd Msg
-getProfessionRequest =
-    getProfessionQuery
+getAgendaRequest : Cmd Msg
+getAgendaRequest =
+    getAgendaQuery
         |> Graphql.Http.queryRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
         |> Graphql.Http.withHeader "x-hasura-admin-secret" "Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU"
-        |> Graphql.Http.send (RemoteData.fromResult >> GetProfessionResponse)
+        |> Graphql.Http.send (RemoteData.fromResult >> GetAgendaResponse)
 
 
-type alias AddProfessionData =
-    RemoteData (Graphql.Http.Error (Maybe (List Profession))) (Maybe (List Profession))
+type alias AddAgendaData =
+    RemoteData (Graphql.Http.Error (Maybe (List Agenda))) (Maybe (List Agenda))
 
 
-getProfessionMutation : SelectionSet (List Profession) Api.Object.Profession_mutation_response
-getProfessionMutation =
-    Api.Object.Profession_mutation_response.returning getProfession
+getAgendaMutation : SelectionSet (List Agenda) Api.Object.Agenda_mutation_response
+getAgendaMutation =
+    Api.Object.Agenda_mutation_response.returning getAgenda
 
 
-addProfession : Form -> SelectionSet (Maybe (List Profession)) RootMutation
-addProfession form =
+addAgenda : Form -> SelectionSet (Maybe (List Agenda)) RootMutation
+addAgenda form =
     let
-        professioninsert =
-            { patient_Professions = Absent
-            , profession = Present form.profession
-            , id_profession = Absent
+        agendainsert =
+            { consultations = Absent
+            , date = Present form.date 
+            , heure = Present form.heure
+            , id_agenda = Absent
             }
 
-        reqArgs : InsertProfessionRequiredArguments
+        reqArgs : InsertAgendaRequiredArguments
         reqArgs =
-            InsertProfessionRequiredArguments
-                [ Profession_insert_input professioninsert ]
+            InsertAgendaRequiredArguments
+                [ Agenda_insert_input agendainsert ]
     in
-    Mutation.insert_Profession (\optionals -> optionals)
+    Mutation.insert_Agenda (\optionals -> optionals)
         reqArgs
-        getProfessionMutation
+        getAgendaMutation
 
 
 
--- Profession is the type alias and thus the constructor of a record
+-- Agenda is the type alias and thus the constructor of a record
 -- it will thus take all of these parameters as input
 
 
-addProfessionRequest : Form -> Cmd Msg
-addProfessionRequest form =
-    addProfession form
+addAgendaRequest : Form -> Cmd Msg
+addAgendaRequest form =
+    addAgenda form
         |> Graphql.Http.mutationRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
         |> Graphql.Http.withHeader "x-hasura-admin-secret" "Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU"
-        |> Graphql.Http.send (RemoteData.fromResult >> AddProfessionResponse)
+        |> Graphql.Http.send (RemoteData.fromResult >> AddAgendaResponse)
