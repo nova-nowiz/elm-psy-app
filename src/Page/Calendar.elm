@@ -246,7 +246,7 @@ successView response form addAgendaData =
     column [ centerX, centerY, Background.color (rgb255 214 217 216), height fill, width fill ]
         [ row [ centerX, padding 50 ]
             [ image [ width (fill |> maximum 80) ] { src = "logo.png", description = "logo" }
-            , el [ Font.color (rgb255 111 144 166), Font.size 80 ] (text "Votre liste de patients")
+            , el [ Font.color (rgb255 111 144 166), Font.size 80 ] (text "Votre liste de rendez-vous")
             , image [ width (fill |> maximum 80) ] { src = "logo.png", description = "logo" }
             ]
         , agendaTable response

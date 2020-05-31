@@ -16,6 +16,7 @@ type Route
     = Root (Maybe Auth0CallbackInfo)
     | Calendar
     | Patients
+    | Logout
 
 
 parser : Parser (Route -> a) a
@@ -24,6 +25,7 @@ parser =
         [ Parser.map Root (Parser.fragment accessTokenUrlParser)
         , Parser.map Calendar (s "calendar")
         , Parser.map Patients (s "patients")
+        , Parser.map Logout (s "logout")
         ]
 
 

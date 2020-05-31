@@ -1,4 +1,4 @@
-port module Api exposing (Cred, Role, application, checkTokenExpiry, credChanges, credHeader, getRoleFromMaybeCred, isExpired, logout, makeMutation, makeQuery, storeCred, storeCredFromAuth)
+port module Api exposing (Cred, Role(..), application, checkTokenExpiry, credChanges, credHeader, getRoleFromMaybeCred, isExpired, logout, makeMutation, makeQuery, storeCred, storeCredFromAuth)
 
 import Api.InputObject exposing (..)
 import Api.Mutation as Mutation exposing (..)

@@ -8632,6 +8632,21 @@ var $author$project$Page$Patients$init = function (session) {
 };
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$core$Debug$log = _Debug_log;
+var $elm$core$Maybe$destruct = F3(
+	function (_default, func, maybe) {
+		if (maybe.$ === 'Just') {
+			var a = maybe.a;
+			return func(a);
+		} else {
+			return _default;
+		}
+	});
+var $author$project$Api$storeCache = _Platform_outgoingPort(
+	'storeCache',
+	function ($) {
+		return A3($elm$core$Maybe$destruct, $elm$json$Json$Encode$null, $elm$core$Basics$identity, $);
+	});
+var $author$project$Api$logout = $author$project$Api$storeCache($elm$core$Maybe$Nothing);
 var $author$project$Session$navKey = function (session) {
 	if (session.$ === 'LoggedIn') {
 		var key = session.a;
@@ -8683,20 +8698,6 @@ var $author$project$Route$replaceUrl = F2(
 			$elm$browser$Browser$Navigation$replaceUrl,
 			key,
 			$author$project$Route$routeToString(route));
-	});
-var $elm$core$Maybe$destruct = F3(
-	function (_default, func, maybe) {
-		if (maybe.$ === 'Just') {
-			var a = maybe.a;
-			return func(a);
-		} else {
-			return _default;
-		}
-	});
-var $author$project$Api$storeCache = _Platform_outgoingPort(
-	'storeCache',
-	function ($) {
-		return A3($elm$core$Maybe$destruct, $elm$json$Json$Encode$null, $elm$core$Basics$identity, $);
 	});
 var $author$project$Api$storeCred = function (_v0) {
 	var token = _v0.a;
@@ -8770,15 +8771,20 @@ var $author$project$Main$changeRouteTo = F2(
 					$elm$core$Platform$Cmd$none);
 			} else {
 				switch (_v1.a.$) {
-					case 'Calendar':
+					case 'Logout':
 						var _v2 = _v1.a;
+						return _Utils_Tuple2(
+							$author$project$Main$Redirect(session),
+							$author$project$Api$logout);
+					case 'Calendar':
+						var _v3 = _v1.a;
 						return A3(
 							$author$project$Main$updateWith,
 							$author$project$Main$Calendar,
 							$author$project$Main$GotCalendarMsg,
 							$author$project$Page$Calendar$init(session));
 					case 'Patients':
-						var _v3 = _v1.a;
+						var _v4 = _v1.a;
 						return A3(
 							$author$project$Main$updateWith,
 							$author$project$Main$Patients,
@@ -8953,6 +8959,7 @@ var $elm$url$Url$Parser$parse = F2(
 					url.fragment,
 					$elm$core$Basics$identity)));
 	});
+var $author$project$Route$Logout = {$: 'Logout'};
 var $author$project$Route$Patients = {$: 'Patients'};
 var $author$project$Route$Root = function (a) {
 	return {$: 'Root', a: a};
@@ -9144,7 +9151,11 @@ var $author$project$Route$parser = $elm$url$Url$Parser$oneOf(
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Route$Patients,
-			$elm$url$Url$Parser$s('patients'))
+			$elm$url$Url$Parser$s('patients')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$Logout,
+			$elm$url$Url$Parser$s('logout'))
 		]));
 var $author$project$Route$fromUrl = function (url) {
 	return A2(
@@ -9891,7 +9902,6 @@ var $author$project$Main$checkToken = F2(
 				time,
 				$author$project$Main$toSession(model)));
 	});
-var $author$project$Api$logout = $author$project$Api$storeCache($elm$core$Maybe$Nothing);
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
 var $elm$url$Url$addPort = F2(
 	function (maybePort, starter) {
@@ -11388,9 +11398,6 @@ var $author$project$Main$update = F2(
 		}
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	});
-var $author$project$Page$Calendar = {$: 'Calendar'};
-var $author$project$Page$Other = {$: 'Other'};
-var $author$project$Page$Patients = {$: 'Patients'};
 var $mdgriffith$elm_ui$Internal$Model$AlignX = function (a) {
 	return {$: 'AlignX', a: a};
 };
@@ -17029,228 +17036,6 @@ var $mdgriffith$elm_ui$Element$layoutWith = F3(
 	});
 var $mdgriffith$elm_ui$Element$layout = $mdgriffith$elm_ui$Element$layoutWith(
 	{options: _List_Nil});
-var $author$project$Page$viewHeader = F2(
-	function (page, maybeCred) {
-		return A2(
-			$mdgriffith$elm_ui$Element$el,
-			_List_Nil,
-			$mdgriffith$elm_ui$Element$text('Todo: Here, there should be one or two buttons depending on if the user is a psy or not'));
-	});
-var $author$project$Page$view = F3(
-	function (maybeCred, page, _v0) {
-		var title = _v0.title;
-		var body = _v0.body;
-		return {
-			body: _List_fromArray(
-				[
-					A2(
-					$mdgriffith$elm_ui$Element$layout,
-					_List_Nil,
-					A2(
-						$mdgriffith$elm_ui$Element$column,
-						_List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-								$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
-							]),
-						A2(
-							$elm$core$List$cons,
-							A2($author$project$Page$viewHeader, page, maybeCred),
-							body)))
-				]),
-			title: title + ' - PsyApp'
-		};
-	});
-var $author$project$Page$Calendar$graphqlErrorToString = function (error) {
-	return error.message;
-};
-var $author$project$Page$Calendar$errorToString = function (errorData) {
-	if (errorData.$ === 'GraphqlError') {
-		var graphqlErrors = errorData.b;
-		return A2(
-			$elm$core$String$join,
-			'\n',
-			A2($elm$core$List$map, $author$project$Page$Calendar$graphqlErrorToString, graphqlErrors));
-	} else {
-		var httpError = errorData.a;
-		switch (httpError.$) {
-			case 'BadUrl':
-				var error = httpError.a;
-				return error;
-			case 'Timeout':
-				return 'There was a timeout';
-			case 'NetworkError':
-				return 'There was a network error';
-			case 'BadStatus':
-				var metadata = httpError.a;
-				var error = httpError.b;
-				return error;
-			default:
-				var jsonDecodeError = httpError.a;
-				return 'There was a bad payload';
-		}
-	}
-};
-var $author$project$Page$Calendar$failureView = function (error) {
-	return A2(
-		$mdgriffith$elm_ui$Element$el,
-		_List_fromArray(
-			[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-		$mdgriffith$elm_ui$Element$text(
-			$author$project$Page$Calendar$errorToString(error)));
-};
-var $author$project$Page$Calendar$AddAgenda = {$: 'AddAgenda'};
-var $author$project$Page$Calendar$EnteredDate = function (a) {
-	return {$: 'EnteredDate', a: a};
-};
-var $author$project$Page$Calendar$EnteredHeure = function (a) {
-	return {$: 'EnteredHeure', a: a};
-};
-var $author$project$Page$Calendar$DeleteAgenda = function (a) {
-	return {$: 'DeleteAgenda', a: a};
-};
-var $mdgriffith$elm_ui$Internal$Model$Button = {$: 'Button'};
-var $mdgriffith$elm_ui$Internal$Model$Describe = function (a) {
-	return {$: 'Describe', a: a};
-};
-var $elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$bool(bool));
-	});
-var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
-var $mdgriffith$elm_ui$Internal$Model$NoAttribute = {$: 'NoAttribute'};
-var $mdgriffith$elm_ui$Element$Input$hasFocusStyle = function (attr) {
-	if (((attr.$ === 'StyleClass') && (attr.b.$ === 'PseudoSelector')) && (attr.b.a.$ === 'Focus')) {
-		var _v1 = attr.b;
-		var _v2 = _v1.a;
-		return true;
-	} else {
-		return false;
-	}
-};
-var $mdgriffith$elm_ui$Element$Input$focusDefault = function (attrs) {
-	return A2($elm$core$List$any, $mdgriffith$elm_ui$Element$Input$hasFocusStyle, attrs) ? $mdgriffith$elm_ui$Internal$Model$NoAttribute : $mdgriffith$elm_ui$Internal$Model$htmlClass('focusable');
-};
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var $elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
-};
-var $mdgriffith$elm_ui$Element$Events$onClick = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Attr, $elm$html$Html$Events$onClick);
-var $mdgriffith$elm_ui$Element$Input$enter = 'Enter';
-var $elm$json$Json$Decode$fail = _Json_fail;
-var $elm$virtual_dom$VirtualDom$MayPreventDefault = function (a) {
-	return {$: 'MayPreventDefault', a: a};
-};
-var $elm$html$Html$Events$preventDefaultOn = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$MayPreventDefault(decoder));
-	});
-var $mdgriffith$elm_ui$Element$Input$onKey = F2(
-	function (desiredCode, msg) {
-		var decode = function (code) {
-			return _Utils_eq(code, desiredCode) ? $elm$json$Json$Decode$succeed(msg) : $elm$json$Json$Decode$fail('Not the enter key');
-		};
-		var isKey = A2(
-			$elm$json$Json$Decode$andThen,
-			decode,
-			A2($elm$json$Json$Decode$field, 'key', $elm$json$Json$Decode$string));
-		return $mdgriffith$elm_ui$Internal$Model$Attr(
-			A2(
-				$elm$html$Html$Events$preventDefaultOn,
-				'keyup',
-				A2(
-					$elm$json$Json$Decode$map,
-					function (fired) {
-						return _Utils_Tuple2(fired, true);
-					},
-					isKey)));
-	});
-var $mdgriffith$elm_ui$Element$Input$onEnter = function (msg) {
-	return A2($mdgriffith$elm_ui$Element$Input$onKey, $mdgriffith$elm_ui$Element$Input$enter, msg);
-};
-var $mdgriffith$elm_ui$Internal$Model$Class = F2(
-	function (a, b) {
-		return {$: 'Class', a: a, b: b};
-	});
-var $mdgriffith$elm_ui$Internal$Flag$cursor = $mdgriffith$elm_ui$Internal$Flag$flag(21);
-var $mdgriffith$elm_ui$Element$pointer = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$cursor, $mdgriffith$elm_ui$Internal$Style$classes.cursorPointer);
-var $elm$html$Html$Attributes$tabindex = function (n) {
-	return A2(
-		_VirtualDom_attribute,
-		'tabIndex',
-		$elm$core$String$fromInt(n));
-};
-var $mdgriffith$elm_ui$Element$Input$button = F2(
-	function (attrs, _v0) {
-		var onPress = _v0.onPress;
-		var label = _v0.label;
-		return A4(
-			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asEl,
-			$mdgriffith$elm_ui$Internal$Model$div,
-			A2(
-				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-				A2(
-					$elm$core$List$cons,
-					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-					A2(
-						$elm$core$List$cons,
-						$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentCenterX + (' ' + ($mdgriffith$elm_ui$Internal$Style$classes.contentCenterY + (' ' + ($mdgriffith$elm_ui$Internal$Style$classes.seButton + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.noTextSelection)))))),
-						A2(
-							$elm$core$List$cons,
-							$mdgriffith$elm_ui$Element$pointer,
-							A2(
-								$elm$core$List$cons,
-								$mdgriffith$elm_ui$Element$Input$focusDefault(attrs),
-								A2(
-									$elm$core$List$cons,
-									$mdgriffith$elm_ui$Internal$Model$Describe($mdgriffith$elm_ui$Internal$Model$Button),
-									A2(
-										$elm$core$List$cons,
-										$mdgriffith$elm_ui$Internal$Model$Attr(
-											$elm$html$Html$Attributes$tabindex(0)),
-										function () {
-											if (onPress.$ === 'Nothing') {
-												return A2(
-													$elm$core$List$cons,
-													$mdgriffith$elm_ui$Internal$Model$Attr(
-														$elm$html$Html$Attributes$disabled(true)),
-													attrs);
-											} else {
-												var msg = onPress.a;
-												return A2(
-													$elm$core$List$cons,
-													$mdgriffith$elm_ui$Element$Events$onClick(msg),
-													A2(
-														$elm$core$List$cons,
-														$mdgriffith$elm_ui$Element$Input$onEnter(msg),
-														attrs));
-											}
-										}()))))))),
-			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
-				_List_fromArray(
-					[label])));
-	});
 var $mdgriffith$elm_ui$Element$Background$color = function (clr) {
 	return A2(
 		$mdgriffith$elm_ui$Internal$Model$StyleClass,
@@ -17277,10 +17062,18 @@ var $mdgriffith$elm_ui$Internal$Model$PseudoSelector = F2(
 		return {$: 'PseudoSelector', a: a, b: b};
 	});
 var $mdgriffith$elm_ui$Internal$Flag$focus = $mdgriffith$elm_ui$Internal$Flag$flag(31);
+var $mdgriffith$elm_ui$Internal$Model$Class = F2(
+	function (a, b) {
+		return {$: 'Class', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Model$Describe = function (a) {
+	return {$: 'Describe', a: a};
+};
 var $mdgriffith$elm_ui$Internal$Model$Nearby = F2(
 	function (a, b) {
 		return {$: 'Nearby', a: a, b: b};
 	});
+var $mdgriffith$elm_ui$Internal$Model$NoAttribute = {$: 'NoAttribute'};
 var $mdgriffith$elm_ui$Internal$Model$TransformComponent = F2(
 	function (a, b) {
 		return {$: 'TransformComponent', a: a, b: b};
@@ -17408,6 +17201,72 @@ var $mdgriffith$elm_ui$Element$focused = function (decs) {
 			$mdgriffith$elm_ui$Internal$Model$Focus,
 			$mdgriffith$elm_ui$Internal$Model$unwrapDecorations(decs)));
 };
+var $author$project$Api$None = {$: 'None'};
+var $author$project$Api$Psy = {$: 'Psy'};
+var $author$project$Api$User = {$: 'User'};
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$json$Json$Decode$index = _Json_decodeIndex;
+var $author$project$Api$getRole = A2(
+	$elm$json$Json$Decode$map,
+	function (string) {
+		return (string === 'Psy') ? $author$project$Api$Psy : ((string === 'user') ? $author$project$Api$User : $author$project$Api$None);
+	},
+	A2(
+		$elm$json$Json$Decode$at,
+		_List_fromArray(
+			['https://hasura.io/jwt/claims', 'x-hasura-allowed-roles']),
+		A2($elm$json$Json$Decode$index, 0, $elm$json$Json$Decode$string)));
+var $author$project$Api$getRoleFromMaybeCred = function (maybecred) {
+	if (maybecred.$ === 'Just') {
+		var token = maybecred.a.a;
+		return A2(
+			$elm$core$Result$withDefault,
+			$author$project$Api$None,
+			A2($JonRowe$elm_jwt$Jwt$decodeToken, $author$project$Api$getRole, token));
+	} else {
+		return $author$project$Api$None;
+	}
+};
+var $elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
+var $elm$html$Html$Attributes$rel = _VirtualDom_attribute('rel');
+var $mdgriffith$elm_ui$Element$link = F2(
+	function (attrs, _v0) {
+		var url = _v0.url;
+		var label = _v0.label;
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asEl,
+			$mdgriffith$elm_ui$Internal$Model$NodeName('a'),
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Internal$Model$Attr(
+					$elm$html$Html$Attributes$href(url)),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Internal$Model$Attr(
+						$elm$html$Html$Attributes$rel('noopener noreferrer')),
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+						A2(
+							$elm$core$List$cons,
+							$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+							A2(
+								$elm$core$List$cons,
+								$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentCenterX + (' ' + ($mdgriffith$elm_ui$Internal$Style$classes.contentCenterY + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.link)))),
+								attrs))))),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+				_List_fromArray(
+					[label])));
+	});
 var $mdgriffith$elm_ui$Internal$Model$Hover = {$: 'Hover'};
 var $mdgriffith$elm_ui$Internal$Flag$hover = $mdgriffith$elm_ui$Internal$Flag$flag(33);
 var $mdgriffith$elm_ui$Element$mouseOver = function (decs) {
@@ -17419,6 +17278,7 @@ var $mdgriffith$elm_ui$Element$mouseOver = function (decs) {
 			$mdgriffith$elm_ui$Internal$Model$Hover,
 			$mdgriffith$elm_ui$Internal$Model$unwrapDecorations(decs)));
 };
+var $mdgriffith$elm_ui$Element$none = $mdgriffith$elm_ui$Internal$Model$Empty;
 var $mdgriffith$elm_ui$Internal$Model$PaddingStyle = F5(
 	function (a, b, c, d, e) {
 		return {$: 'PaddingStyle', a: a, b: b, c: c, d: d, e: e};
@@ -17439,6 +17299,411 @@ var $mdgriffith$elm_ui$Element$padding = function (x) {
 var $mdgriffith$elm_ui$Element$rgb255 = F3(
 	function (red, green, blue) {
 		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, red / 255, green / 255, blue / 255, 1);
+	});
+var $mdgriffith$elm_ui$Internal$Model$AsRow = {$: 'AsRow'};
+var $mdgriffith$elm_ui$Internal$Model$asRow = $mdgriffith$elm_ui$Internal$Model$AsRow;
+var $mdgriffith$elm_ui$Element$row = F2(
+	function (attrs, children) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asRow,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentLeft + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentCenterY)),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+						attrs))),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
+	});
+var $author$project$Page$viewHeader = function (maybeCred) {
+	return A2(
+		$mdgriffith$elm_ui$Element$row,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+				$mdgriffith$elm_ui$Element$Background$color(
+				A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166))
+			]),
+		_Utils_ap(
+			function () {
+				var _v0 = $author$project$Api$getRoleFromMaybeCred(maybeCred);
+				switch (_v0.$) {
+					case 'Psy':
+						return _List_fromArray(
+							[
+								A2(
+								$mdgriffith$elm_ui$Element$link,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+									]),
+								{
+									label: A2(
+										$mdgriffith$elm_ui$Element$el,
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+												$mdgriffith$elm_ui$Element$padding(30),
+												$mdgriffith$elm_ui$Element$Background$color(
+												A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
+												$mdgriffith$elm_ui$Element$mouseOver(
+												_List_fromArray(
+													[
+														$mdgriffith$elm_ui$Element$Background$color(
+														A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
+													])),
+												$mdgriffith$elm_ui$Element$focused(
+												_List_fromArray(
+													[
+														$mdgriffith$elm_ui$Element$Background$color(
+														A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61)),
+														$mdgriffith$elm_ui$Element$Font$color(
+														A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216))
+													]))
+											]),
+										A2(
+											$mdgriffith$elm_ui$Element$el,
+											_List_fromArray(
+												[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+											$mdgriffith$elm_ui$Element$text('Patients'))),
+									url: 'patients'
+								}),
+								A2(
+								$mdgriffith$elm_ui$Element$link,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+									]),
+								{
+									label: A2(
+										$mdgriffith$elm_ui$Element$el,
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+												$mdgriffith$elm_ui$Element$padding(30),
+												$mdgriffith$elm_ui$Element$Background$color(
+												A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
+												$mdgriffith$elm_ui$Element$mouseOver(
+												_List_fromArray(
+													[
+														$mdgriffith$elm_ui$Element$Background$color(
+														A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
+													])),
+												$mdgriffith$elm_ui$Element$focused(
+												_List_fromArray(
+													[
+														$mdgriffith$elm_ui$Element$Background$color(
+														A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61)),
+														$mdgriffith$elm_ui$Element$Font$color(
+														A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216))
+													]))
+											]),
+										A2(
+											$mdgriffith$elm_ui$Element$el,
+											_List_fromArray(
+												[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+											$mdgriffith$elm_ui$Element$text('Calendrier'))),
+									url: 'calendar'
+								})
+							]);
+					case 'User':
+						return _List_fromArray(
+							[
+								A2(
+								$mdgriffith$elm_ui$Element$link,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+									]),
+								{
+									label: A2(
+										$mdgriffith$elm_ui$Element$el,
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+												$mdgriffith$elm_ui$Element$padding(30),
+												$mdgriffith$elm_ui$Element$Background$color(
+												A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
+												$mdgriffith$elm_ui$Element$mouseOver(
+												_List_fromArray(
+													[
+														$mdgriffith$elm_ui$Element$Background$color(
+														A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
+													])),
+												$mdgriffith$elm_ui$Element$focused(
+												_List_fromArray(
+													[
+														$mdgriffith$elm_ui$Element$Background$color(
+														A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61)),
+														$mdgriffith$elm_ui$Element$Font$color(
+														A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216))
+													]))
+											]),
+										A2(
+											$mdgriffith$elm_ui$Element$el,
+											_List_fromArray(
+												[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+											$mdgriffith$elm_ui$Element$text('Calendrier'))),
+									url: 'calendar'
+								})
+							]);
+					default:
+						return _List_fromArray(
+							[$mdgriffith$elm_ui$Element$none]);
+				}
+			}(),
+			_List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$link,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+						]),
+					{
+						label: A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+									$mdgriffith$elm_ui$Element$padding(30),
+									$mdgriffith$elm_ui$Element$Background$color(
+									A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
+									$mdgriffith$elm_ui$Element$mouseOver(
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$Background$color(
+											A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
+										])),
+									$mdgriffith$elm_ui$Element$focused(
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$Background$color(
+											A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61)),
+											$mdgriffith$elm_ui$Element$Font$color(
+											A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216))
+										]))
+								]),
+							A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+								$mdgriffith$elm_ui$Element$text('Logout'))),
+						url: 'logout'
+					})
+				])));
+};
+var $author$project$Page$view = F2(
+	function (maybeCred, _v0) {
+		var title = _v0.title;
+		var body = _v0.body;
+		return {
+			body: _List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$layout,
+					_List_Nil,
+					A2(
+						$mdgriffith$elm_ui$Element$column,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+								$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+							]),
+						A2(
+							$elm$core$List$cons,
+							$author$project$Page$viewHeader(maybeCred),
+							body)))
+				]),
+			title: title + ' - PsyApp'
+		};
+	});
+var $author$project$Page$Calendar$graphqlErrorToString = function (error) {
+	return error.message;
+};
+var $author$project$Page$Calendar$errorToString = function (errorData) {
+	if (errorData.$ === 'GraphqlError') {
+		var graphqlErrors = errorData.b;
+		return A2(
+			$elm$core$String$join,
+			'\n',
+			A2($elm$core$List$map, $author$project$Page$Calendar$graphqlErrorToString, graphqlErrors));
+	} else {
+		var httpError = errorData.a;
+		switch (httpError.$) {
+			case 'BadUrl':
+				var error = httpError.a;
+				return error;
+			case 'Timeout':
+				return 'There was a timeout';
+			case 'NetworkError':
+				return 'There was a network error';
+			case 'BadStatus':
+				var metadata = httpError.a;
+				var error = httpError.b;
+				return error;
+			default:
+				var jsonDecodeError = httpError.a;
+				return 'There was a bad payload';
+		}
+	}
+};
+var $author$project$Page$Calendar$failureView = function (error) {
+	return A2(
+		$mdgriffith$elm_ui$Element$el,
+		_List_fromArray(
+			[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+		$mdgriffith$elm_ui$Element$text(
+			$author$project$Page$Calendar$errorToString(error)));
+};
+var $author$project$Page$Calendar$AddAgenda = {$: 'AddAgenda'};
+var $author$project$Page$Calendar$EnteredDate = function (a) {
+	return {$: 'EnteredDate', a: a};
+};
+var $author$project$Page$Calendar$EnteredHeure = function (a) {
+	return {$: 'EnteredHeure', a: a};
+};
+var $author$project$Page$Calendar$DeleteAgenda = function (a) {
+	return {$: 'DeleteAgenda', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Model$Button = {$: 'Button'};
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
+var $mdgriffith$elm_ui$Element$Input$hasFocusStyle = function (attr) {
+	if (((attr.$ === 'StyleClass') && (attr.b.$ === 'PseudoSelector')) && (attr.b.a.$ === 'Focus')) {
+		var _v1 = attr.b;
+		var _v2 = _v1.a;
+		return true;
+	} else {
+		return false;
+	}
+};
+var $mdgriffith$elm_ui$Element$Input$focusDefault = function (attrs) {
+	return A2($elm$core$List$any, $mdgriffith$elm_ui$Element$Input$hasFocusStyle, attrs) ? $mdgriffith$elm_ui$Internal$Model$NoAttribute : $mdgriffith$elm_ui$Internal$Model$htmlClass('focusable');
+};
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $mdgriffith$elm_ui$Element$Events$onClick = A2($elm$core$Basics$composeL, $mdgriffith$elm_ui$Internal$Model$Attr, $elm$html$Html$Events$onClick);
+var $mdgriffith$elm_ui$Element$Input$enter = 'Enter';
+var $elm$json$Json$Decode$fail = _Json_fail;
+var $elm$virtual_dom$VirtualDom$MayPreventDefault = function (a) {
+	return {$: 'MayPreventDefault', a: a};
+};
+var $elm$html$Html$Events$preventDefaultOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayPreventDefault(decoder));
+	});
+var $mdgriffith$elm_ui$Element$Input$onKey = F2(
+	function (desiredCode, msg) {
+		var decode = function (code) {
+			return _Utils_eq(code, desiredCode) ? $elm$json$Json$Decode$succeed(msg) : $elm$json$Json$Decode$fail('Not the enter key');
+		};
+		var isKey = A2(
+			$elm$json$Json$Decode$andThen,
+			decode,
+			A2($elm$json$Json$Decode$field, 'key', $elm$json$Json$Decode$string));
+		return $mdgriffith$elm_ui$Internal$Model$Attr(
+			A2(
+				$elm$html$Html$Events$preventDefaultOn,
+				'keyup',
+				A2(
+					$elm$json$Json$Decode$map,
+					function (fired) {
+						return _Utils_Tuple2(fired, true);
+					},
+					isKey)));
+	});
+var $mdgriffith$elm_ui$Element$Input$onEnter = function (msg) {
+	return A2($mdgriffith$elm_ui$Element$Input$onKey, $mdgriffith$elm_ui$Element$Input$enter, msg);
+};
+var $mdgriffith$elm_ui$Internal$Flag$cursor = $mdgriffith$elm_ui$Internal$Flag$flag(21);
+var $mdgriffith$elm_ui$Element$pointer = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$cursor, $mdgriffith$elm_ui$Internal$Style$classes.cursorPointer);
+var $elm$html$Html$Attributes$tabindex = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'tabIndex',
+		$elm$core$String$fromInt(n));
+};
+var $mdgriffith$elm_ui$Element$Input$button = F2(
+	function (attrs, _v0) {
+		var onPress = _v0.onPress;
+		var label = _v0.label;
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asEl,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentCenterX + (' ' + ($mdgriffith$elm_ui$Internal$Style$classes.contentCenterY + (' ' + ($mdgriffith$elm_ui$Internal$Style$classes.seButton + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.noTextSelection)))))),
+						A2(
+							$elm$core$List$cons,
+							$mdgriffith$elm_ui$Element$pointer,
+							A2(
+								$elm$core$List$cons,
+								$mdgriffith$elm_ui$Element$Input$focusDefault(attrs),
+								A2(
+									$elm$core$List$cons,
+									$mdgriffith$elm_ui$Internal$Model$Describe($mdgriffith$elm_ui$Internal$Model$Button),
+									A2(
+										$elm$core$List$cons,
+										$mdgriffith$elm_ui$Internal$Model$Attr(
+											$elm$html$Html$Attributes$tabindex(0)),
+										function () {
+											if (onPress.$ === 'Nothing') {
+												return A2(
+													$elm$core$List$cons,
+													$mdgriffith$elm_ui$Internal$Model$Attr(
+														$elm$html$Html$Attributes$disabled(true)),
+													attrs);
+											} else {
+												var msg = onPress.a;
+												return A2(
+													$elm$core$List$cons,
+													$mdgriffith$elm_ui$Element$Events$onClick(msg),
+													A2(
+														$elm$core$List$cons,
+														$mdgriffith$elm_ui$Element$Input$onEnter(msg),
+														attrs));
+											}
+										}()))))))),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+				_List_fromArray(
+					[label])));
 	});
 var $mdgriffith$elm_ui$Element$InternalColumn = function (a) {
 	return {$: 'InternalColumn', a: a};
@@ -17864,26 +18129,6 @@ var $mdgriffith$elm_ui$Element$Border$rounded = function (radius) {
 			'border-radius',
 			$elm$core$String$fromInt(radius) + 'px'));
 };
-var $mdgriffith$elm_ui$Internal$Model$AsRow = {$: 'AsRow'};
-var $mdgriffith$elm_ui$Internal$Model$asRow = $mdgriffith$elm_ui$Internal$Model$AsRow;
-var $mdgriffith$elm_ui$Element$row = F2(
-	function (attrs, children) {
-		return A4(
-			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asRow,
-			$mdgriffith$elm_ui$Internal$Model$div,
-			A2(
-				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentLeft + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentCenterY)),
-				A2(
-					$elm$core$List$cons,
-					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-					A2(
-						$elm$core$List$cons,
-						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-						attrs))),
-			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
-	});
 var $mdgriffith$elm_ui$Element$Input$Above = {$: 'Above'};
 var $mdgriffith$elm_ui$Element$Input$Label = F3(
 	function (a, b, c) {
@@ -18171,10 +18416,6 @@ var $elm$html$Html$Events$stopPropagationOn = F2(
 			$elm$virtual_dom$VirtualDom$on,
 			event,
 			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
-	});
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
 	});
 var $elm$html$Html$Events$targetValue = A2(
 	$elm$json$Json$Decode$at,
@@ -18855,7 +19096,7 @@ var $author$project$Page$Calendar$successView = F3(
 									A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
 									$mdgriffith$elm_ui$Element$Font$size(80)
 								]),
-							$mdgriffith$elm_ui$Element$text('Votre liste de patients')),
+							$mdgriffith$elm_ui$Element$text('Votre liste de rendez-vous')),
 							A2(
 							$mdgriffith$elm_ui$Element$image,
 							_List_fromArray(
@@ -19362,9 +19603,9 @@ var $author$project$Page$Patients$view = function (model) {
 var $author$project$Main$view = function (model) {
 	var cred = $author$project$Session$cred(
 		$author$project$Main$toSession(model));
-	var viewPage = F3(
-		function (page, toMsg, config) {
-			var _v1 = A3($author$project$Page$view, cred, page, config);
+	var viewPage = F2(
+		function (toMsg, config) {
+			var _v1 = A2($author$project$Page$view, cred, config);
 			var title = _v1.title;
 			var body = _v1.body;
 			return {
@@ -19377,10 +19618,9 @@ var $author$project$Main$view = function (model) {
 		});
 	switch (model.$) {
 		case 'Redirect':
-			return A3(
+			return A2(
 				$author$project$Page$view,
 				cred,
-				$author$project$Page$Other,
 				{
 					body: _List_fromArray(
 						[
@@ -19389,10 +19629,9 @@ var $author$project$Main$view = function (model) {
 					title: ''
 				});
 		case 'NotFound':
-			return A3(
+			return A2(
 				$author$project$Page$view,
 				cred,
-				$author$project$Page$Other,
 				{
 					body: _List_fromArray(
 						[
@@ -19410,16 +19649,14 @@ var $author$project$Main$view = function (model) {
 				});
 		case 'Calendar':
 			var calendar = model.a;
-			return A3(
+			return A2(
 				viewPage,
-				$author$project$Page$Calendar,
 				$author$project$Main$GotCalendarMsg,
 				$author$project$Page$Calendar$view(calendar));
 		default:
 			var patients = model.a;
-			return A3(
+			return A2(
 				viewPage,
-				$author$project$Page$Patients,
 				$author$project$Main$GotPatientsMsg,
 				$author$project$Page$Patients$view(patients));
 	}

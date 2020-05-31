@@ -6,10 +6,9 @@ import Browser.Navigation as Nav
 import Debug exposing (log)
 import Element exposing (..)
 import Element.Font as Font
-import Html exposing (Html)
+import Html
 import Json.Decode as Decode exposing (Value)
-import Jwt exposing (JwtError)
-import Page exposing (Page)
+import Page
 import Page.Calendar as Calendar
 import Page.Patients as Patients
 import Route exposing (Route)
@@ -50,10 +49,10 @@ view model =
         cred =
             Session.cred (toSession model)
 
-        viewPage page toMsg config =
+        viewPage toMsg config =
             let
                 { title, body } =
-                    Page.view cred page config
+                    Page.view cred config
             in
             { title = title
             , body = List.map (Html.map toMsg) body
@@ -61,16 +60,16 @@ view model =
     in
     case model of
         Redirect _ ->
-            Page.view cred Page.Other { title = "", body = [ text "" ] }
+            Page.view cred { title = "", body = [ text "" ] }
 
         NotFound _ ->
-            Page.view cred Page.Other { title = "", body = [ el [ centerX, centerY, Font.size 30 ] (text "Page not found") ] }
+            Page.view cred { title = "", body = [ el [ centerX, centerY, Font.size 30 ] (text "Page not found") ] }
 
         Calendar calendar ->
-            viewPage Page.Calendar GotCalendarMsg (Calendar.view calendar)
+            viewPage GotCalendarMsg (Calendar.view calendar)
 
         Patients patients ->
-            viewPage Page.Patients GotPatientsMsg (Patients.view patients)
+            viewPage GotPatientsMsg (Patients.view patients)
 
 
 
@@ -116,6 +115,9 @@ changeRouteTo maybeRoute model =
             case log "maybeRoute (l112)" maybeRoute of
                 Nothing ->
                     ( NotFound session, Cmd.none )
+
+                Just Route.Logout ->
+                    ( Redirect session, Api.logout )
 
                 Just Route.Calendar ->
                     Calendar.init session
