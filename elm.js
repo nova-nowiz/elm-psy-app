@@ -4685,7 +4685,53 @@ function _Url_percentDecode(string)
 	{
 		return $elm$core$Maybe$Nothing;
 	}
-}var $author$project$Main$ChangedUrl = function (a) {
+}
+
+
+function _Time_now(millisToPosix)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		callback(_Scheduler_succeed(millisToPosix(Date.now())));
+	});
+}
+
+var _Time_setInterval = F2(function(interval, task)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		var id = setInterval(function() { _Scheduler_rawSpawn(task); }, interval);
+		return function() { clearInterval(id); };
+	});
+});
+
+function _Time_here()
+{
+	return _Scheduler_binding(function(callback)
+	{
+		callback(_Scheduler_succeed(
+			A2($elm$time$Time$customZone, -(new Date().getTimezoneOffset()), _List_Nil)
+		));
+	});
+}
+
+
+function _Time_getZoneName()
+{
+	return _Scheduler_binding(function(callback)
+	{
+		try
+		{
+			var name = $elm$time$Time$Name(Intl.DateTimeFormat().resolvedOptions().timeZone);
+		}
+		catch (e)
+		{
+			var name = $elm$time$Time$Offset(new Date().getTimezoneOffset());
+		}
+		callback(_Scheduler_succeed(name));
+	});
+}
+var $author$project$Main$ChangedUrl = function (a) {
 	return {$: 'ChangedUrl', a: a};
 };
 var $author$project$Main$ClickedLink = function (a) {
@@ -5538,6 +5584,9 @@ var $author$project$Main$Calendar = function (a) {
 	return {$: 'Calendar', a: a};
 };
 var $author$project$Route$Calendar = {$: 'Calendar'};
+var $author$project$Main$CheckToken = function (a) {
+	return {$: 'CheckToken', a: a};
+};
 var $author$project$Main$GotCalendarMsg = function (a) {
 	return {$: 'GotCalendarMsg', a: a};
 };
@@ -5550,6 +5599,7 @@ var $author$project$Main$NotFound = function (a) {
 var $author$project$Main$Patients = function (a) {
 	return {$: 'Patients', a: a};
 };
+var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $author$project$Session$cred = function (session) {
 	if (session.$ === 'LoggedIn') {
 		var val = session.b;
@@ -8591,8 +8641,23 @@ var $author$project$Session$navKey = function (session) {
 		return key;
 	}
 };
-var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $elm$time$Time$Name = function (a) {
+	return {$: 'Name', a: a};
+};
+var $elm$time$Time$Offset = function (a) {
+	return {$: 'Offset', a: a};
+};
+var $elm$time$Time$Zone = F2(
+	function (a, b) {
+		return {$: 'Zone', a: a, b: b};
+	});
+var $elm$time$Time$customZone = $elm$time$Time$Zone;
+var $elm$time$Time$Posix = function (a) {
+	return {$: 'Posix', a: a};
+};
+var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
+var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
 var $elm$browser$Browser$Navigation$replaceUrl = _Browser_replaceUrl;
 var $author$project$Route$routeToPieces = function (page) {
 	switch (page.$) {
@@ -8686,7 +8751,12 @@ var $author$project$Main$updateWith = F3(
 		var subCmd = _v0.b;
 		return _Utils_Tuple2(
 			toModel(subModel),
-			A2($elm$core$Platform$Cmd$map, toMsg, subCmd));
+			$elm$core$Platform$Cmd$batch(
+				_List_fromArray(
+					[
+						A2($elm$core$Platform$Cmd$map, toMsg, subCmd),
+						A2($elm$core$Task$perform, $author$project$Main$CheckToken, $elm$time$Time$now)
+					])));
 	});
 var $author$project$Main$changeRouteTo = F2(
 	function (maybeRoute, model) {
@@ -8717,10 +8787,15 @@ var $author$project$Main$changeRouteTo = F2(
 					default:
 						return _Utils_Tuple2(
 							$author$project$Main$Redirect(session),
-							A2(
-								$author$project$Route$replaceUrl,
-								$author$project$Session$navKey(session),
-								$author$project$Route$Calendar));
+							$elm$core$Platform$Cmd$batch(
+								_List_fromArray(
+									[
+										A2(
+										$author$project$Route$replaceUrl,
+										$author$project$Session$navKey(session),
+										$author$project$Route$Calendar),
+										A2($elm$core$Task$perform, $author$project$Main$CheckToken, $elm$time$Time$now)
+									])));
 				}
 			}
 		} else {
@@ -9088,6 +9163,7 @@ var $author$project$Main$init = F3(
 var $author$project$Main$GotSession = function (a) {
 	return {$: 'GotSession', a: a};
 };
+var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $author$project$Api$decodeFromChange = function (val) {
 	return $elm$core$Result$toMaybe(
 		A2($elm$json$Json$Decode$decodeValue, $author$project$Api$credDecoder, val));
@@ -9108,8 +9184,256 @@ var $author$project$Session$changes = F2(
 					A2($author$project$Session$fromCred, key, maybeCred));
 			});
 	});
+var $elm$time$Time$Every = F2(
+	function (a, b) {
+		return {$: 'Every', a: a, b: b};
+	});
+var $elm$time$Time$State = F2(
+	function (taggers, processes) {
+		return {processes: processes, taggers: taggers};
+	});
+var $elm$time$Time$init = $elm$core$Task$succeed(
+	A2($elm$time$Time$State, $elm$core$Dict$empty, $elm$core$Dict$empty));
+var $elm$time$Time$addMySub = F2(
+	function (_v0, state) {
+		var interval = _v0.a;
+		var tagger = _v0.b;
+		var _v1 = A2($elm$core$Dict$get, interval, state);
+		if (_v1.$ === 'Nothing') {
+			return A3(
+				$elm$core$Dict$insert,
+				interval,
+				_List_fromArray(
+					[tagger]),
+				state);
+		} else {
+			var taggers = _v1.a;
+			return A3(
+				$elm$core$Dict$insert,
+				interval,
+				A2($elm$core$List$cons, tagger, taggers),
+				state);
+		}
+	});
+var $elm$core$Dict$foldl = F3(
+	function (func, acc, dict) {
+		foldl:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return acc;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var $temp$func = func,
+					$temp$acc = A3(
+					func,
+					key,
+					value,
+					A3($elm$core$Dict$foldl, func, acc, left)),
+					$temp$dict = right;
+				func = $temp$func;
+				acc = $temp$acc;
+				dict = $temp$dict;
+				continue foldl;
+			}
+		}
+	});
+var $elm$core$Dict$merge = F6(
+	function (leftStep, bothStep, rightStep, leftDict, rightDict, initialResult) {
+		var stepState = F3(
+			function (rKey, rValue, _v0) {
+				stepState:
+				while (true) {
+					var list = _v0.a;
+					var result = _v0.b;
+					if (!list.b) {
+						return _Utils_Tuple2(
+							list,
+							A3(rightStep, rKey, rValue, result));
+					} else {
+						var _v2 = list.a;
+						var lKey = _v2.a;
+						var lValue = _v2.b;
+						var rest = list.b;
+						if (_Utils_cmp(lKey, rKey) < 0) {
+							var $temp$rKey = rKey,
+								$temp$rValue = rValue,
+								$temp$_v0 = _Utils_Tuple2(
+								rest,
+								A3(leftStep, lKey, lValue, result));
+							rKey = $temp$rKey;
+							rValue = $temp$rValue;
+							_v0 = $temp$_v0;
+							continue stepState;
+						} else {
+							if (_Utils_cmp(lKey, rKey) > 0) {
+								return _Utils_Tuple2(
+									list,
+									A3(rightStep, rKey, rValue, result));
+							} else {
+								return _Utils_Tuple2(
+									rest,
+									A4(bothStep, lKey, lValue, rValue, result));
+							}
+						}
+					}
+				}
+			});
+		var _v3 = A3(
+			$elm$core$Dict$foldl,
+			stepState,
+			_Utils_Tuple2(
+				$elm$core$Dict$toList(leftDict),
+				initialResult),
+			rightDict);
+		var leftovers = _v3.a;
+		var intermediateResult = _v3.b;
+		return A3(
+			$elm$core$List$foldl,
+			F2(
+				function (_v4, result) {
+					var k = _v4.a;
+					var v = _v4.b;
+					return A3(leftStep, k, v, result);
+				}),
+			intermediateResult,
+			leftovers);
+	});
+var $elm$time$Time$setInterval = _Time_setInterval;
+var $elm$time$Time$spawnHelp = F3(
+	function (router, intervals, processes) {
+		if (!intervals.b) {
+			return $elm$core$Task$succeed(processes);
+		} else {
+			var interval = intervals.a;
+			var rest = intervals.b;
+			var spawnTimer = $elm$core$Process$spawn(
+				A2(
+					$elm$time$Time$setInterval,
+					interval,
+					A2($elm$core$Platform$sendToSelf, router, interval)));
+			var spawnRest = function (id) {
+				return A3(
+					$elm$time$Time$spawnHelp,
+					router,
+					rest,
+					A3($elm$core$Dict$insert, interval, id, processes));
+			};
+			return A2($elm$core$Task$andThen, spawnRest, spawnTimer);
+		}
+	});
+var $elm$time$Time$onEffects = F3(
+	function (router, subs, _v0) {
+		var processes = _v0.processes;
+		var rightStep = F3(
+			function (_v6, id, _v7) {
+				var spawns = _v7.a;
+				var existing = _v7.b;
+				var kills = _v7.c;
+				return _Utils_Tuple3(
+					spawns,
+					existing,
+					A2(
+						$elm$core$Task$andThen,
+						function (_v5) {
+							return kills;
+						},
+						$elm$core$Process$kill(id)));
+			});
+		var newTaggers = A3($elm$core$List$foldl, $elm$time$Time$addMySub, $elm$core$Dict$empty, subs);
+		var leftStep = F3(
+			function (interval, taggers, _v4) {
+				var spawns = _v4.a;
+				var existing = _v4.b;
+				var kills = _v4.c;
+				return _Utils_Tuple3(
+					A2($elm$core$List$cons, interval, spawns),
+					existing,
+					kills);
+			});
+		var bothStep = F4(
+			function (interval, taggers, id, _v3) {
+				var spawns = _v3.a;
+				var existing = _v3.b;
+				var kills = _v3.c;
+				return _Utils_Tuple3(
+					spawns,
+					A3($elm$core$Dict$insert, interval, id, existing),
+					kills);
+			});
+		var _v1 = A6(
+			$elm$core$Dict$merge,
+			leftStep,
+			bothStep,
+			rightStep,
+			newTaggers,
+			processes,
+			_Utils_Tuple3(
+				_List_Nil,
+				$elm$core$Dict$empty,
+				$elm$core$Task$succeed(_Utils_Tuple0)));
+		var spawnList = _v1.a;
+		var existingDict = _v1.b;
+		var killTask = _v1.c;
+		return A2(
+			$elm$core$Task$andThen,
+			function (newProcesses) {
+				return $elm$core$Task$succeed(
+					A2($elm$time$Time$State, newTaggers, newProcesses));
+			},
+			A2(
+				$elm$core$Task$andThen,
+				function (_v2) {
+					return A3($elm$time$Time$spawnHelp, router, spawnList, existingDict);
+				},
+				killTask));
+	});
+var $elm$time$Time$onSelfMsg = F3(
+	function (router, interval, state) {
+		var _v0 = A2($elm$core$Dict$get, interval, state.taggers);
+		if (_v0.$ === 'Nothing') {
+			return $elm$core$Task$succeed(state);
+		} else {
+			var taggers = _v0.a;
+			var tellTaggers = function (time) {
+				return $elm$core$Task$sequence(
+					A2(
+						$elm$core$List$map,
+						function (tagger) {
+							return A2(
+								$elm$core$Platform$sendToApp,
+								router,
+								tagger(time));
+						},
+						taggers));
+			};
+			return A2(
+				$elm$core$Task$andThen,
+				function (_v1) {
+					return $elm$core$Task$succeed(state);
+				},
+				A2($elm$core$Task$andThen, tellTaggers, $elm$time$Time$now));
+		}
+	});
+var $elm$time$Time$subMap = F2(
+	function (f, _v0) {
+		var interval = _v0.a;
+		var tagger = _v0.b;
+		return A2(
+			$elm$time$Time$Every,
+			interval,
+			A2($elm$core$Basics$composeL, f, tagger));
+	});
+_Platform_effectManagers['Time'] = _Platform_createManager($elm$time$Time$init, $elm$time$Time$onEffects, $elm$time$Time$onSelfMsg, 0, $elm$time$Time$subMap);
+var $elm$time$Time$subscription = _Platform_leaf('Time');
+var $elm$time$Time$every = F2(
+	function (interval, tagger) {
+		return $elm$time$Time$subscription(
+			A2($elm$time$Time$Every, interval, tagger));
+	});
 var $elm$core$Platform$Sub$map = _Platform_map;
-var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Page$Calendar$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$none;
@@ -9118,29 +9442,456 @@ var $author$project$Page$Patients$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$none;
 };
 var $author$project$Main$subscriptions = function (model) {
-	switch (model.$) {
-		case 'NotFound':
-			return $elm$core$Platform$Sub$none;
-		case 'Redirect':
-			return A2(
-				$author$project$Session$changes,
-				$author$project$Main$GotSession,
-				$author$project$Session$navKey(
-					$author$project$Main$toSession(model)));
-		case 'Calendar':
-			var calendar = model.a;
-			return A2(
-				$elm$core$Platform$Sub$map,
-				$author$project$Main$GotCalendarMsg,
-				$author$project$Page$Calendar$subscriptions(calendar));
+	return $elm$core$Platform$Sub$batch(
+		_List_fromArray(
+			[
+				A2($elm$time$Time$every, (5 * 60) * 1000, $author$project$Main$CheckToken),
+				function () {
+				switch (model.$) {
+					case 'NotFound':
+						return $elm$core$Platform$Sub$none;
+					case 'Redirect':
+						return A2(
+							$author$project$Session$changes,
+							$author$project$Main$GotSession,
+							$author$project$Session$navKey(
+								$author$project$Main$toSession(model)));
+					case 'Calendar':
+						var calendar = model.a;
+						return A2(
+							$elm$core$Platform$Sub$map,
+							$author$project$Main$GotCalendarMsg,
+							$author$project$Page$Calendar$subscriptions(calendar));
+					default:
+						var patients = model.a;
+						return A2(
+							$elm$core$Platform$Sub$map,
+							$author$project$Main$GotPatientsMsg,
+							$author$project$Page$Patients$subscriptions(patients));
+				}
+			}()
+			]));
+};
+var $elm$core$Basics$round = _Basics_round;
+var $JonRowe$elm_jwt$Jwt$decodeExp = $elm$json$Json$Decode$oneOf(
+	_List_fromArray(
+		[
+			$elm$json$Json$Decode$int,
+			A2($elm$json$Json$Decode$map, $elm$core$Basics$round, $elm$json$Json$Decode$float)
+		]));
+var $JonRowe$elm_jwt$Jwt$TokenDecodeError = function (a) {
+	return {$: 'TokenDecodeError', a: a};
+};
+var $JonRowe$elm_jwt$Jwt$TokenProcessingError = function (a) {
+	return {$: 'TokenProcessingError', a: a};
+};
+var $truqu$elm_base64$Base64$Decode$pad = function (input) {
+	var _v0 = $elm$core$String$length(input) % 4;
+	switch (_v0) {
+		case 3:
+			return input + '=';
+		case 2:
+			return input + '==';
 		default:
-			var patients = model.a;
-			return A2(
-				$elm$core$Platform$Sub$map,
-				$author$project$Main$GotPatientsMsg,
-				$author$project$Page$Patients$subscriptions(patients));
+			return input;
 	}
 };
+var $truqu$elm_base64$Base64$Decode$charToInt = function (_char) {
+	switch (_char.valueOf()) {
+		case 'A':
+			return 0;
+		case 'B':
+			return 1;
+		case 'C':
+			return 2;
+		case 'D':
+			return 3;
+		case 'E':
+			return 4;
+		case 'F':
+			return 5;
+		case 'G':
+			return 6;
+		case 'H':
+			return 7;
+		case 'I':
+			return 8;
+		case 'J':
+			return 9;
+		case 'K':
+			return 10;
+		case 'L':
+			return 11;
+		case 'M':
+			return 12;
+		case 'N':
+			return 13;
+		case 'O':
+			return 14;
+		case 'P':
+			return 15;
+		case 'Q':
+			return 16;
+		case 'R':
+			return 17;
+		case 'S':
+			return 18;
+		case 'T':
+			return 19;
+		case 'U':
+			return 20;
+		case 'V':
+			return 21;
+		case 'W':
+			return 22;
+		case 'X':
+			return 23;
+		case 'Y':
+			return 24;
+		case 'Z':
+			return 25;
+		case 'a':
+			return 26;
+		case 'b':
+			return 27;
+		case 'c':
+			return 28;
+		case 'd':
+			return 29;
+		case 'e':
+			return 30;
+		case 'f':
+			return 31;
+		case 'g':
+			return 32;
+		case 'h':
+			return 33;
+		case 'i':
+			return 34;
+		case 'j':
+			return 35;
+		case 'k':
+			return 36;
+		case 'l':
+			return 37;
+		case 'm':
+			return 38;
+		case 'n':
+			return 39;
+		case 'o':
+			return 40;
+		case 'p':
+			return 41;
+		case 'q':
+			return 42;
+		case 'r':
+			return 43;
+		case 's':
+			return 44;
+		case 't':
+			return 45;
+		case 'u':
+			return 46;
+		case 'v':
+			return 47;
+		case 'w':
+			return 48;
+		case 'x':
+			return 49;
+		case 'y':
+			return 50;
+		case 'z':
+			return 51;
+		case '0':
+			return 52;
+		case '1':
+			return 53;
+		case '2':
+			return 54;
+		case '3':
+			return 55;
+		case '4':
+			return 56;
+		case '5':
+			return 57;
+		case '6':
+			return 58;
+		case '7':
+			return 59;
+		case '8':
+			return 60;
+		case '9':
+			return 61;
+		case '+':
+			return 62;
+		case '/':
+			return 63;
+		default:
+			return 0;
+	}
+};
+var $elm$core$String$cons = _String_cons;
+var $elm$core$String$fromChar = function (_char) {
+	return A2($elm$core$String$cons, _char, '');
+};
+var $elm$core$Char$fromCode = _Char_fromCode;
+var $truqu$elm_base64$Base64$Decode$intToString = A2($elm$core$Basics$composeR, $elm$core$Char$fromCode, $elm$core$String$fromChar);
+var $truqu$elm_base64$Base64$Decode$add = F2(
+	function (_char, _v0) {
+		var curr = _v0.a;
+		var need = _v0.b;
+		var res = _v0.c;
+		var shiftAndAdd = function (_int) {
+			return (63 & _int) | (curr << 6);
+		};
+		return (!need) ? ((!(128 & _char)) ? _Utils_Tuple3(
+			0,
+			0,
+			_Utils_ap(
+				res,
+				$truqu$elm_base64$Base64$Decode$intToString(_char))) : (((224 & _char) === 192) ? _Utils_Tuple3(31 & _char, 1, res) : (((240 & _char) === 224) ? _Utils_Tuple3(15 & _char, 2, res) : _Utils_Tuple3(7 & _char, 3, res)))) : ((need === 1) ? _Utils_Tuple3(
+			0,
+			0,
+			_Utils_ap(
+				res,
+				$truqu$elm_base64$Base64$Decode$intToString(
+					shiftAndAdd(_char)))) : _Utils_Tuple3(
+			shiftAndAdd(_char),
+			need - 1,
+			res));
+	});
+var $truqu$elm_base64$Base64$Decode$toUTF16 = F2(
+	function (_char, acc) {
+		return _Utils_Tuple3(
+			0,
+			0,
+			A2(
+				$truqu$elm_base64$Base64$Decode$add,
+				255 & (_char >>> 0),
+				A2(
+					$truqu$elm_base64$Base64$Decode$add,
+					255 & (_char >>> 8),
+					A2($truqu$elm_base64$Base64$Decode$add, 255 & (_char >>> 16), acc))));
+	});
+var $truqu$elm_base64$Base64$Decode$chomp = F2(
+	function (char_, _v0) {
+		var curr = _v0.a;
+		var cnt = _v0.b;
+		var utf8ToUtf16 = _v0.c;
+		var _char = $truqu$elm_base64$Base64$Decode$charToInt(char_);
+		if (cnt === 3) {
+			return A2($truqu$elm_base64$Base64$Decode$toUTF16, curr | _char, utf8ToUtf16);
+		} else {
+			return _Utils_Tuple3((_char << ((3 - cnt) * 6)) | curr, cnt + 1, utf8ToUtf16);
+		}
+	});
+var $truqu$elm_base64$Base64$Decode$initial = _Utils_Tuple3(
+	0,
+	0,
+	_Utils_Tuple3(0, 0, ''));
+var $elm$core$Result$map = F2(
+	function (func, ra) {
+		if (ra.$ === 'Ok') {
+			var a = ra.a;
+			return $elm$core$Result$Ok(
+				func(a));
+		} else {
+			var e = ra.a;
+			return $elm$core$Result$Err(e);
+		}
+	});
+var $elm$core$String$endsWith = _String_endsWith;
+var $truqu$elm_base64$Base64$Decode$stripNulls = F2(
+	function (input, output) {
+		return A2($elm$core$String$endsWith, '==', input) ? A2($elm$core$String$dropRight, 2, output) : (A2($elm$core$String$endsWith, '=', input) ? A2($elm$core$String$dropRight, 1, output) : output);
+	});
+var $elm$regex$Regex$contains = _Regex_contains;
+var $truqu$elm_base64$Base64$Decode$validBase64Regex = A2(
+	$elm$core$Maybe$withDefault,
+	$elm$regex$Regex$never,
+	$elm$regex$Regex$fromString('^([A-Za-z0-9\\/+]{4})*([A-Za-z0-9\\/+]{2}[A-Za-z0-9\\/+=]{2})?$'));
+var $truqu$elm_base64$Base64$Decode$validate = function (input) {
+	return A2($elm$regex$Regex$contains, $truqu$elm_base64$Base64$Decode$validBase64Regex, input) ? $elm$core$Result$Ok(input) : $elm$core$Result$Err('Invalid base64');
+};
+var $truqu$elm_base64$Base64$Decode$wrapUp = function (_v0) {
+	var _v1 = _v0.c;
+	var need = _v1.b;
+	var res = _v1.c;
+	return (need > 0) ? $elm$core$Result$Err('Invalid UTF-16') : $elm$core$Result$Ok(res);
+};
+var $truqu$elm_base64$Base64$Decode$validateAndDecode = function (input) {
+	return A2(
+		$elm$core$Result$map,
+		$truqu$elm_base64$Base64$Decode$stripNulls(input),
+		A2(
+			$elm$core$Result$andThen,
+			A2(
+				$elm$core$Basics$composeR,
+				A2($elm$core$String$foldl, $truqu$elm_base64$Base64$Decode$chomp, $truqu$elm_base64$Base64$Decode$initial),
+				$truqu$elm_base64$Base64$Decode$wrapUp),
+			$truqu$elm_base64$Base64$Decode$validate(input)));
+};
+var $truqu$elm_base64$Base64$Decode$decode = A2($elm$core$Basics$composeR, $truqu$elm_base64$Base64$Decode$pad, $truqu$elm_base64$Base64$Decode$validateAndDecode);
+var $truqu$elm_base64$Base64$decode = $truqu$elm_base64$Base64$Decode$decode;
+var $elm$core$Basics$modBy = _Basics_modBy;
+var $JonRowe$elm_jwt$Jwt$fixlength = function (s) {
+	var _v0 = A2(
+		$elm$core$Basics$modBy,
+		4,
+		$elm$core$String$length(s));
+	switch (_v0) {
+		case 0:
+			return $elm$core$Result$Ok(s);
+		case 2:
+			return $elm$core$Result$Ok(
+				$elm$core$String$concat(
+					_List_fromArray(
+						[s, '=='])));
+		case 3:
+			return $elm$core$Result$Ok(
+				$elm$core$String$concat(
+					_List_fromArray(
+						[s, '='])));
+		default:
+			return $elm$core$Result$Err(
+				$JonRowe$elm_jwt$Jwt$TokenProcessingError('Wrong length'));
+	}
+};
+var $elm$core$String$map = _String_map;
+var $JonRowe$elm_jwt$Jwt$unurl = function () {
+	var fix = function (c) {
+		switch (c.valueOf()) {
+			case '-':
+				return _Utils_chr('+');
+			case '_':
+				return _Utils_chr('/');
+			default:
+				return c;
+		}
+	};
+	return $elm$core$String$map(fix);
+}();
+var $JonRowe$elm_jwt$Jwt$getTokenBody = function (token) {
+	var processor = A2(
+		$elm$core$Basics$composeR,
+		$JonRowe$elm_jwt$Jwt$unurl,
+		A2(
+			$elm$core$Basics$composeR,
+			$elm$core$String$split('.'),
+			$elm$core$List$map($JonRowe$elm_jwt$Jwt$fixlength)));
+	var _v0 = processor(token);
+	_v0$2:
+	while (true) {
+		if (_v0.b && _v0.b.b) {
+			if (_v0.b.a.$ === 'Err') {
+				if (_v0.b.b.b && (!_v0.b.b.b.b)) {
+					var _v1 = _v0.b;
+					var e = _v1.a.a;
+					var _v2 = _v1.b;
+					return $elm$core$Result$Err(e);
+				} else {
+					break _v0$2;
+				}
+			} else {
+				if (_v0.b.b.b && (!_v0.b.b.b.b)) {
+					var _v3 = _v0.b;
+					var encBody = _v3.a.a;
+					var _v4 = _v3.b;
+					return $elm$core$Result$Ok(encBody);
+				} else {
+					break _v0$2;
+				}
+			}
+		} else {
+			break _v0$2;
+		}
+	}
+	return $elm$core$Result$Err(
+		$JonRowe$elm_jwt$Jwt$TokenProcessingError('Token has invalid shape'));
+};
+var $elm$core$Result$mapError = F2(
+	function (f, result) {
+		if (result.$ === 'Ok') {
+			var v = result.a;
+			return $elm$core$Result$Ok(v);
+		} else {
+			var e = result.a;
+			return $elm$core$Result$Err(
+				f(e));
+		}
+	});
+var $JonRowe$elm_jwt$Jwt$decodeToken = function (dec) {
+	return A2(
+		$elm$core$Basics$composeR,
+		$JonRowe$elm_jwt$Jwt$getTokenBody,
+		A2(
+			$elm$core$Basics$composeR,
+			$elm$core$Result$andThen(
+				A2(
+					$elm$core$Basics$composeR,
+					$truqu$elm_base64$Base64$decode,
+					$elm$core$Result$mapError($JonRowe$elm_jwt$Jwt$TokenProcessingError))),
+			$elm$core$Result$andThen(
+				A2(
+					$elm$core$Basics$composeR,
+					$elm$json$Json$Decode$decodeString(dec),
+					$elm$core$Result$mapError($JonRowe$elm_jwt$Jwt$TokenDecodeError)))));
+};
+var $elm$time$Time$posixToMillis = function (_v0) {
+	var millis = _v0.a;
+	return millis;
+};
+var $JonRowe$elm_jwt$Jwt$isExpired = F2(
+	function (now, token) {
+		return A2(
+			$elm$core$Result$map,
+			function (exp) {
+				return _Utils_cmp(
+					$elm$time$Time$posixToMillis(now),
+					exp * 1000) > 0;
+			},
+			A2(
+				$JonRowe$elm_jwt$Jwt$decodeToken,
+				A2($elm$json$Json$Decode$field, 'exp', $JonRowe$elm_jwt$Jwt$decodeExp),
+				token));
+	});
+var $author$project$Api$isExpired = F2(
+	function (time, cred) {
+		var tokenval = function () {
+			if (cred.$ === 'Just') {
+				var token = cred.a.a;
+				return token;
+			} else {
+				return '';
+			}
+		}();
+		return A2($JonRowe$elm_jwt$Jwt$isExpired, time, tokenval);
+	});
+var $author$project$Session$isExpired = F2(
+	function (time, session) {
+		var credval = $author$project$Session$cred(session);
+		return A2($author$project$Api$isExpired, time, credval);
+	});
+var $elm$core$Result$withDefault = F2(
+	function (def, result) {
+		if (result.$ === 'Ok') {
+			var a = result.a;
+			return a;
+		} else {
+			return def;
+		}
+	});
+var $author$project$Main$checkToken = F2(
+	function (time, model) {
+		return A2(
+			$elm$core$Result$withDefault,
+			false,
+			A2(
+				$author$project$Session$isExpired,
+				time,
+				$author$project$Main$toSession(model)));
+	});
+var $author$project$Api$logout = $author$project$Api$storeCache($elm$core$Maybe$Nothing);
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
 var $elm$url$Url$addPort = F2(
 	function (maybePort, starter) {
@@ -10562,7 +11313,7 @@ var $author$project$Page$Patients$update = F2(
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		var _v0 = _Utils_Tuple2(msg, model);
-		_v0$5:
+		_v0$6:
 		while (true) {
 			switch (_v0.a.$) {
 				case 'ClickedLink':
@@ -10598,7 +11349,7 @@ var $author$project$Main$update = F2(
 							$author$project$Main$GotCalendarMsg,
 							A2($author$project$Page$Calendar$update, subMsg, calendar));
 					} else {
-						break _v0$5;
+						break _v0$6;
 					}
 				case 'GotPatientsMsg':
 					if (_v0.b.$ === 'Patients') {
@@ -10610,9 +11361,9 @@ var $author$project$Main$update = F2(
 							$author$project$Main$GotPatientsMsg,
 							A2($author$project$Page$Patients$update, subMsg, patients));
 					} else {
-						break _v0$5;
+						break _v0$6;
 					}
-				default:
+				case 'GotSession':
 					if (_v0.b.$ === 'Redirect') {
 						var session = _v0.a.a;
 						return _Utils_Tuple2(
@@ -10622,8 +11373,17 @@ var $author$project$Main$update = F2(
 								$author$project$Session$navKey(session),
 								$author$project$Route$Calendar));
 					} else {
-						break _v0$5;
+						break _v0$6;
 					}
+				default:
+					var time = _v0.a.a;
+					return A2(
+						$elm$core$Debug$log,
+						'isExpired',
+						A2($author$project$Main$checkToken, time, model)) ? _Utils_Tuple2(
+						$author$project$Main$Redirect(
+							$author$project$Main$toSession(model)),
+						$author$project$Api$logout) : _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 			}
 		}
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -10798,7 +11558,6 @@ var $elm$core$Tuple$second = function (_v0) {
 	var y = _v0.b;
 	return y;
 };
-var $elm$core$Basics$round = _Basics_round;
 var $mdgriffith$elm_ui$Internal$Model$floatClass = function (x) {
 	return $elm$core$String$fromInt(
 		$elm$core$Basics$round(x * 255));

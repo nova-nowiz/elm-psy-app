@@ -1,5 +1,13 @@
-port module Api exposing (Cred, Role, application, credChanges, credHeader, getRoleFromMaybeCred, logout, makeMutation, makeQuery, storeCred, storeCredFromAuth)
+port module Api exposing (Cred, Role, application, checkTokenExpiry, credChanges, credHeader, getRoleFromMaybeCred, isExpired, logout, makeMutation, makeQuery, storeCred, storeCredFromAuth)
 
+import Api.InputObject exposing (..)
+import Api.Mutation as Mutation exposing (..)
+import Api.Object exposing (..)
+import Api.Object.Patient
+import Api.Object.Patient_mutation_response
+import Api.Query as Query exposing (..)
+import Api.Scalar exposing (..)
+import Api.ScalarCodecs
 import Auth0.UrlParser exposing (Auth0CallbackInfo)
 import Browser
 import Browser.Navigation as Nav
@@ -10,8 +18,10 @@ import Http exposing (Body, Expect)
 import Json.Decode as Decode exposing (Decoder, Value, decodeString, field, string)
 import Json.Decode.Pipeline as Pipeline exposing (optional, required)
 import Json.Encode as Encode
-import Jwt
+import Jwt exposing (JwtError)
 import RemoteData exposing (RemoteData)
+import Task exposing (Task)
+import Time exposing (Posix)
 import Url exposing (Url)
 
 
@@ -169,6 +179,34 @@ getRole =
                 else
                     None
             )
+
+
+checkTokenExpiry : Maybe Cred -> Task Never JwtError
+checkTokenExpiry cred =
+    let
+        tokenval =
+            case cred of
+                Just (Cred token) ->
+                    token
+
+                Nothing ->
+                    ""
+    in
+    Jwt.checkTokenExpiry tokenval
+
+
+isExpired : Posix -> Maybe Cred -> Result JwtError Bool
+isExpired time cred =
+    let
+        tokenval =
+            case cred of
+                Just (Cred token) ->
+                    token
+
+                Nothing ->
+                    ""
+    in
+    Jwt.isExpired time tokenval
 
 
 

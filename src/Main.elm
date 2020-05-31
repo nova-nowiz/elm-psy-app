@@ -8,11 +8,14 @@ import Element exposing (..)
 import Element.Font as Font
 import Html exposing (Html)
 import Json.Decode as Decode exposing (Value)
+import Jwt exposing (JwtError)
 import Page exposing (Page)
 import Page.Calendar as Calendar
 import Page.Patients as Patients
 import Route exposing (Route)
 import Session exposing (Session)
+import Task
+import Time exposing (Posix)
 import Url exposing (Url)
 
 
@@ -80,6 +83,7 @@ type Msg
     | GotCalendarMsg Calendar.Msg
     | GotPatientsMsg Patients.Msg
     | GotSession Session
+    | CheckToken Posix
 
 
 toSession : Model -> Session
@@ -126,7 +130,7 @@ changeRouteTo maybeRoute model =
                     -- I could have deleted it and in route.elm I could
                     -- have put the Parser.top as a Route.Calendar
                     -- but this is way clearer
-                    ( Redirect session, Route.replaceUrl (Session.navKey session) Route.Calendar )
+                    ( Redirect session, Cmd.batch [ Route.replaceUrl (Session.navKey session) Route.Calendar, Task.perform CheckToken Time.now ] )
 
         Nothing ->
             case maybeRoute of
@@ -175,6 +179,14 @@ update msg model =
             , Route.replaceUrl (Session.navKey session) Route.Calendar
             )
 
+        ( CheckToken time, _ ) ->
+            if log "isExpired" (checkToken time model) then
+                -- If token is expired then we logout the user
+                ( Redirect <| toSession model, Api.logout )
+
+            else
+                ( model, Cmd.none )
+
         ( _, _ ) ->
             -- Disregard messages that arrived for the wrong page.
             ( model, Cmd.none )
@@ -183,8 +195,13 @@ update msg model =
 updateWith : (subModel -> Model) -> (subMsg -> Msg) -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
 updateWith toModel toMsg ( subModel, subCmd ) =
     ( toModel subModel
-    , Cmd.map toMsg subCmd
+    , Cmd.batch [ Cmd.map toMsg subCmd, Task.perform CheckToken Time.now ]
     )
+
+
+checkToken : Posix -> Model -> Bool
+checkToken time model =
+    Result.withDefault False <| Session.isExpired time <| toSession model
 
 
 
@@ -193,18 +210,21 @@ updateWith toModel toMsg ( subModel, subCmd ) =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    case model of
-        NotFound _ ->
-            Sub.none
+    Sub.batch
+        [ Time.every (5 * 60 * 1000) CheckToken
+        , case model of
+            NotFound _ ->
+                Sub.none
 
-        Redirect _ ->
-            Session.changes GotSession (Session.navKey (toSession model))
+            Redirect _ ->
+                Session.changes GotSession (Session.navKey (toSession model))
 
-        Calendar calendar ->
-            Sub.map GotCalendarMsg (Calendar.subscriptions calendar)
+            Calendar calendar ->
+                Sub.map GotCalendarMsg (Calendar.subscriptions calendar)
 
-        Patients patients ->
-            Sub.map GotPatientsMsg (Patients.subscriptions patients)
+            Patients patients ->
+                Sub.map GotPatientsMsg (Patients.subscriptions patients)
+        ]
 
 
 

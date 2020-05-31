@@ -1,7 +1,11 @@
-module Session exposing (Session, changes, cred, fromCred, navKey, role)
+module Session exposing (Session, changes, checkTokenExpiry, cred, fromCred, isExpired, navKey, role)
 
 import Api exposing (Cred, Role)
 import Browser.Navigation as Nav
+import Debug exposing (log)
+import Jwt exposing (JwtError)
+import Task exposing (Task)
+import Time exposing (Posix)
 
 
 
@@ -43,7 +47,25 @@ role session =
         credval =
             cred session
     in
-    Api.getRoleFromMaybeCred credval
+    log "Role" Api.getRoleFromMaybeCred credval
+
+
+checkTokenExpiry : Session -> Task Never JwtError
+checkTokenExpiry session =
+    let
+        credval =
+            cred session
+    in
+    Api.checkTokenExpiry credval
+
+
+isExpired : Posix -> Session -> Result JwtError Bool
+isExpired time session =
+    let
+        credval =
+            cred session
+    in
+    Api.isExpired time credval
 
 
 
