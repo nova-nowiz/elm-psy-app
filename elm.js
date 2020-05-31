@@ -5563,9 +5563,9 @@ var $author$project$Page$Calendar$Model = function (a) {
 	return {$: 'Model', a: a};
 };
 var $krisajenkins$remotedata$RemoteData$NotAsked = {$: 'NotAsked'};
-var $author$project$Page$Calendar$emptyForm = {code_postal: '', date_de_naissance: '', genre: '', moyen_de_decouverte: '', nom: '', numero_de_rue: '', pays: '', prenom: '', rue: '', ville: ''};
-var $author$project$Page$Calendar$GetPatientsResponse = function (a) {
-	return {$: 'GetPatientsResponse', a: a};
+var $author$project$Page$Calendar$emptyForm = {date: '', heure: ''};
+var $author$project$Page$Calendar$GetAgendaResponse = function (a) {
+	return {$: 'GetAgendaResponse', a: a};
 };
 var $elm$core$Basics$composeR = F3(
 	function (f, g, x) {
@@ -5587,271 +5587,15 @@ var $krisajenkins$remotedata$RemoteData$fromResult = function (result) {
 		return $krisajenkins$remotedata$RemoteData$Success(x);
 	}
 };
-var $author$project$Page$Calendar$Patient = function (prenom) {
-	return function (nom) {
-		return function (numero_rue) {
-			return function (rue) {
-				return function (code_postal) {
-					return function (ville) {
-						return function (pays) {
-							return function (date_de_naissance) {
-								return function (genre) {
-									return function (moyen_de_decouverte) {
-										return {code_postal: code_postal, date_de_naissance: date_de_naissance, genre: genre, moyen_de_decouverte: moyen_de_decouverte, nom: nom, numero_rue: numero_rue, pays: pays, prenom: prenom, rue: rue, ville: ville};
-									};
-								};
-							};
-						};
-					};
-				};
-			};
-		};
-	};
+var $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent = {$: 'Absent'};
+var $dillonkearns$elm_graphql$Graphql$Internal$Encode$Json = function (a) {
+	return {$: 'Json', a: a};
 };
-var $elm$json$Json$Decode$int = _Json_decodeInt;
-var $dillonkearns$elm_graphql$Graphql$SelectionSet$SelectionSet = F2(
-	function (a, b) {
-		return {$: 'SelectionSet', a: a, b: b};
-	});
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
-var $elm$core$List$append = F2(
-	function (xs, ys) {
-		if (!ys.b) {
-			return xs;
-		} else {
-			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
-		}
-	});
-var $elm$core$String$concat = function (strings) {
-	return A2($elm$core$String$join, '', strings);
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $dillonkearns$elm_graphql$Graphql$Internal$Encode$bool = function (value) {
+	return $dillonkearns$elm_graphql$Graphql$Internal$Encode$Json(
+		$elm$json$Json$Encode$bool(value));
 };
-var $Skinney$murmur3$Murmur3$HashData = F4(
-	function (shift, seed, hash, charsProcessed) {
-		return {charsProcessed: charsProcessed, hash: hash, seed: seed, shift: shift};
-	});
-var $Skinney$murmur3$Murmur3$c1 = 3432918353;
-var $Skinney$murmur3$Murmur3$c2 = 461845907;
-var $elm$core$Bitwise$and = _Bitwise_and;
-var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
-var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
-var $Skinney$murmur3$Murmur3$multiplyBy = F2(
-	function (b, a) {
-		return ((a & 65535) * b) + ((((a >>> 16) * b) & 65535) << 16);
-	});
-var $elm$core$Basics$neq = _Utils_notEqual;
-var $elm$core$Bitwise$or = _Bitwise_or;
-var $Skinney$murmur3$Murmur3$rotlBy = F2(
-	function (b, a) {
-		return (a << b) | (a >>> (32 - b));
-	});
-var $elm$core$Bitwise$xor = _Bitwise_xor;
-var $Skinney$murmur3$Murmur3$finalize = function (data) {
-	var acc = (!(!data.hash)) ? (data.seed ^ A2(
-		$Skinney$murmur3$Murmur3$multiplyBy,
-		$Skinney$murmur3$Murmur3$c2,
-		A2(
-			$Skinney$murmur3$Murmur3$rotlBy,
-			15,
-			A2($Skinney$murmur3$Murmur3$multiplyBy, $Skinney$murmur3$Murmur3$c1, data.hash)))) : data.seed;
-	var h0 = acc ^ data.charsProcessed;
-	var h1 = A2($Skinney$murmur3$Murmur3$multiplyBy, 2246822507, h0 ^ (h0 >>> 16));
-	var h2 = A2($Skinney$murmur3$Murmur3$multiplyBy, 3266489909, h1 ^ (h1 >>> 13));
-	return (h2 ^ (h2 >>> 16)) >>> 0;
-};
-var $elm$core$String$foldl = _String_foldl;
-var $Skinney$murmur3$Murmur3$mix = F2(
-	function (h1, k1) {
-		return A2(
-			$Skinney$murmur3$Murmur3$multiplyBy,
-			5,
-			A2(
-				$Skinney$murmur3$Murmur3$rotlBy,
-				13,
-				h1 ^ A2(
-					$Skinney$murmur3$Murmur3$multiplyBy,
-					$Skinney$murmur3$Murmur3$c2,
-					A2(
-						$Skinney$murmur3$Murmur3$rotlBy,
-						15,
-						A2($Skinney$murmur3$Murmur3$multiplyBy, $Skinney$murmur3$Murmur3$c1, k1))))) + 3864292196;
-	});
-var $Skinney$murmur3$Murmur3$hashFold = F2(
-	function (c, data) {
-		var res = data.hash | ((255 & $elm$core$Char$toCode(c)) << data.shift);
-		var _v0 = data.shift;
-		if (_v0 === 24) {
-			return {
-				charsProcessed: data.charsProcessed + 1,
-				hash: 0,
-				seed: A2($Skinney$murmur3$Murmur3$mix, data.seed, res),
-				shift: 0
-			};
-		} else {
-			return {charsProcessed: data.charsProcessed + 1, hash: res, seed: data.seed, shift: data.shift + 8};
-		}
-	});
-var $Skinney$murmur3$Murmur3$hashString = F2(
-	function (seed, str) {
-		return $Skinney$murmur3$Murmur3$finalize(
-			A3(
-				$elm$core$String$foldl,
-				$Skinney$murmur3$Murmur3$hashFold,
-				A4($Skinney$murmur3$Murmur3$HashData, 0, seed, 0, 0),
-				str));
-	});
-var $elm$core$List$isEmpty = function (xs) {
-	if (!xs.b) {
-		return true;
-	} else {
-		return false;
-	}
-};
-var $dillonkearns$elm_graphql$Graphql$Internal$Encode$serialize = function (value) {
-	switch (value.$) {
-		case 'EnumValue':
-			var enumValue = value.a;
-			return enumValue;
-		case 'Json':
-			var json = value.a;
-			return A2($elm$json$Json$Encode$encode, 0, json);
-		case 'List':
-			var values = value.a;
-			return '[' + (A2(
-				$elm$core$String$join,
-				', ',
-				A2($elm$core$List$map, $dillonkearns$elm_graphql$Graphql$Internal$Encode$serialize, values)) + ']');
-		default:
-			var keyValuePairs = value.a;
-			return '{' + (A2(
-				$elm$core$String$join,
-				', ',
-				A2(
-					$elm$core$List$map,
-					function (_v1) {
-						var key = _v1.a;
-						var objectValue = _v1.b;
-						return key + (': ' + $dillonkearns$elm_graphql$Graphql$Internal$Encode$serialize(objectValue));
-					},
-					keyValuePairs)) + '}');
-	}
-};
-var $dillonkearns$elm_graphql$Graphql$Document$Argument$argToString = function (_v0) {
-	var name = _v0.a;
-	var value = _v0.b;
-	return name + (': ' + $dillonkearns$elm_graphql$Graphql$Internal$Encode$serialize(value));
-};
-var $dillonkearns$elm_graphql$Graphql$Document$Argument$serialize = function (args) {
-	if (!args.b) {
-		return '';
-	} else {
-		var nonemptyArgs = args;
-		return '(' + (A2(
-			$elm$core$String$join,
-			', ',
-			A2($elm$core$List$map, $dillonkearns$elm_graphql$Graphql$Document$Argument$argToString, nonemptyArgs)) + ')');
-	}
-};
-var $elm$core$List$singleton = function (value) {
-	return _List_fromArray(
-		[value]);
-};
-var $dillonkearns$elm_graphql$Graphql$Document$Field$maybeAliasHash = function (field) {
-	return A2(
-		$elm$core$Maybe$map,
-		$Skinney$murmur3$Murmur3$hashString(0),
-		function () {
-			if (field.$ === 'Composite') {
-				var name = field.a;
-				var _arguments = field.b;
-				var children = field.c;
-				return $elm$core$List$isEmpty(_arguments) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
-					$dillonkearns$elm_graphql$Graphql$Document$Argument$serialize(_arguments));
-			} else {
-				var typeString = field.a.typeString;
-				var fieldName = field.a.fieldName;
-				var _arguments = field.b;
-				return (fieldName === '__typename') ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
-					$elm$core$String$concat(
-						A2(
-							$elm$core$List$append,
-							_List_fromArray(
-								[typeString]),
-							$elm$core$List$singleton(
-								$dillonkearns$elm_graphql$Graphql$Document$Argument$serialize(_arguments)))));
-			}
-		}());
-};
-var $dillonkearns$elm_graphql$Graphql$RawField$name = function (field) {
-	if (field.$ === 'Composite') {
-		var fieldName = field.a;
-		var argumentList = field.b;
-		var fieldList = field.c;
-		return fieldName;
-	} else {
-		var typeString = field.a.typeString;
-		var fieldName = field.a.fieldName;
-		var argumentList = field.b;
-		return fieldName;
-	}
-};
-var $dillonkearns$elm_graphql$Graphql$Document$Field$alias = function (field) {
-	return A2(
-		$elm$core$Maybe$map,
-		function (aliasHash) {
-			return _Utils_ap(
-				$dillonkearns$elm_graphql$Graphql$RawField$name(field),
-				$elm$core$String$fromInt(aliasHash));
-		},
-		$dillonkearns$elm_graphql$Graphql$Document$Field$maybeAliasHash(field));
-};
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
-var $dillonkearns$elm_graphql$Graphql$Document$Field$hashedAliasName = function (field) {
-	return A2(
-		$elm$core$Maybe$withDefault,
-		$dillonkearns$elm_graphql$Graphql$RawField$name(field),
-		$dillonkearns$elm_graphql$Graphql$Document$Field$alias(field));
-};
-var $dillonkearns$elm_graphql$Graphql$RawField$Leaf = F2(
-	function (a, b) {
-		return {$: 'Leaf', a: a, b: b};
-	});
-var $dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$leaf = F2(
-	function (details, args) {
-		return A2($dillonkearns$elm_graphql$Graphql$RawField$Leaf, details, args);
-	});
-var $dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField = F4(
-	function (typeString, fieldName, args, decoder) {
-		var newLeaf = A2(
-			$dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$leaf,
-			{fieldName: fieldName, typeString: typeString},
-			args);
-		return A2(
-			$dillonkearns$elm_graphql$Graphql$SelectionSet$SelectionSet,
-			_List_fromArray(
-				[newLeaf]),
-			A2(
-				$elm$json$Json$Decode$field,
-				$dillonkearns$elm_graphql$Graphql$Document$Field$hashedAliasName(newLeaf),
-				decoder));
-	});
-var $author$project$Api$Object$Patient$code_postal = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'Int', 'code_postal', _List_Nil, $elm$json$Json$Decode$int);
 var $author$project$Api$Scalar$Date = function (a) {
 	return {$: 'Date', a: a};
 };
@@ -5870,6 +5614,7 @@ var $author$project$Api$Scalar$Timetz = function (a) {
 var $elm$json$Json$Decode$bool = _Json_decodeBool;
 var $elm$json$Json$Decode$float = _Json_decodeFloat;
 var $elm$core$String$fromFloat = _String_fromNumber;
+var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $elm$json$Json$Decode$oneOf = _Json_oneOf;
 var $dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$scalarDecoder = $elm$json$Json$Decode$oneOf(
 	_List_fromArray(
@@ -5934,81 +5679,6 @@ var $author$project$Api$Scalar$defineCodecs = function (definitions) {
 };
 var $author$project$Api$ScalarCodecs$codecs = $author$project$Api$Scalar$defineCodecs(
 	{codecDate: $author$project$Api$Scalar$defaultCodecs.codecDate, codecId: $author$project$Api$Scalar$defaultCodecs.codecId, codecMoney: $author$project$Api$Scalar$defaultCodecs.codecMoney, codecSmallint: $author$project$Api$Scalar$defaultCodecs.codecSmallint, codecTimetz: $author$project$Api$Scalar$defaultCodecs.codecTimetz});
-var $author$project$Api$Scalar$unwrapCodecs = function (_v0) {
-	var unwrappedCodecs = _v0.a;
-	return unwrappedCodecs;
-};
-var $author$project$Api$Object$Patient$date_de_naissance = A4(
-	$dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField,
-	'ScalarCodecs.Date',
-	'date_de_naissance',
-	_List_Nil,
-	$author$project$Api$Scalar$unwrapCodecs($author$project$Api$ScalarCodecs$codecs).codecDate.decoder);
-var $author$project$Api$Object$Patient$genre = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'String', 'genre', _List_Nil, $elm$json$Json$Decode$string);
-var $author$project$Api$Object$Patient$moyen_de_decouverte = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'String', 'moyen_de_decouverte', _List_Nil, $elm$json$Json$Decode$string);
-var $author$project$Api$Object$Patient$nom = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'String', 'nom', _List_Nil, $elm$json$Json$Decode$string);
-var $author$project$Api$Object$Patient$numero_rue = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'Int', 'numero_rue', _List_Nil, $elm$json$Json$Decode$int);
-var $author$project$Api$Object$Patient$pays = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'String', 'pays', _List_Nil, $elm$json$Json$Decode$string);
-var $author$project$Api$Object$Patient$prenom = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'String', 'prenom', _List_Nil, $elm$json$Json$Decode$string);
-var $author$project$Api$Object$Patient$rue = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'String', 'rue', _List_Nil, $elm$json$Json$Decode$string);
-var $dillonkearns$elm_graphql$Graphql$SelectionSet$succeed = function (constructor) {
-	return A2(
-		$dillonkearns$elm_graphql$Graphql$SelectionSet$SelectionSet,
-		_List_Nil,
-		$elm$json$Json$Decode$succeed(constructor));
-};
-var $author$project$Api$Object$Patient$ville = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'String', 'ville', _List_Nil, $elm$json$Json$Decode$string);
-var $dillonkearns$elm_graphql$Graphql$SelectionSet$with = F2(
-	function (_v0, _v1) {
-		var selectionFields1 = _v0.a;
-		var selectionDecoder1 = _v0.b;
-		var selectionFields2 = _v1.a;
-		var selectionDecoder2 = _v1.b;
-		return A2(
-			$dillonkearns$elm_graphql$Graphql$SelectionSet$SelectionSet,
-			_Utils_ap(selectionFields1, selectionFields2),
-			A3($elm$json$Json$Decode$map2, $elm$core$Basics$apR, selectionDecoder1, selectionDecoder2));
-	});
-var $author$project$Page$Calendar$getPatient = A2(
-	$dillonkearns$elm_graphql$Graphql$SelectionSet$with,
-	$author$project$Api$Object$Patient$moyen_de_decouverte,
-	A2(
-		$dillonkearns$elm_graphql$Graphql$SelectionSet$with,
-		$author$project$Api$Object$Patient$genre,
-		A2(
-			$dillonkearns$elm_graphql$Graphql$SelectionSet$with,
-			$author$project$Api$Object$Patient$date_de_naissance,
-			A2(
-				$dillonkearns$elm_graphql$Graphql$SelectionSet$with,
-				$author$project$Api$Object$Patient$pays,
-				A2(
-					$dillonkearns$elm_graphql$Graphql$SelectionSet$with,
-					$author$project$Api$Object$Patient$ville,
-					A2(
-						$dillonkearns$elm_graphql$Graphql$SelectionSet$with,
-						$author$project$Api$Object$Patient$code_postal,
-						A2(
-							$dillonkearns$elm_graphql$Graphql$SelectionSet$with,
-							$author$project$Api$Object$Patient$rue,
-							A2(
-								$dillonkearns$elm_graphql$Graphql$SelectionSet$with,
-								$author$project$Api$Object$Patient$numero_rue,
-								A2(
-									$dillonkearns$elm_graphql$Graphql$SelectionSet$with,
-									$author$project$Api$Object$Patient$nom,
-									A2(
-										$dillonkearns$elm_graphql$Graphql$SelectionSet$with,
-										$author$project$Api$Object$Patient$prenom,
-										$dillonkearns$elm_graphql$Graphql$SelectionSet$succeed($author$project$Page$Calendar$Patient)))))))))));
-var $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent = {$: 'Absent'};
-var $dillonkearns$elm_graphql$Graphql$Internal$Encode$Json = function (a) {
-	return {$: 'Json', a: a};
-};
-var $elm$json$Json$Encode$bool = _Json_wrap;
-var $dillonkearns$elm_graphql$Graphql$Internal$Encode$bool = function (value) {
-	return $dillonkearns$elm_graphql$Graphql$Internal$Encode$Json(
-		$elm$json$Json$Encode$bool(value));
-};
 var $dillonkearns$elm_graphql$Graphql$Internal$Encode$List = function (a) {
 	return {$: 'List', a: a};
 };
@@ -6582,6 +6252,25 @@ var $author$project$Api$InputObject$encodeTimetz_comparison_exp = function (inpu
 							$author$project$Api$ScalarCodecs$codecs))))
 			]));
 };
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
 var $dillonkearns$elm_graphql$Graphql$Internal$Encode$maybe = function (encoder) {
 	return A2(
 		$elm$core$Basics$composeR,
@@ -6834,75 +6523,27 @@ var $author$project$Api$Enum$Order_by$toString = function (_enum) {
 			return 'desc_nulls_last';
 	}
 };
-var $author$project$Api$InputObject$encodePatient_order_by = function (input) {
+var $author$project$Api$InputObject$encodeAgenda_order_by = function (input) {
 	return $dillonkearns$elm_graphql$Graphql$Internal$Encode$maybeObject(
 		_List_fromArray(
 			[
 				_Utils_Tuple2(
-				'code_postal',
+				'date',
 				A2(
 					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
-					input.code_postal,
+					input.date,
 					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
 				_Utils_Tuple2(
-				'date_de_naissance',
+				'heure',
 				A2(
 					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
-					input.date_de_naissance,
+					input.heure,
 					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
 				_Utils_Tuple2(
-				'genre',
+				'id_agenda',
 				A2(
 					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
-					input.genre,
-					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
-				_Utils_Tuple2(
-				'id_patient',
-				A2(
-					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
-					input.id_patient,
-					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
-				_Utils_Tuple2(
-				'moyen_de_decouverte',
-				A2(
-					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
-					input.moyen_de_decouverte,
-					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
-				_Utils_Tuple2(
-				'nom',
-				A2(
-					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
-					input.nom,
-					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
-				_Utils_Tuple2(
-				'numero_rue',
-				A2(
-					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
-					input.numero_rue,
-					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
-				_Utils_Tuple2(
-				'pays',
-				A2(
-					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
-					input.pays,
-					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
-				_Utils_Tuple2(
-				'prenom',
-				A2(
-					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
-					input.prenom,
-					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
-				_Utils_Tuple2(
-				'rue',
-				A2(
-					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
-					input.rue,
-					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
-				_Utils_Tuple2(
-				'ville',
-				A2(
-					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
-					input.ville,
+					input.id_agenda,
 					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString)))
 			]));
 };
@@ -6928,6 +6569,10 @@ var $dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$optional = F3(
 					A2($dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$Argument, fieldName, $dillonkearns$elm_graphql$Graphql$Internal$Encode$null));
 		}
 	});
+var $dillonkearns$elm_graphql$Graphql$SelectionSet$SelectionSet = F2(
+	function (a, b) {
+		return {$: 'SelectionSet', a: a, b: b};
+	});
 var $dillonkearns$elm_graphql$Graphql$RawField$Composite = F3(
 	function (a, b, c) {
 		return {$: 'Composite', a: a, b: b, c: c};
@@ -6936,6 +6581,202 @@ var $dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$composite = F3(
 	function (fieldName, args, fields) {
 		return A3($dillonkearns$elm_graphql$Graphql$RawField$Composite, fieldName, args, fields);
 	});
+var $elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+		}
+	});
+var $elm$core$String$concat = function (strings) {
+	return A2($elm$core$String$join, '', strings);
+};
+var $Skinney$murmur3$Murmur3$HashData = F4(
+	function (shift, seed, hash, charsProcessed) {
+		return {charsProcessed: charsProcessed, hash: hash, seed: seed, shift: shift};
+	});
+var $Skinney$murmur3$Murmur3$c1 = 3432918353;
+var $Skinney$murmur3$Murmur3$c2 = 461845907;
+var $elm$core$Bitwise$and = _Bitwise_and;
+var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
+var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
+var $Skinney$murmur3$Murmur3$multiplyBy = F2(
+	function (b, a) {
+		return ((a & 65535) * b) + ((((a >>> 16) * b) & 65535) << 16);
+	});
+var $elm$core$Basics$neq = _Utils_notEqual;
+var $elm$core$Bitwise$or = _Bitwise_or;
+var $Skinney$murmur3$Murmur3$rotlBy = F2(
+	function (b, a) {
+		return (a << b) | (a >>> (32 - b));
+	});
+var $elm$core$Bitwise$xor = _Bitwise_xor;
+var $Skinney$murmur3$Murmur3$finalize = function (data) {
+	var acc = (!(!data.hash)) ? (data.seed ^ A2(
+		$Skinney$murmur3$Murmur3$multiplyBy,
+		$Skinney$murmur3$Murmur3$c2,
+		A2(
+			$Skinney$murmur3$Murmur3$rotlBy,
+			15,
+			A2($Skinney$murmur3$Murmur3$multiplyBy, $Skinney$murmur3$Murmur3$c1, data.hash)))) : data.seed;
+	var h0 = acc ^ data.charsProcessed;
+	var h1 = A2($Skinney$murmur3$Murmur3$multiplyBy, 2246822507, h0 ^ (h0 >>> 16));
+	var h2 = A2($Skinney$murmur3$Murmur3$multiplyBy, 3266489909, h1 ^ (h1 >>> 13));
+	return (h2 ^ (h2 >>> 16)) >>> 0;
+};
+var $elm$core$String$foldl = _String_foldl;
+var $Skinney$murmur3$Murmur3$mix = F2(
+	function (h1, k1) {
+		return A2(
+			$Skinney$murmur3$Murmur3$multiplyBy,
+			5,
+			A2(
+				$Skinney$murmur3$Murmur3$rotlBy,
+				13,
+				h1 ^ A2(
+					$Skinney$murmur3$Murmur3$multiplyBy,
+					$Skinney$murmur3$Murmur3$c2,
+					A2(
+						$Skinney$murmur3$Murmur3$rotlBy,
+						15,
+						A2($Skinney$murmur3$Murmur3$multiplyBy, $Skinney$murmur3$Murmur3$c1, k1))))) + 3864292196;
+	});
+var $Skinney$murmur3$Murmur3$hashFold = F2(
+	function (c, data) {
+		var res = data.hash | ((255 & $elm$core$Char$toCode(c)) << data.shift);
+		var _v0 = data.shift;
+		if (_v0 === 24) {
+			return {
+				charsProcessed: data.charsProcessed + 1,
+				hash: 0,
+				seed: A2($Skinney$murmur3$Murmur3$mix, data.seed, res),
+				shift: 0
+			};
+		} else {
+			return {charsProcessed: data.charsProcessed + 1, hash: res, seed: data.seed, shift: data.shift + 8};
+		}
+	});
+var $Skinney$murmur3$Murmur3$hashString = F2(
+	function (seed, str) {
+		return $Skinney$murmur3$Murmur3$finalize(
+			A3(
+				$elm$core$String$foldl,
+				$Skinney$murmur3$Murmur3$hashFold,
+				A4($Skinney$murmur3$Murmur3$HashData, 0, seed, 0, 0),
+				str));
+	});
+var $elm$core$List$isEmpty = function (xs) {
+	if (!xs.b) {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $dillonkearns$elm_graphql$Graphql$Internal$Encode$serialize = function (value) {
+	switch (value.$) {
+		case 'EnumValue':
+			var enumValue = value.a;
+			return enumValue;
+		case 'Json':
+			var json = value.a;
+			return A2($elm$json$Json$Encode$encode, 0, json);
+		case 'List':
+			var values = value.a;
+			return '[' + (A2(
+				$elm$core$String$join,
+				', ',
+				A2($elm$core$List$map, $dillonkearns$elm_graphql$Graphql$Internal$Encode$serialize, values)) + ']');
+		default:
+			var keyValuePairs = value.a;
+			return '{' + (A2(
+				$elm$core$String$join,
+				', ',
+				A2(
+					$elm$core$List$map,
+					function (_v1) {
+						var key = _v1.a;
+						var objectValue = _v1.b;
+						return key + (': ' + $dillonkearns$elm_graphql$Graphql$Internal$Encode$serialize(objectValue));
+					},
+					keyValuePairs)) + '}');
+	}
+};
+var $dillonkearns$elm_graphql$Graphql$Document$Argument$argToString = function (_v0) {
+	var name = _v0.a;
+	var value = _v0.b;
+	return name + (': ' + $dillonkearns$elm_graphql$Graphql$Internal$Encode$serialize(value));
+};
+var $dillonkearns$elm_graphql$Graphql$Document$Argument$serialize = function (args) {
+	if (!args.b) {
+		return '';
+	} else {
+		var nonemptyArgs = args;
+		return '(' + (A2(
+			$elm$core$String$join,
+			', ',
+			A2($elm$core$List$map, $dillonkearns$elm_graphql$Graphql$Document$Argument$argToString, nonemptyArgs)) + ')');
+	}
+};
+var $elm$core$List$singleton = function (value) {
+	return _List_fromArray(
+		[value]);
+};
+var $dillonkearns$elm_graphql$Graphql$Document$Field$maybeAliasHash = function (field) {
+	return A2(
+		$elm$core$Maybe$map,
+		$Skinney$murmur3$Murmur3$hashString(0),
+		function () {
+			if (field.$ === 'Composite') {
+				var name = field.a;
+				var _arguments = field.b;
+				var children = field.c;
+				return $elm$core$List$isEmpty(_arguments) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
+					$dillonkearns$elm_graphql$Graphql$Document$Argument$serialize(_arguments));
+			} else {
+				var typeString = field.a.typeString;
+				var fieldName = field.a.fieldName;
+				var _arguments = field.b;
+				return (fieldName === '__typename') ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
+					$elm$core$String$concat(
+						A2(
+							$elm$core$List$append,
+							_List_fromArray(
+								[typeString]),
+							$elm$core$List$singleton(
+								$dillonkearns$elm_graphql$Graphql$Document$Argument$serialize(_arguments)))));
+			}
+		}());
+};
+var $dillonkearns$elm_graphql$Graphql$RawField$name = function (field) {
+	if (field.$ === 'Composite') {
+		var fieldName = field.a;
+		var argumentList = field.b;
+		var fieldList = field.c;
+		return fieldName;
+	} else {
+		var typeString = field.a.typeString;
+		var fieldName = field.a.fieldName;
+		var argumentList = field.b;
+		return fieldName;
+	}
+};
+var $dillonkearns$elm_graphql$Graphql$Document$Field$alias = function (field) {
+	return A2(
+		$elm$core$Maybe$map,
+		function (aliasHash) {
+			return _Utils_ap(
+				$dillonkearns$elm_graphql$Graphql$RawField$name(field),
+				$elm$core$String$fromInt(aliasHash));
+		},
+		$dillonkearns$elm_graphql$Graphql$Document$Field$maybeAliasHash(field));
+};
+var $dillonkearns$elm_graphql$Graphql$Document$Field$hashedAliasName = function (field) {
+	return A2(
+		$elm$core$Maybe$withDefault,
+		$dillonkearns$elm_graphql$Graphql$RawField$name(field),
+		$dillonkearns$elm_graphql$Graphql$Document$Field$alias(field));
+};
 var $dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForCompositeField = F4(
 	function (fieldName, args, _v0, decoderTransform) {
 		var fields = _v0.a;
@@ -6952,33 +6793,17 @@ var $dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForCompos
 					A3($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$composite, fieldName, args, fields)),
 				decoderTransform(decoder)));
 	});
-var $author$project$Api$Enum$Patient_select_column$toString = function (_enum) {
+var $author$project$Api$Enum$Agenda_select_column$toString = function (_enum) {
 	switch (_enum.$) {
-		case 'Code_postal':
-			return 'code_postal';
-		case 'Date_de_naissance':
-			return 'date_de_naissance';
-		case 'Genre':
-			return 'genre';
-		case 'Id_patient':
-			return 'id_patient';
-		case 'Moyen_de_decouverte':
-			return 'moyen_de_decouverte';
-		case 'Nom':
-			return 'nom';
-		case 'Numero_rue':
-			return 'numero_rue';
-		case 'Pays':
-			return 'pays';
-		case 'Prenom':
-			return 'prenom';
-		case 'Rue':
-			return 'rue';
+		case 'Date':
+			return 'date';
+		case 'Heure':
+			return 'heure';
 		default:
-			return 'ville';
+			return 'id_agenda';
 	}
 };
-var $author$project$Api$Query$patient = F2(
+var $author$project$Api$Query$agenda = F2(
 	function (fillInOptionals, object_) {
 		var filledInOptionals = fillInOptionals(
 			{distinct_on: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, limit: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, offset: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, order_by: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, where_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent});
@@ -6992,24 +6817,91 @@ var $author$project$Api$Query$patient = F2(
 					'distinct_on',
 					filledInOptionals.distinct_on,
 					$dillonkearns$elm_graphql$Graphql$Internal$Encode$list(
-						$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Patient_select_column$toString))),
+						$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Agenda_select_column$toString))),
 					A3($dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$optional, 'limit', filledInOptionals.limit, $dillonkearns$elm_graphql$Graphql$Internal$Encode$int),
 					A3($dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$optional, 'offset', filledInOptionals.offset, $dillonkearns$elm_graphql$Graphql$Internal$Encode$int),
 					A3(
 					$dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$optional,
 					'order_by',
 					filledInOptionals.order_by,
-					$dillonkearns$elm_graphql$Graphql$Internal$Encode$list($author$project$Api$InputObject$encodePatient_order_by)),
-					A3($dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$optional, 'where', filledInOptionals.where_, $author$project$Api$InputObject$encodePatient_bool_exp)
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$list($author$project$Api$InputObject$encodeAgenda_order_by)),
+					A3($dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$optional, 'where', filledInOptionals.where_, $author$project$Api$InputObject$encodeAgenda_bool_exp)
 				]));
 		return A4(
 			$dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForCompositeField,
-			'Patient',
+			'Agenda',
 			optionalArgs,
 			object_,
 			A2($elm$core$Basics$composeR, $elm$core$Basics$identity, $elm$json$Json$Decode$list));
 	});
-var $author$project$Page$Calendar$getPatientsQuery = A2($author$project$Api$Query$patient, $elm$core$Basics$identity, $author$project$Page$Calendar$getPatient);
+var $author$project$Page$Calendar$Agenda = F2(
+	function (date, heure) {
+		return {date: date, heure: heure};
+	});
+var $dillonkearns$elm_graphql$Graphql$RawField$Leaf = F2(
+	function (a, b) {
+		return {$: 'Leaf', a: a, b: b};
+	});
+var $dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$leaf = F2(
+	function (details, args) {
+		return A2($dillonkearns$elm_graphql$Graphql$RawField$Leaf, details, args);
+	});
+var $dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField = F4(
+	function (typeString, fieldName, args, decoder) {
+		var newLeaf = A2(
+			$dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$leaf,
+			{fieldName: fieldName, typeString: typeString},
+			args);
+		return A2(
+			$dillonkearns$elm_graphql$Graphql$SelectionSet$SelectionSet,
+			_List_fromArray(
+				[newLeaf]),
+			A2(
+				$elm$json$Json$Decode$field,
+				$dillonkearns$elm_graphql$Graphql$Document$Field$hashedAliasName(newLeaf),
+				decoder));
+	});
+var $author$project$Api$Scalar$unwrapCodecs = function (_v0) {
+	var unwrappedCodecs = _v0.a;
+	return unwrappedCodecs;
+};
+var $author$project$Api$Object$Agenda$date = A4(
+	$dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField,
+	'ScalarCodecs.Date',
+	'date',
+	_List_Nil,
+	$author$project$Api$Scalar$unwrapCodecs($author$project$Api$ScalarCodecs$codecs).codecDate.decoder);
+var $author$project$Api$Object$Agenda$heure = A4(
+	$dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField,
+	'ScalarCodecs.Timetz',
+	'heure',
+	_List_Nil,
+	$author$project$Api$Scalar$unwrapCodecs($author$project$Api$ScalarCodecs$codecs).codecTimetz.decoder);
+var $dillonkearns$elm_graphql$Graphql$SelectionSet$succeed = function (constructor) {
+	return A2(
+		$dillonkearns$elm_graphql$Graphql$SelectionSet$SelectionSet,
+		_List_Nil,
+		$elm$json$Json$Decode$succeed(constructor));
+};
+var $dillonkearns$elm_graphql$Graphql$SelectionSet$with = F2(
+	function (_v0, _v1) {
+		var selectionFields1 = _v0.a;
+		var selectionDecoder1 = _v0.b;
+		var selectionFields2 = _v1.a;
+		var selectionDecoder2 = _v1.b;
+		return A2(
+			$dillonkearns$elm_graphql$Graphql$SelectionSet$SelectionSet,
+			_Utils_ap(selectionFields1, selectionFields2),
+			A3($elm$json$Json$Decode$map2, $elm$core$Basics$apR, selectionDecoder1, selectionDecoder2));
+	});
+var $author$project$Page$Calendar$getAgenda = A2(
+	$dillonkearns$elm_graphql$Graphql$SelectionSet$with,
+	$author$project$Api$Object$Agenda$heure,
+	A2(
+		$dillonkearns$elm_graphql$Graphql$SelectionSet$with,
+		$author$project$Api$Object$Agenda$date,
+		$dillonkearns$elm_graphql$Graphql$SelectionSet$succeed($author$project$Page$Calendar$Agenda)));
+var $author$project$Page$Calendar$getAgendaQuery = A2($author$project$Api$Query$agenda, $elm$core$Basics$identity, $author$project$Page$Calendar$getAgenda);
 var $dillonkearns$elm_graphql$Graphql$Http$Query = F2(
 	function (a, b) {
 		return {$: 'Query', a: a, b: b};
@@ -8446,19 +8338,19 @@ var $dillonkearns$elm_graphql$Graphql$Http$withHeader = F3(
 						request.headers)
 				}));
 	});
-var $author$project$Page$Calendar$getPatientsRequest = A2(
+var $author$project$Page$Calendar$getAgendaRequest = A2(
 	$dillonkearns$elm_graphql$Graphql$Http$send,
-	A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$Calendar$GetPatientsResponse),
+	A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$Calendar$GetAgendaResponse),
 	A3(
 		$dillonkearns$elm_graphql$Graphql$Http$withHeader,
 		'x-hasura-admin-secret',
 		'Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU',
-		A2($dillonkearns$elm_graphql$Graphql$Http$queryRequest, 'https://bdd-psy-app.herokuapp.com/v1/graphql', $author$project$Page$Calendar$getPatientsQuery)));
+		A2($dillonkearns$elm_graphql$Graphql$Http$queryRequest, 'https://bdd-psy-app.herokuapp.com/v1/graphql', $author$project$Page$Calendar$getAgendaQuery)));
 var $author$project$Page$Calendar$init = function (session) {
 	return _Utils_Tuple2(
 		$author$project$Page$Calendar$Model(
-			{addPatientData: $krisajenkins$remotedata$RemoteData$NotAsked, deletePatientData: $krisajenkins$remotedata$RemoteData$NotAsked, form: $author$project$Page$Calendar$emptyForm, getPatientsData: $krisajenkins$remotedata$RemoteData$Loading, session: session}),
-		$author$project$Page$Calendar$getPatientsRequest);
+			{addAgendaData: $krisajenkins$remotedata$RemoteData$NotAsked, deleteAgendaData: $krisajenkins$remotedata$RemoteData$NotAsked, form: $author$project$Page$Calendar$emptyForm, getAgendaData: $krisajenkins$remotedata$RemoteData$Loading, session: session}),
+		$author$project$Page$Calendar$getAgendaRequest);
 };
 var $author$project$Page$Patients$Model = function (a) {
 	return {$: 'Model', a: a};
@@ -8488,6 +8380,21 @@ var $author$project$Page$Patients$Patient = function (prenom) {
 		};
 	};
 };
+var $author$project$Api$Object$Patient$code_postal = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'Int', 'code_postal', _List_Nil, $elm$json$Json$Decode$int);
+var $author$project$Api$Object$Patient$date_de_naissance = A4(
+	$dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField,
+	'ScalarCodecs.Date',
+	'date_de_naissance',
+	_List_Nil,
+	$author$project$Api$Scalar$unwrapCodecs($author$project$Api$ScalarCodecs$codecs).codecDate.decoder);
+var $author$project$Api$Object$Patient$genre = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'String', 'genre', _List_Nil, $elm$json$Json$Decode$string);
+var $author$project$Api$Object$Patient$moyen_de_decouverte = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'String', 'moyen_de_decouverte', _List_Nil, $elm$json$Json$Decode$string);
+var $author$project$Api$Object$Patient$nom = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'String', 'nom', _List_Nil, $elm$json$Json$Decode$string);
+var $author$project$Api$Object$Patient$numero_rue = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'Int', 'numero_rue', _List_Nil, $elm$json$Json$Decode$int);
+var $author$project$Api$Object$Patient$pays = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'String', 'pays', _List_Nil, $elm$json$Json$Decode$string);
+var $author$project$Api$Object$Patient$prenom = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'String', 'prenom', _List_Nil, $elm$json$Json$Decode$string);
+var $author$project$Api$Object$Patient$rue = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'String', 'rue', _List_Nil, $elm$json$Json$Decode$string);
+var $author$project$Api$Object$Patient$ville = A4($dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForField, 'String', 'ville', _List_Nil, $elm$json$Json$Decode$string);
 var $author$project$Page$Patients$getPatient = A2(
 	$dillonkearns$elm_graphql$Graphql$SelectionSet$with,
 	$author$project$Api$Object$Patient$moyen_de_decouverte,
@@ -8519,6 +8426,135 @@ var $author$project$Page$Patients$getPatient = A2(
 										$dillonkearns$elm_graphql$Graphql$SelectionSet$with,
 										$author$project$Api$Object$Patient$prenom,
 										$dillonkearns$elm_graphql$Graphql$SelectionSet$succeed($author$project$Page$Patients$Patient)))))))))));
+var $author$project$Api$InputObject$encodePatient_order_by = function (input) {
+	return $dillonkearns$elm_graphql$Graphql$Internal$Encode$maybeObject(
+		_List_fromArray(
+			[
+				_Utils_Tuple2(
+				'code_postal',
+				A2(
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
+					input.code_postal,
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
+				_Utils_Tuple2(
+				'date_de_naissance',
+				A2(
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
+					input.date_de_naissance,
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
+				_Utils_Tuple2(
+				'genre',
+				A2(
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
+					input.genre,
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
+				_Utils_Tuple2(
+				'id_patient',
+				A2(
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
+					input.id_patient,
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
+				_Utils_Tuple2(
+				'moyen_de_decouverte',
+				A2(
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
+					input.moyen_de_decouverte,
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
+				_Utils_Tuple2(
+				'nom',
+				A2(
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
+					input.nom,
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
+				_Utils_Tuple2(
+				'numero_rue',
+				A2(
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
+					input.numero_rue,
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
+				_Utils_Tuple2(
+				'pays',
+				A2(
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
+					input.pays,
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
+				_Utils_Tuple2(
+				'prenom',
+				A2(
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
+					input.prenom,
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
+				_Utils_Tuple2(
+				'rue',
+				A2(
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
+					input.rue,
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString))),
+				_Utils_Tuple2(
+				'ville',
+				A2(
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$optional,
+					input.ville,
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Order_by$toString)))
+			]));
+};
+var $author$project$Api$Enum$Patient_select_column$toString = function (_enum) {
+	switch (_enum.$) {
+		case 'Code_postal':
+			return 'code_postal';
+		case 'Date_de_naissance':
+			return 'date_de_naissance';
+		case 'Genre':
+			return 'genre';
+		case 'Id_patient':
+			return 'id_patient';
+		case 'Moyen_de_decouverte':
+			return 'moyen_de_decouverte';
+		case 'Nom':
+			return 'nom';
+		case 'Numero_rue':
+			return 'numero_rue';
+		case 'Pays':
+			return 'pays';
+		case 'Prenom':
+			return 'prenom';
+		case 'Rue':
+			return 'rue';
+		default:
+			return 'ville';
+	}
+};
+var $author$project$Api$Query$patient = F2(
+	function (fillInOptionals, object_) {
+		var filledInOptionals = fillInOptionals(
+			{distinct_on: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, limit: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, offset: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, order_by: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, where_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent});
+		var optionalArgs = A2(
+			$elm$core$List$filterMap,
+			$elm$core$Basics$identity,
+			_List_fromArray(
+				[
+					A3(
+					$dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$optional,
+					'distinct_on',
+					filledInOptionals.distinct_on,
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$list(
+						$dillonkearns$elm_graphql$Graphql$Internal$Encode$enum($author$project$Api$Enum$Patient_select_column$toString))),
+					A3($dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$optional, 'limit', filledInOptionals.limit, $dillonkearns$elm_graphql$Graphql$Internal$Encode$int),
+					A3($dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$optional, 'offset', filledInOptionals.offset, $dillonkearns$elm_graphql$Graphql$Internal$Encode$int),
+					A3(
+					$dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$optional,
+					'order_by',
+					filledInOptionals.order_by,
+					$dillonkearns$elm_graphql$Graphql$Internal$Encode$list($author$project$Api$InputObject$encodePatient_order_by)),
+					A3($dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$optional, 'where', filledInOptionals.where_, $author$project$Api$InputObject$encodePatient_bool_exp)
+				]));
+		return A4(
+			$dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForCompositeField,
+			'Patient',
+			optionalArgs,
+			object_,
+			A2($elm$core$Basics$composeR, $elm$core$Basics$identity, $elm$json$Json$Decode$list));
+	});
 var $author$project$Page$Patients$getPatientsQuery = A2($author$project$Api$Query$patient, $elm$core$Basics$identity, $author$project$Page$Patients$getPatient);
 var $author$project$Page$Patients$getPatientsRequest = A2(
 	$dillonkearns$elm_graphql$Graphql$Http$send,
@@ -9140,19 +9176,19 @@ var $elm$url$Url$toString = function (url) {
 					_Utils_ap(http, url.host)),
 				url.path)));
 };
-var $author$project$Page$Calendar$AddPatientResponse = function (a) {
-	return {$: 'AddPatientResponse', a: a};
+var $author$project$Page$Calendar$AddAgendaResponse = function (a) {
+	return {$: 'AddAgendaResponse', a: a};
 };
-var $author$project$Api$Mutation$InsertPatientRequiredArguments = function (objects) {
+var $author$project$Api$InputObject$Agenda_insert_input = function (a) {
+	return {$: 'Agenda_insert_input', a: a};
+};
+var $author$project$Api$Mutation$InsertAgendaRequiredArguments = function (objects) {
 	return {objects: objects};
-};
-var $author$project$Api$InputObject$Patient_insert_input = function (a) {
-	return {$: 'Patient_insert_input', a: a};
 };
 var $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present = function (a) {
 	return {$: 'Present', a: a};
 };
-var $author$project$Api$Object$Patient_mutation_response$returning = function (object_) {
+var $author$project$Api$Object$Agenda_mutation_response$returning = function (object_) {
 	return A4(
 		$dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForCompositeField,
 		'returning',
@@ -9160,7 +9196,7 @@ var $author$project$Api$Object$Patient_mutation_response$returning = function (o
 		object_,
 		A2($elm$core$Basics$composeR, $elm$core$Basics$identity, $elm$json$Json$Decode$list));
 };
-var $author$project$Page$Calendar$getPatientsMutation = $author$project$Api$Object$Patient_mutation_response$returning($author$project$Page$Calendar$getPatient);
+var $author$project$Page$Calendar$getAgendaMutation = $author$project$Api$Object$Agenda_mutation_response$returning($author$project$Page$Calendar$getAgenda);
 var $author$project$Api$Enum$Agenda_constraint$toString = function (_enum) {
 	return 'Agenda_pkey';
 };
@@ -9636,7 +9672,7 @@ var $dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$required = F3(
 			fieldName,
 			encode(raw));
 	});
-var $author$project$Api$Mutation$insert_Patient = F3(
+var $author$project$Api$Mutation$insert_Agenda = F3(
 	function (fillInOptionals, requiredArgs, object_) {
 		var filledInOptionals = fillInOptionals(
 			{on_conflict: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent});
@@ -9645,11 +9681,11 @@ var $author$project$Api$Mutation$insert_Patient = F3(
 			$elm$core$Basics$identity,
 			_List_fromArray(
 				[
-					A3($dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$optional, 'on_conflict', filledInOptionals.on_conflict, $author$project$Api$InputObject$encodePatient_on_conflict)
+					A3($dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$optional, 'on_conflict', filledInOptionals.on_conflict, $author$project$Api$InputObject$encodeAgenda_on_conflict)
 				]));
 		return A4(
 			$dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForCompositeField,
-			'insert_Patient',
+			'insert_Agenda',
 			_Utils_ap(
 				optionalArgs,
 				_List_fromArray(
@@ -9658,48 +9694,32 @@ var $author$project$Api$Mutation$insert_Patient = F3(
 						$dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$required,
 						'objects',
 						requiredArgs.objects,
-						$dillonkearns$elm_graphql$Graphql$Internal$Encode$list($author$project$Api$InputObject$encodePatient_insert_input))
+						$dillonkearns$elm_graphql$Graphql$Internal$Encode$list($author$project$Api$InputObject$encodeAgenda_insert_input))
 					])),
 			object_,
 			A2($elm$core$Basics$composeR, $elm$core$Basics$identity, $elm$json$Json$Decode$nullable));
 	});
-var $author$project$Page$Calendar$addPatient = function (form) {
-	var patientinsert = {
-		code_postal: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
-			A2(
-				$elm$core$Maybe$withDefault,
-				0,
-				$elm$core$String$toInt(form.code_postal))),
+var $author$project$Page$Calendar$addAgenda = function (form) {
+	var agendainsert = {
 		consultations: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent,
-		date_de_naissance: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
-			$author$project$Api$Scalar$Date(form.date_de_naissance)),
-		genre: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(form.genre),
-		id_patient: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent,
-		moyen_de_decouverte: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(form.moyen_de_decouverte),
-		nom: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(form.nom),
-		numero_rue: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
-			A2(
-				$elm$core$Maybe$withDefault,
-				0,
-				$elm$core$String$toInt(form.numero_de_rue))),
-		patient_Professions: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent,
-		pays: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(form.pays),
-		prenom: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(form.prenom),
-		rue: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(form.rue),
-		ville: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(form.ville)
+		date: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
+			$author$project$Api$Scalar$Date(form.date)),
+		heure: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
+			$author$project$Api$Scalar$Timetz(form.heure)),
+		id_agenda: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent
 	};
-	var reqArgs = $author$project$Api$Mutation$InsertPatientRequiredArguments(
+	var reqArgs = $author$project$Api$Mutation$InsertAgendaRequiredArguments(
 		_List_fromArray(
 			[
-				$author$project$Api$InputObject$Patient_insert_input(patientinsert)
+				$author$project$Api$InputObject$Agenda_insert_input(agendainsert)
 			]));
 	return A3(
-		$author$project$Api$Mutation$insert_Patient,
+		$author$project$Api$Mutation$insert_Agenda,
 		function (optionals) {
 			return optionals;
 		},
 		reqArgs,
-		$author$project$Page$Calendar$getPatientsMutation);
+		$author$project$Page$Calendar$getAgendaMutation);
 };
 var $dillonkearns$elm_graphql$Graphql$Http$Mutation = function (a) {
 	return {$: 'Mutation', a: a};
@@ -9718,10 +9738,10 @@ var $dillonkearns$elm_graphql$Graphql$Http$mutationRequest = F2(
 				withCredentials: false
 			});
 	});
-var $author$project$Page$Calendar$addPatientRequest = function (form) {
+var $author$project$Page$Calendar$addAgendaRequest = function (form) {
 	return A2(
 		$dillonkearns$elm_graphql$Graphql$Http$send,
-		A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$Calendar$AddPatientResponse),
+		A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$Calendar$AddAgendaResponse),
 		A3(
 			$dillonkearns$elm_graphql$Graphql$Http$withHeader,
 			'x-hasura-admin-secret',
@@ -9729,155 +9749,78 @@ var $author$project$Page$Calendar$addPatientRequest = function (form) {
 			A2(
 				$dillonkearns$elm_graphql$Graphql$Http$mutationRequest,
 				'https://bdd-psy-app.herokuapp.com/v1/graphql',
-				$author$project$Page$Calendar$addPatient(form))));
+				$author$project$Page$Calendar$addAgenda(form))));
 };
-var $author$project$Page$Calendar$DeletePatientResponse = function (a) {
-	return {$: 'DeletePatientResponse', a: a};
+var $author$project$Page$Calendar$DeleteAgendaResponse = function (a) {
+	return {$: 'DeleteAgendaResponse', a: a};
 };
-var $author$project$Api$Mutation$DeletePatientRequiredArguments = function (where_) {
+var $author$project$Api$Mutation$DeleteAgendaRequiredArguments = function (where_) {
 	return {where_: where_};
+};
+var $author$project$Api$InputObject$Agenda_bool_exp = function (a) {
+	return {$: 'Agenda_bool_exp', a: a};
+};
+var $author$project$Api$InputObject$buildAgenda_bool_exp = function (fillOptionals) {
+	var optionals = fillOptionals(
+		{and_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, consultations: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, date: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, heure: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, id_agenda: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, not_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, or_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent});
+	return $author$project$Api$InputObject$Agenda_bool_exp(
+		{and_: optionals.and_, consultations: optionals.consultations, date: optionals.date, heure: optionals.heure, id_agenda: optionals.id_agenda, not_: optionals.not_, or_: optionals.or_});
 };
 var $author$project$Api$InputObject$buildDate_comparison_exp = function (fillOptionals) {
 	var optionals = fillOptionals(
 		{eq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, gt_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, gte_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, in_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, is_null_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, lt_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, lte_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, neq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, nin_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent});
 	return {eq_: optionals.eq_, gt_: optionals.gt_, gte_: optionals.gte_, in_: optionals.in_, is_null_: optionals.is_null_, lt_: optionals.lt_, lte_: optionals.lte_, neq_: optionals.neq_, nin_: optionals.nin_};
 };
-var $author$project$Api$InputObject$buildInt_comparison_exp = function (fillOptionals) {
+var $author$project$Api$InputObject$buildTimetz_comparison_exp = function (fillOptionals) {
 	var optionals = fillOptionals(
 		{eq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, gt_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, gte_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, in_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, is_null_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, lt_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, lte_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, neq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, nin_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent});
 	return {eq_: optionals.eq_, gt_: optionals.gt_, gte_: optionals.gte_, in_: optionals.in_, is_null_: optionals.is_null_, lt_: optionals.lt_, lte_: optionals.lte_, neq_: optionals.neq_, nin_: optionals.nin_};
 };
-var $author$project$Api$InputObject$Patient_bool_exp = function (a) {
-	return {$: 'Patient_bool_exp', a: a};
-};
-var $author$project$Api$InputObject$buildPatient_bool_exp = function (fillOptionals) {
-	var optionals = fillOptionals(
-		{and_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, code_postal: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, consultations: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, date_de_naissance: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, genre: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, id_patient: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, moyen_de_decouverte: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, nom: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, not_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, numero_rue: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, or_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, patient_Professions: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, pays: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, prenom: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, rue: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, ville: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent});
-	return $author$project$Api$InputObject$Patient_bool_exp(
-		{and_: optionals.and_, code_postal: optionals.code_postal, consultations: optionals.consultations, date_de_naissance: optionals.date_de_naissance, genre: optionals.genre, id_patient: optionals.id_patient, moyen_de_decouverte: optionals.moyen_de_decouverte, nom: optionals.nom, not_: optionals.not_, numero_rue: optionals.numero_rue, or_: optionals.or_, patient_Professions: optionals.patient_Professions, pays: optionals.pays, prenom: optionals.prenom, rue: optionals.rue, ville: optionals.ville});
-};
-var $author$project$Api$InputObject$buildString_comparison_exp = function (fillOptionals) {
-	var optionals = fillOptionals(
-		{eq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, gt_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, gte_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, ilike_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, in_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, is_null_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, like_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, lt_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, lte_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, neq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, nilike_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, nin_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, nlike_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, nsimilar_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, similar_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent});
-	return {eq_: optionals.eq_, gt_: optionals.gt_, gte_: optionals.gte_, ilike_: optionals.ilike_, in_: optionals.in_, is_null_: optionals.is_null_, like_: optionals.like_, lt_: optionals.lt_, lte_: optionals.lte_, neq_: optionals.neq_, nilike_: optionals.nilike_, nin_: optionals.nin_, nlike_: optionals.nlike_, nsimilar_: optionals.nsimilar_, similar_: optionals.similar_};
-};
-var $author$project$Api$Mutation$delete_Patient = F2(
+var $author$project$Api$Mutation$delete_Agenda = F2(
 	function (requiredArgs, object_) {
 		return A4(
 			$dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForCompositeField,
-			'delete_Patient',
+			'delete_Agenda',
 			_List_fromArray(
 				[
-					A3($dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$required, 'where', requiredArgs.where_, $author$project$Api$InputObject$encodePatient_bool_exp)
+					A3($dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$required, 'where', requiredArgs.where_, $author$project$Api$InputObject$encodeAgenda_bool_exp)
 				]),
 			object_,
 			A2($elm$core$Basics$composeR, $elm$core$Basics$identity, $elm$json$Json$Decode$nullable));
 	});
-var $author$project$Page$Calendar$deletePatient = function (patient) {
-	var reqArgs = $author$project$Api$Mutation$DeletePatientRequiredArguments(
-		$author$project$Api$InputObject$buildPatient_bool_exp(
+var $author$project$Page$Calendar$deleteAgenda = function (agenda) {
+	var reqArgs = $author$project$Api$Mutation$DeleteAgendaRequiredArguments(
+		$author$project$Api$InputObject$buildAgenda_bool_exp(
 			function (record) {
 				return _Utils_update(
 					record,
 					{
-						code_postal: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
-							$author$project$Api$InputObject$buildInt_comparison_exp(
-								function (r) {
-									return _Utils_update(
-										r,
-										{
-											eq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(patient.code_postal)
-										});
-								})),
-						date_de_naissance: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
+						date: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
 							$author$project$Api$InputObject$buildDate_comparison_exp(
 								function (r) {
 									return _Utils_update(
 										r,
 										{
-											eq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(patient.date_de_naissance)
+											eq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(agenda.date)
 										});
 								})),
-						genre: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
-							$author$project$Api$InputObject$buildString_comparison_exp(
+						heure: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
+							$author$project$Api$InputObject$buildTimetz_comparison_exp(
 								function (r) {
 									return _Utils_update(
 										r,
 										{
-											eq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(patient.genre)
-										});
-								})),
-						moyen_de_decouverte: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
-							$author$project$Api$InputObject$buildString_comparison_exp(
-								function (r) {
-									return _Utils_update(
-										r,
-										{
-											eq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(patient.moyen_de_decouverte)
-										});
-								})),
-						nom: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
-							$author$project$Api$InputObject$buildString_comparison_exp(
-								function (r) {
-									return _Utils_update(
-										r,
-										{
-											eq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(patient.nom)
-										});
-								})),
-						numero_rue: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
-							$author$project$Api$InputObject$buildInt_comparison_exp(
-								function (r) {
-									return _Utils_update(
-										r,
-										{
-											eq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(patient.numero_rue)
-										});
-								})),
-						pays: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
-							$author$project$Api$InputObject$buildString_comparison_exp(
-								function (r) {
-									return _Utils_update(
-										r,
-										{
-											eq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(patient.pays)
-										});
-								})),
-						prenom: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
-							$author$project$Api$InputObject$buildString_comparison_exp(
-								function (r) {
-									return _Utils_update(
-										r,
-										{
-											eq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(patient.prenom)
-										});
-								})),
-						rue: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
-							$author$project$Api$InputObject$buildString_comparison_exp(
-								function (r) {
-									return _Utils_update(
-										r,
-										{
-											eq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(patient.rue)
-										});
-								})),
-						ville: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
-							$author$project$Api$InputObject$buildString_comparison_exp(
-								function (r) {
-									return _Utils_update(
-										r,
-										{
-											eq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(patient.ville)
+											eq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(agenda.heure)
 										});
 								}))
 					});
 			}));
-	return A2($author$project$Api$Mutation$delete_Patient, reqArgs, $author$project$Page$Calendar$getPatientsMutation);
+	return A2($author$project$Api$Mutation$delete_Agenda, reqArgs, $author$project$Page$Calendar$getAgendaMutation);
 };
-var $author$project$Page$Calendar$deletePatientRequest = function (patient) {
+var $author$project$Page$Calendar$deleteAgendaRequest = function (agenda) {
 	return A2(
 		$dillonkearns$elm_graphql$Graphql$Http$send,
-		A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$Calendar$DeletePatientResponse),
+		A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$Calendar$DeleteAgendaResponse),
 		A3(
 			$dillonkearns$elm_graphql$Graphql$Http$withHeader,
 			'x-hasura-admin-secret',
@@ -9885,7 +9828,7 @@ var $author$project$Page$Calendar$deletePatientRequest = function (patient) {
 			A2(
 				$dillonkearns$elm_graphql$Graphql$Http$mutationRequest,
 				'https://bdd-psy-app.herokuapp.com/v1/graphql',
-				$author$project$Page$Calendar$deletePatient(patient))));
+				$author$project$Page$Calendar$deleteAgenda(agenda))));
 };
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
@@ -9947,53 +9890,53 @@ var $author$project$Page$Calendar$update = F2(
 			return datamodel;
 		}();
 		switch (msg.$) {
-			case 'GetPatientsResponse':
-				var getPatientsData = msg.a;
-				switch (getPatientsData.$) {
+			case 'GetAgendaResponse':
+				var getAgendaData = msg.a;
+				switch (getAgendaData.$) {
 					case 'NotAsked':
 						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 					case 'Loading':
 						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 					case 'Success':
-						var response = getPatientsData.a;
+						var response = getAgendaData.a;
 						return _Utils_Tuple2(
 							$author$project$Page$Calendar$Model(
 								_Utils_update(
 									data,
-									{getPatientsData: getPatientsData})),
+									{getAgendaData: getAgendaData})),
 							$elm$core$Platform$Cmd$none);
 					default:
-						var error = getPatientsData.a;
+						var error = getAgendaData.a;
 						return _Utils_Tuple2(
 							$author$project$Page$Calendar$Model(
 								_Utils_update(
 									data,
-									{getPatientsData: getPatientsData})),
+									{getAgendaData: getAgendaData})),
 							$elm$core$Platform$Cmd$none);
 				}
-			case 'AddPatientResponse':
-				var addPatientData = msg.a;
-				switch (addPatientData.$) {
+			case 'AddAgendaResponse':
+				var addAgendaData = msg.a;
+				switch (addAgendaData.$) {
 					case 'NotAsked':
 						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 					case 'Loading':
 						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 					case 'Success':
-						var response = addPatientData.a;
+						var response = addAgendaData.a;
 						if (response.$ === 'Just') {
-							var patients = response.a;
+							var agenda = response.a;
 							return _Utils_Tuple2(
 								$author$project$Page$Calendar$Model(
 									_Utils_update(
 										data,
 										{
-											addPatientData: addPatientData,
-											getPatientsData: function () {
-												var _v4 = data.getPatientsData;
+											addAgendaData: addAgendaData,
+											getAgendaData: function () {
+												var _v4 = data.getAgendaData;
 												if (_v4.$ === 'Success') {
-													var patientsdata = _v4.a;
+													var agendadata = _v4.a;
 													return $krisajenkins$remotedata$RemoteData$Success(
-														_Utils_ap(patientsdata, patients));
+														_Utils_ap(agendadata, agenda));
 												} else {
 													var meh = _v4;
 													return meh;
@@ -10006,46 +9949,46 @@ var $author$project$Page$Calendar$update = F2(
 								$author$project$Page$Calendar$Model(
 									_Utils_update(
 										data,
-										{addPatientData: addPatientData})),
+										{addAgendaData: addAgendaData})),
 								$elm$core$Platform$Cmd$none);
 						}
 					default:
-						var error = addPatientData.a;
+						var error = addAgendaData.a;
 						return _Utils_Tuple2(
 							$author$project$Page$Calendar$Model(
 								_Utils_update(
 									data,
-									{addPatientData: addPatientData})),
+									{addAgendaData: addAgendaData})),
 							$elm$core$Platform$Cmd$none);
 				}
-			case 'DeletePatientResponse':
-				var deletePatientData = msg.a;
-				switch (deletePatientData.$) {
+			case 'DeleteAgendaResponse':
+				var deleteAgendaData = msg.a;
+				switch (deleteAgendaData.$) {
 					case 'NotAsked':
 						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 					case 'Loading':
 						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 					case 'Success':
-						var response = deletePatientData.a;
+						var response = deleteAgendaData.a;
 						if (response.$ === 'Just') {
-							var patients = response.a;
+							var agendas = response.a;
 							return _Utils_Tuple2(
 								$author$project$Page$Calendar$Model(
 									_Utils_update(
 										data,
 										{
-											deletePatientData: deletePatientData,
-											getPatientsData: function () {
-												var _v7 = data.getPatientsData;
+											deleteAgendaData: deleteAgendaData,
+											getAgendaData: function () {
+												var _v7 = data.getAgendaData;
 												if (_v7.$ === 'Success') {
-													var patientdata = _v7.a;
+													var agendadata = _v7.a;
 													return $krisajenkins$remotedata$RemoteData$Success(
 														A2(
 															$elm$core$List$filter,
-															function (patient) {
-																return !A2($elm$core$List$member, patient, patients);
+															function (agenda) {
+																return !A2($elm$core$List$member, agenda, agendas);
 															},
-															patientdata));
+															agendadata));
 												} else {
 													var meh = _v7;
 													return meh;
@@ -10058,115 +10001,35 @@ var $author$project$Page$Calendar$update = F2(
 								$author$project$Page$Calendar$Model(
 									_Utils_update(
 										data,
-										{deletePatientData: deletePatientData})),
+										{deleteAgendaData: deleteAgendaData})),
 								$elm$core$Platform$Cmd$none);
 						}
 					default:
-						var error = deletePatientData.a;
+						var error = deleteAgendaData.a;
 						return _Utils_Tuple2(
 							$author$project$Page$Calendar$Model(
 								_Utils_update(
 									data,
-									{deletePatientData: deletePatientData})),
+									{deleteAgendaData: deleteAgendaData})),
 							$elm$core$Platform$Cmd$none);
 				}
-			case 'AddPatient':
+			case 'AddAgenda':
 				return _Utils_Tuple2(
 					model,
-					$author$project$Page$Calendar$addPatientRequest(data.form));
-			case 'DeletePatient':
-				var patient = msg.a;
+					$author$project$Page$Calendar$addAgendaRequest(data.form));
+			case 'DeleteAgenda':
+				var agenda = msg.a;
 				return _Utils_Tuple2(
 					model,
-					$author$project$Page$Calendar$deletePatientRequest(patient));
-			case 'EnteredPrenom':
+					$author$project$Page$Calendar$deleteAgendaRequest(agenda));
+			case 'EnteredDate':
 				var text = msg.a;
 				return A2(
 					$author$project$Page$Calendar$updateForm,
 					function (form) {
 						return _Utils_update(
 							form,
-							{prenom: text});
-					},
-					data);
-			case 'EnteredNom':
-				var text = msg.a;
-				return A2(
-					$author$project$Page$Calendar$updateForm,
-					function (form) {
-						return _Utils_update(
-							form,
-							{nom: text});
-					},
-					data);
-			case 'EnteredNumero_de_rue':
-				var text = msg.a;
-				return A2(
-					$author$project$Page$Calendar$updateForm,
-					function (form) {
-						return _Utils_update(
-							form,
-							{numero_de_rue: text});
-					},
-					data);
-			case 'EnteredRue':
-				var text = msg.a;
-				return A2(
-					$author$project$Page$Calendar$updateForm,
-					function (form) {
-						return _Utils_update(
-							form,
-							{rue: text});
-					},
-					data);
-			case 'EnteredCode_postal':
-				var text = msg.a;
-				return A2(
-					$author$project$Page$Calendar$updateForm,
-					function (form) {
-						return _Utils_update(
-							form,
-							{code_postal: text});
-					},
-					data);
-			case 'EnteredVille':
-				var text = msg.a;
-				return A2(
-					$author$project$Page$Calendar$updateForm,
-					function (form) {
-						return _Utils_update(
-							form,
-							{ville: text});
-					},
-					data);
-			case 'EnteredPays':
-				var text = msg.a;
-				return A2(
-					$author$project$Page$Calendar$updateForm,
-					function (form) {
-						return _Utils_update(
-							form,
-							{pays: text});
-					},
-					data);
-			case 'EnteredDate_de_naissance':
-				var text = msg.a;
-				return A2(
-					$author$project$Page$Calendar$updateForm,
-					function (form) {
-						return _Utils_update(
-							form,
-							{date_de_naissance: text});
-					},
-					data);
-			case 'EnteredGenre':
-				var text = msg.a;
-				return A2(
-					$author$project$Page$Calendar$updateForm,
-					function (form) {
-						return _Utils_update(
-							form,
-							{genre: text});
+							{date: text});
 					},
 					data);
 			default:
@@ -10176,7 +10039,7 @@ var $author$project$Page$Calendar$update = F2(
 					function (form) {
 						return _Utils_update(
 							form,
-							{moyen_de_decouverte: text});
+							{heure: text});
 					},
 					data);
 		}
@@ -10184,7 +10047,48 @@ var $author$project$Page$Calendar$update = F2(
 var $author$project$Page$Patients$AddPatientResponse = function (a) {
 	return {$: 'AddPatientResponse', a: a};
 };
+var $author$project$Api$Mutation$InsertPatientRequiredArguments = function (objects) {
+	return {objects: objects};
+};
+var $author$project$Api$InputObject$Patient_insert_input = function (a) {
+	return {$: 'Patient_insert_input', a: a};
+};
+var $author$project$Api$Object$Patient_mutation_response$returning = function (object_) {
+	return A4(
+		$dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForCompositeField,
+		'returning',
+		_List_Nil,
+		object_,
+		A2($elm$core$Basics$composeR, $elm$core$Basics$identity, $elm$json$Json$Decode$list));
+};
 var $author$project$Page$Patients$getPatientsMutation = $author$project$Api$Object$Patient_mutation_response$returning($author$project$Page$Patients$getPatient);
+var $author$project$Api$Mutation$insert_Patient = F3(
+	function (fillInOptionals, requiredArgs, object_) {
+		var filledInOptionals = fillInOptionals(
+			{on_conflict: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent});
+		var optionalArgs = A2(
+			$elm$core$List$filterMap,
+			$elm$core$Basics$identity,
+			_List_fromArray(
+				[
+					A3($dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$optional, 'on_conflict', filledInOptionals.on_conflict, $author$project$Api$InputObject$encodePatient_on_conflict)
+				]));
+		return A4(
+			$dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForCompositeField,
+			'insert_Patient',
+			_Utils_ap(
+				optionalArgs,
+				_List_fromArray(
+					[
+						A3(
+						$dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$required,
+						'objects',
+						requiredArgs.objects,
+						$dillonkearns$elm_graphql$Graphql$Internal$Encode$list($author$project$Api$InputObject$encodePatient_insert_input))
+					])),
+			object_,
+			A2($elm$core$Basics$composeR, $elm$core$Basics$identity, $elm$json$Json$Decode$nullable));
+	});
 var $author$project$Page$Patients$addPatient = function (form) {
 	var patientinsert = {
 		code_postal: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Present(
@@ -10239,6 +10143,40 @@ var $author$project$Page$Patients$addPatientRequest = function (form) {
 var $author$project$Page$Patients$DeletePatientResponse = function (a) {
 	return {$: 'DeletePatientResponse', a: a};
 };
+var $author$project$Api$Mutation$DeletePatientRequiredArguments = function (where_) {
+	return {where_: where_};
+};
+var $author$project$Api$InputObject$buildInt_comparison_exp = function (fillOptionals) {
+	var optionals = fillOptionals(
+		{eq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, gt_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, gte_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, in_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, is_null_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, lt_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, lte_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, neq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, nin_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent});
+	return {eq_: optionals.eq_, gt_: optionals.gt_, gte_: optionals.gte_, in_: optionals.in_, is_null_: optionals.is_null_, lt_: optionals.lt_, lte_: optionals.lte_, neq_: optionals.neq_, nin_: optionals.nin_};
+};
+var $author$project$Api$InputObject$Patient_bool_exp = function (a) {
+	return {$: 'Patient_bool_exp', a: a};
+};
+var $author$project$Api$InputObject$buildPatient_bool_exp = function (fillOptionals) {
+	var optionals = fillOptionals(
+		{and_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, code_postal: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, consultations: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, date_de_naissance: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, genre: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, id_patient: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, moyen_de_decouverte: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, nom: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, not_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, numero_rue: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, or_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, patient_Professions: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, pays: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, prenom: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, rue: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, ville: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent});
+	return $author$project$Api$InputObject$Patient_bool_exp(
+		{and_: optionals.and_, code_postal: optionals.code_postal, consultations: optionals.consultations, date_de_naissance: optionals.date_de_naissance, genre: optionals.genre, id_patient: optionals.id_patient, moyen_de_decouverte: optionals.moyen_de_decouverte, nom: optionals.nom, not_: optionals.not_, numero_rue: optionals.numero_rue, or_: optionals.or_, patient_Professions: optionals.patient_Professions, pays: optionals.pays, prenom: optionals.prenom, rue: optionals.rue, ville: optionals.ville});
+};
+var $author$project$Api$InputObject$buildString_comparison_exp = function (fillOptionals) {
+	var optionals = fillOptionals(
+		{eq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, gt_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, gte_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, ilike_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, in_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, is_null_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, like_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, lt_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, lte_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, neq_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, nilike_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, nin_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, nlike_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, nsimilar_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent, similar_: $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent});
+	return {eq_: optionals.eq_, gt_: optionals.gt_, gte_: optionals.gte_, ilike_: optionals.ilike_, in_: optionals.in_, is_null_: optionals.is_null_, like_: optionals.like_, lt_: optionals.lt_, lte_: optionals.lte_, neq_: optionals.neq_, nilike_: optionals.nilike_, nin_: optionals.nin_, nlike_: optionals.nlike_, nsimilar_: optionals.nsimilar_, similar_: optionals.similar_};
+};
+var $author$project$Api$Mutation$delete_Patient = F2(
+	function (requiredArgs, object_) {
+		return A4(
+			$dillonkearns$elm_graphql$Graphql$Internal$Builder$Object$selectionForCompositeField,
+			'delete_Patient',
+			_List_fromArray(
+				[
+					A3($dillonkearns$elm_graphql$Graphql$Internal$Builder$Argument$required, 'where', requiredArgs.where_, $author$project$Api$InputObject$encodePatient_bool_exp)
+				]),
+			object_,
+			A2($elm$core$Basics$composeR, $elm$core$Basics$identity, $elm$json$Json$Decode$nullable));
+	});
 var $author$project$Page$Patients$deletePatient = function (patient) {
 	var reqArgs = $author$project$Api$Mutation$DeletePatientRequiredArguments(
 		$author$project$Api$InputObject$buildPatient_bool_exp(
@@ -16355,36 +16293,15 @@ var $author$project$Page$Calendar$failureView = function (error) {
 			$mdgriffith$elm_ui$Element$text(
 				$author$project$Page$Calendar$errorToString(error))));
 };
-var $author$project$Page$Calendar$AddPatient = {$: 'AddPatient'};
-var $author$project$Page$Calendar$EnteredCode_postal = function (a) {
-	return {$: 'EnteredCode_postal', a: a};
+var $author$project$Page$Calendar$AddAgenda = {$: 'AddAgenda'};
+var $author$project$Page$Calendar$EnteredDate = function (a) {
+	return {$: 'EnteredDate', a: a};
 };
-var $author$project$Page$Calendar$EnteredDate_de_naissance = function (a) {
-	return {$: 'EnteredDate_de_naissance', a: a};
+var $author$project$Page$Calendar$EnteredHeure = function (a) {
+	return {$: 'EnteredHeure', a: a};
 };
-var $author$project$Page$Calendar$EnteredGenre = function (a) {
-	return {$: 'EnteredGenre', a: a};
-};
-var $author$project$Page$Calendar$EnteredMoyen_de_decouverte = function (a) {
-	return {$: 'EnteredMoyen_de_decouverte', a: a};
-};
-var $author$project$Page$Calendar$EnteredNom = function (a) {
-	return {$: 'EnteredNom', a: a};
-};
-var $author$project$Page$Calendar$EnteredNumero_de_rue = function (a) {
-	return {$: 'EnteredNumero_de_rue', a: a};
-};
-var $author$project$Page$Calendar$EnteredPays = function (a) {
-	return {$: 'EnteredPays', a: a};
-};
-var $author$project$Page$Calendar$EnteredPrenom = function (a) {
-	return {$: 'EnteredPrenom', a: a};
-};
-var $author$project$Page$Calendar$EnteredRue = function (a) {
-	return {$: 'EnteredRue', a: a};
-};
-var $author$project$Page$Calendar$EnteredVille = function (a) {
-	return {$: 'EnteredVille', a: a};
+var $author$project$Page$Calendar$DeleteAgenda = function (a) {
+	return {$: 'DeleteAgenda', a: a};
 };
 var $mdgriffith$elm_ui$Internal$Model$Button = {$: 'Button'};
 var $mdgriffith$elm_ui$Internal$Model$Describe = function (a) {
@@ -16528,30 +16445,178 @@ var $mdgriffith$elm_ui$Element$Input$button = F2(
 				_List_fromArray(
 					[label])));
 	});
-var $mdgriffith$elm_ui$Internal$Model$AsColumn = {$: 'AsColumn'};
-var $mdgriffith$elm_ui$Internal$Model$asColumn = $mdgriffith$elm_ui$Internal$Model$AsColumn;
-var $mdgriffith$elm_ui$Element$column = F2(
-	function (attrs, children) {
-		return A4(
-			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asColumn,
-			$mdgriffith$elm_ui$Internal$Model$div,
-			A2(
-				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentTop + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentLeft)),
-				A2(
-					$elm$core$List$cons,
-					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-					A2(
-						$elm$core$List$cons,
-						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-						attrs))),
-			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
-	});
+var $mdgriffith$elm_ui$Element$Background$color = function (clr) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$bgColor,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Colored,
+			'bg-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
+			'background-color',
+			clr));
+};
+var $mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$fontColor,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Colored,
+			'fc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(fontColor),
+			'color',
+			fontColor));
+};
 var $mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
 	return {$: 'Fill', a: a};
 };
 var $mdgriffith$elm_ui$Element$fill = $mdgriffith$elm_ui$Internal$Model$Fill(1);
+var $mdgriffith$elm_ui$Internal$Model$Focus = {$: 'Focus'};
+var $mdgriffith$elm_ui$Internal$Model$PseudoSelector = F2(
+	function (a, b) {
+		return {$: 'PseudoSelector', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$focus = $mdgriffith$elm_ui$Internal$Flag$flag(31);
+var $mdgriffith$elm_ui$Internal$Model$Nearby = F2(
+	function (a, b) {
+		return {$: 'Nearby', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Model$TransformComponent = F2(
+	function (a, b) {
+		return {$: 'TransformComponent', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Model$Empty = {$: 'Empty'};
+var $mdgriffith$elm_ui$Internal$Model$map = F2(
+	function (fn, el) {
+		switch (el.$) {
+			case 'Styled':
+				var styled = el.a;
+				return $mdgriffith$elm_ui$Internal$Model$Styled(
+					{
+						html: F2(
+							function (add, context) {
+								return A2(
+									$elm$virtual_dom$VirtualDom$map,
+									fn,
+									A2(styled.html, add, context));
+							}),
+						styles: styled.styles
+					});
+			case 'Unstyled':
+				var html = el.a;
+				return $mdgriffith$elm_ui$Internal$Model$Unstyled(
+					A2(
+						$elm$core$Basics$composeL,
+						$elm$virtual_dom$VirtualDom$map(fn),
+						html));
+			case 'Text':
+				var str = el.a;
+				return $mdgriffith$elm_ui$Internal$Model$Text(str);
+			default:
+				return $mdgriffith$elm_ui$Internal$Model$Empty;
+		}
+	});
+var $elm$virtual_dom$VirtualDom$mapAttribute = _VirtualDom_mapAttribute;
+var $mdgriffith$elm_ui$Internal$Model$mapAttrFromStyle = F2(
+	function (fn, attr) {
+		switch (attr.$) {
+			case 'NoAttribute':
+				return $mdgriffith$elm_ui$Internal$Model$NoAttribute;
+			case 'Describe':
+				var description = attr.a;
+				return $mdgriffith$elm_ui$Internal$Model$Describe(description);
+			case 'AlignX':
+				var x = attr.a;
+				return $mdgriffith$elm_ui$Internal$Model$AlignX(x);
+			case 'AlignY':
+				var y = attr.a;
+				return $mdgriffith$elm_ui$Internal$Model$AlignY(y);
+			case 'Width':
+				var x = attr.a;
+				return $mdgriffith$elm_ui$Internal$Model$Width(x);
+			case 'Height':
+				var x = attr.a;
+				return $mdgriffith$elm_ui$Internal$Model$Height(x);
+			case 'Class':
+				var x = attr.a;
+				var y = attr.b;
+				return A2($mdgriffith$elm_ui$Internal$Model$Class, x, y);
+			case 'StyleClass':
+				var flag = attr.a;
+				var style = attr.b;
+				return A2($mdgriffith$elm_ui$Internal$Model$StyleClass, flag, style);
+			case 'Nearby':
+				var location = attr.a;
+				var elem = attr.b;
+				return A2(
+					$mdgriffith$elm_ui$Internal$Model$Nearby,
+					location,
+					A2($mdgriffith$elm_ui$Internal$Model$map, fn, elem));
+			case 'Attr':
+				var htmlAttr = attr.a;
+				return $mdgriffith$elm_ui$Internal$Model$Attr(
+					A2($elm$virtual_dom$VirtualDom$mapAttribute, fn, htmlAttr));
+			default:
+				var fl = attr.a;
+				var trans = attr.b;
+				return A2($mdgriffith$elm_ui$Internal$Model$TransformComponent, fl, trans);
+		}
+	});
+var $mdgriffith$elm_ui$Internal$Model$removeNever = function (style) {
+	return A2($mdgriffith$elm_ui$Internal$Model$mapAttrFromStyle, $elm$core$Basics$never, style);
+};
+var $mdgriffith$elm_ui$Internal$Model$unwrapDecsHelper = F2(
+	function (attr, _v0) {
+		var styles = _v0.a;
+		var trans = _v0.b;
+		var _v1 = $mdgriffith$elm_ui$Internal$Model$removeNever(attr);
+		switch (_v1.$) {
+			case 'StyleClass':
+				var style = _v1.b;
+				return _Utils_Tuple2(
+					A2($elm$core$List$cons, style, styles),
+					trans);
+			case 'TransformComponent':
+				var flag = _v1.a;
+				var component = _v1.b;
+				return _Utils_Tuple2(
+					styles,
+					A2($mdgriffith$elm_ui$Internal$Model$composeTransformation, trans, component));
+			default:
+				return _Utils_Tuple2(styles, trans);
+		}
+	});
+var $mdgriffith$elm_ui$Internal$Model$unwrapDecorations = function (attrs) {
+	var _v0 = A3(
+		$elm$core$List$foldl,
+		$mdgriffith$elm_ui$Internal$Model$unwrapDecsHelper,
+		_Utils_Tuple2(_List_Nil, $mdgriffith$elm_ui$Internal$Model$Untransformed),
+		attrs);
+	var styles = _v0.a;
+	var transform = _v0.b;
+	return A2(
+		$elm$core$List$cons,
+		$mdgriffith$elm_ui$Internal$Model$Transform(transform),
+		styles);
+};
+var $mdgriffith$elm_ui$Element$focused = function (decs) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$focus,
+		A2(
+			$mdgriffith$elm_ui$Internal$Model$PseudoSelector,
+			$mdgriffith$elm_ui$Internal$Model$Focus,
+			$mdgriffith$elm_ui$Internal$Model$unwrapDecorations(decs)));
+};
+var $mdgriffith$elm_ui$Internal$Model$Hover = {$: 'Hover'};
+var $mdgriffith$elm_ui$Internal$Flag$hover = $mdgriffith$elm_ui$Internal$Flag$flag(33);
+var $mdgriffith$elm_ui$Element$mouseOver = function (decs) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$hover,
+		A2(
+			$mdgriffith$elm_ui$Internal$Model$PseudoSelector,
+			$mdgriffith$elm_ui$Internal$Model$Hover,
+			$mdgriffith$elm_ui$Internal$Model$unwrapDecorations(decs)));
+};
 var $mdgriffith$elm_ui$Internal$Model$PaddingStyle = F5(
 	function (a, b, c, d, e) {
 		return {$: 'PaddingStyle', a: a, b: b, c: c, d: d, e: e};
@@ -16569,13 +16634,13 @@ var $mdgriffith$elm_ui$Element$padding = function (x) {
 			x,
 			x));
 };
-var $author$project$Page$Calendar$DeletePatient = function (a) {
-	return {$: 'DeletePatient', a: a};
-};
+var $mdgriffith$elm_ui$Element$rgb255 = F3(
+	function (red, green, blue) {
+		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, red / 255, green / 255, blue / 255, 1);
+	});
 var $mdgriffith$elm_ui$Element$InternalColumn = function (a) {
 	return {$: 'InternalColumn', a: a};
 };
-var $mdgriffith$elm_ui$Internal$Model$Empty = {$: 'Empty'};
 var $mdgriffith$elm_ui$Internal$Model$GridPosition = function (a) {
 	return {$: 'GridPosition', a: a};
 };
@@ -16801,6 +16866,17 @@ var $mdgriffith$elm_ui$Element$table = F2(
 				data: config.data
 			});
 	});
+var $mdgriffith$elm_ui$Internal$Flag$borderColor = $mdgriffith$elm_ui$Internal$Flag$flag(28);
+var $mdgriffith$elm_ui$Element$Border$color = function (clr) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$borderColor,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$Colored,
+			'bc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
+			'border-color',
+			clr));
+};
 var $mdgriffith$elm_ui$Internal$Model$BorderWidth = F5(
 	function (a, b, c, d, e) {
 		return {$: 'BorderWidth', a: a, b: b, c: c, d: d, e: e};
@@ -16824,108 +16900,63 @@ var $author$project$Page$Calendar$tableField = function (data) {
 			[
 				$mdgriffith$elm_ui$Element$centerX,
 				$mdgriffith$elm_ui$Element$centerY,
-				$mdgriffith$elm_ui$Element$padding(25),
-				$mdgriffith$elm_ui$Element$Border$width(1)
+				$mdgriffith$elm_ui$Element$padding(23),
+				$mdgriffith$elm_ui$Element$Border$width(1),
+				$mdgriffith$elm_ui$Element$Background$color(
+				A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196)),
+				$mdgriffith$elm_ui$Element$Border$color(
+				A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61))
 			]),
 		$mdgriffith$elm_ui$Element$text(data));
 };
-var $author$project$Page$Calendar$patientTable = function (response) {
+var $author$project$Page$Calendar$agendaTable = function (response) {
+	var timeToString = function (_v1) {
+		var string = _v1.a;
+		return string;
+	};
+	var dateToString = function (_v0) {
+		var string = _v0.a;
+		return string;
+	};
 	return A2(
 		$mdgriffith$elm_ui$Element$table,
 		_List_fromArray(
 			[
 				$mdgriffith$elm_ui$Element$centerX,
 				$mdgriffith$elm_ui$Element$centerY,
-				$mdgriffith$elm_ui$Element$padding(10)
+				$mdgriffith$elm_ui$Element$padding(30),
+				$mdgriffith$elm_ui$Element$Background$color(
+				A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166))
 			]),
 		{
 			columns: _List_fromArray(
 				[
 					{
-					header: $author$project$Page$Calendar$tableField('Prénom'),
-					view: function (patient) {
-						return $author$project$Page$Calendar$tableField(patient.prenom);
-					},
-					width: $mdgriffith$elm_ui$Element$fill
-				},
-					{
-					header: $author$project$Page$Calendar$tableField('Nom'),
-					view: function (patient) {
-						return $author$project$Page$Calendar$tableField(patient.nom);
-					},
-					width: $mdgriffith$elm_ui$Element$fill
-				},
-					{
-					header: $author$project$Page$Calendar$tableField('Numéro de rue'),
-					view: function (patient) {
+					header: $author$project$Page$Calendar$tableField('Date'),
+					view: function (agenda) {
 						return $author$project$Page$Calendar$tableField(
-							$elm$core$String$fromInt(patient.numero_rue));
+							dateToString(agenda.date));
 					},
 					width: $mdgriffith$elm_ui$Element$fill
 				},
 					{
-					header: $author$project$Page$Calendar$tableField('Rue'),
-					view: function (patient) {
-						return $author$project$Page$Calendar$tableField(patient.rue);
-					},
-					width: $mdgriffith$elm_ui$Element$fill
-				},
-					{
-					header: $author$project$Page$Calendar$tableField('Code postal'),
-					view: function (patient) {
+					header: $author$project$Page$Calendar$tableField('Heure'),
+					view: function (agenda) {
 						return $author$project$Page$Calendar$tableField(
-							$elm$core$String$fromInt(patient.code_postal));
+							timeToString(agenda.heure));
 					},
 					width: $mdgriffith$elm_ui$Element$fill
 				},
 					{
-					header: $author$project$Page$Calendar$tableField('Ville'),
-					view: function (patient) {
-						return $author$project$Page$Calendar$tableField(patient.ville);
-					},
-					width: $mdgriffith$elm_ui$Element$fill
-				},
-					{
-					header: $author$project$Page$Calendar$tableField('Pays'),
-					view: function (patient) {
-						return $author$project$Page$Calendar$tableField(patient.pays);
-					},
-					width: $mdgriffith$elm_ui$Element$fill
-				},
-					{
-					header: $author$project$Page$Calendar$tableField('Date de naissance'),
-					view: function (patient) {
-						return $author$project$Page$Calendar$tableField(
-							function () {
-								var _v0 = patient.date_de_naissance;
-								var date = _v0.a;
-								return date;
-							}());
-					},
-					width: $mdgriffith$elm_ui$Element$fill
-				},
-					{
-					header: $author$project$Page$Calendar$tableField('Genre'),
-					view: function (patient) {
-						return $author$project$Page$Calendar$tableField(patient.genre);
-					},
-					width: $mdgriffith$elm_ui$Element$fill
-				},
-					{
-					header: $author$project$Page$Calendar$tableField('Moyen de découverte'),
-					view: function (patient) {
-						return $author$project$Page$Calendar$tableField(patient.moyen_de_decouverte);
-					},
-					width: $mdgriffith$elm_ui$Element$fill
-				},
-					{
-					header: $author$project$Page$Calendar$tableField('Supprimer patient'),
-					view: function (patient) {
+					header: $author$project$Page$Calendar$tableField('Supprimer agenda'),
+					view: function (agenda) {
 						return A2(
 							$mdgriffith$elm_ui$Element$Input$button,
 							_List_fromArray(
 								[
-									$mdgriffith$elm_ui$Element$Border$width(1)
+									$mdgriffith$elm_ui$Element$Border$width(1),
+									$mdgriffith$elm_ui$Element$Background$color(
+									A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
 								]),
 							{
 								label: A2(
@@ -16934,11 +16965,25 @@ var $author$project$Page$Calendar$patientTable = function (response) {
 										[
 											$mdgriffith$elm_ui$Element$centerX,
 											$mdgriffith$elm_ui$Element$centerY,
-											$mdgriffith$elm_ui$Element$padding(25)
+											$mdgriffith$elm_ui$Element$padding(23),
+											$mdgriffith$elm_ui$Element$Font$color(
+											A3($mdgriffith$elm_ui$Element$rgb255, 255, 50, 50)),
+											$mdgriffith$elm_ui$Element$mouseOver(
+											_List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$Font$color(
+													A3($mdgriffith$elm_ui$Element$rgb255, 200, 30, 30))
+												])),
+											$mdgriffith$elm_ui$Element$focused(
+											_List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$Font$color(
+													A3($mdgriffith$elm_ui$Element$rgb255, 100, 10, 10))
+												]))
 										]),
 									$mdgriffith$elm_ui$Element$text('X')),
 								onPress: $elm$core$Maybe$Just(
-									$author$project$Page$Calendar$DeletePatient(patient))
+									$author$project$Page$Calendar$DeleteAgenda(agenda))
 							});
 					},
 					width: $mdgriffith$elm_ui$Element$fill
@@ -16947,6 +16992,85 @@ var $author$project$Page$Calendar$patientTable = function (response) {
 			data: response
 		});
 };
+var $mdgriffith$elm_ui$Internal$Model$AsColumn = {$: 'AsColumn'};
+var $mdgriffith$elm_ui$Internal$Model$asColumn = $mdgriffith$elm_ui$Internal$Model$AsColumn;
+var $mdgriffith$elm_ui$Element$column = F2(
+	function (attrs, children) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asColumn,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentTop + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentLeft)),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+						attrs))),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
+	});
+var $elm$html$Html$Attributes$alt = $elm$html$Html$Attributes$stringProperty('alt');
+var $elm$html$Html$Attributes$src = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
+};
+var $mdgriffith$elm_ui$Element$image = F2(
+	function (attrs, _v0) {
+		var src = _v0.src;
+		var description = _v0.description;
+		var imageAttributes = A2(
+			$elm$core$List$filter,
+			function (a) {
+				switch (a.$) {
+					case 'Width':
+						return true;
+					case 'Height':
+						return true;
+					default:
+						return false;
+				}
+			},
+			attrs);
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asEl,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.imageContainer),
+				attrs),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(
+				_List_fromArray(
+					[
+						A4(
+						$mdgriffith$elm_ui$Internal$Model$element,
+						$mdgriffith$elm_ui$Internal$Model$asEl,
+						$mdgriffith$elm_ui$Internal$Model$NodeName('img'),
+						_Utils_ap(
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Internal$Model$Attr(
+									$elm$html$Html$Attributes$src(src)),
+									$mdgriffith$elm_ui$Internal$Model$Attr(
+									$elm$html$Html$Attributes$alt(description))
+								]),
+							imageAttributes),
+						$mdgriffith$elm_ui$Internal$Model$Unkeyed(_List_Nil))
+					])));
+	});
+var $mdgriffith$elm_ui$Internal$Model$Max = F2(
+	function (a, b) {
+		return {$: 'Max', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Element$maximum = F2(
+	function (i, l) {
+		return A2($mdgriffith$elm_ui$Internal$Model$Max, i, l);
+	});
 var $mdgriffith$elm_ui$Internal$Flag$borderRound = $mdgriffith$elm_ui$Internal$Flag$flag(17);
 var $mdgriffith$elm_ui$Element$Border$rounded = function (radius) {
 	return A2(
@@ -16978,25 +17102,6 @@ var $mdgriffith$elm_ui$Element$row = F2(
 						attrs))),
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
-var $mdgriffith$elm_ui$Internal$Model$SpacingStyle = F3(
-	function (a, b, c) {
-		return {$: 'SpacingStyle', a: a, b: b, c: c};
-	});
-var $mdgriffith$elm_ui$Internal$Flag$spacing = $mdgriffith$elm_ui$Internal$Flag$flag(3);
-var $mdgriffith$elm_ui$Internal$Model$spacingName = F2(
-	function (x, y) {
-		return 'spacing-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y)));
-	});
-var $mdgriffith$elm_ui$Element$spacing = function (x) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$spacing,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$SpacingStyle,
-			A2($mdgriffith$elm_ui$Internal$Model$spacingName, x, x),
-			x,
-			x));
-};
 var $mdgriffith$elm_ui$Element$Input$Above = {$: 'Above'};
 var $mdgriffith$elm_ui$Element$Input$Label = F3(
 	function (a, b, c) {
@@ -17084,10 +17189,6 @@ var $mdgriffith$elm_ui$Element$Input$autofill = A2(
 	$mdgriffith$elm_ui$Internal$Model$Attr,
 	$elm$html$Html$Attributes$attribute('autocomplete'));
 var $mdgriffith$elm_ui$Internal$Model$Behind = {$: 'Behind'};
-var $mdgriffith$elm_ui$Internal$Model$Nearby = F2(
-	function (a, b) {
-		return {$: 'Nearby', a: a, b: b};
-	});
 var $mdgriffith$elm_ui$Element$createNearby = F2(
 	function (loc, element) {
 		if (element.$ === 'Empty') {
@@ -17102,10 +17203,6 @@ var $mdgriffith$elm_ui$Element$behindContent = function (element) {
 var $mdgriffith$elm_ui$Internal$Model$MoveY = function (a) {
 	return {$: 'MoveY', a: a};
 };
-var $mdgriffith$elm_ui$Internal$Model$TransformComponent = F2(
-	function (a, b) {
-		return {$: 'TransformComponent', a: a, b: b};
-	});
 var $mdgriffith$elm_ui$Internal$Flag$moveY = $mdgriffith$elm_ui$Internal$Flag$flag(26);
 var $mdgriffith$elm_ui$Element$moveUp = function (y) {
 	return A2(
@@ -17140,27 +17237,6 @@ var $mdgriffith$elm_ui$Element$Input$calcMoveToCompensateForPadding = function (
 };
 var $mdgriffith$elm_ui$Internal$Flag$overflow = $mdgriffith$elm_ui$Internal$Flag$flag(20);
 var $mdgriffith$elm_ui$Element$clip = A2($mdgriffith$elm_ui$Internal$Model$Class, $mdgriffith$elm_ui$Internal$Flag$overflow, $mdgriffith$elm_ui$Internal$Style$classes.clip);
-var $mdgriffith$elm_ui$Element$Background$color = function (clr) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$bgColor,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Colored,
-			'bg-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
-			'background-color',
-			clr));
-};
-var $mdgriffith$elm_ui$Internal$Flag$borderColor = $mdgriffith$elm_ui$Internal$Flag$flag(28);
-var $mdgriffith$elm_ui$Element$Border$color = function (clr) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$borderColor,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Colored,
-			'bc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(clr),
-			'border-color',
-			clr));
-};
 var $mdgriffith$elm_ui$Element$rgb = F3(
 	function (r, g, b) {
 		return A4($mdgriffith$elm_ui$Internal$Model$Rgba, r, g, b, 1);
@@ -17189,6 +17265,25 @@ var $mdgriffith$elm_ui$Element$paddingXY = F2(
 				x));
 	});
 var $mdgriffith$elm_ui$Element$Input$defaultTextPadding = A2($mdgriffith$elm_ui$Element$paddingXY, 12, 12);
+var $mdgriffith$elm_ui$Internal$Model$SpacingStyle = F3(
+	function (a, b, c) {
+		return {$: 'SpacingStyle', a: a, b: b, c: c};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$spacing = $mdgriffith$elm_ui$Internal$Flag$flag(3);
+var $mdgriffith$elm_ui$Internal$Model$spacingName = F2(
+	function (x, y) {
+		return 'spacing-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y)));
+	});
+var $mdgriffith$elm_ui$Element$spacing = function (x) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$spacing,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$SpacingStyle,
+			A2($mdgriffith$elm_ui$Internal$Model$spacingName, x, x),
+			x,
+			x));
+};
 var $mdgriffith$elm_ui$Element$Input$white = A3($mdgriffith$elm_ui$Element$rgb, 1, 1, 1);
 var $mdgriffith$elm_ui$Element$Input$defaultTextBoxStyle = _List_fromArray(
 	[
@@ -17620,16 +17715,6 @@ var $mdgriffith$elm_ui$Element$alpha = function (o) {
 			transparency));
 };
 var $mdgriffith$elm_ui$Element$Input$charcoal = A3($mdgriffith$elm_ui$Element$rgb, 136 / 255, 138 / 255, 133 / 255);
-var $mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$fontColor,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$Colored,
-			'fc-' + $mdgriffith$elm_ui$Internal$Model$formatColorClass(fontColor),
-			'color',
-			fontColor));
-};
 var $mdgriffith$elm_ui$Element$rgba = $mdgriffith$elm_ui$Internal$Model$Rgba;
 var $mdgriffith$elm_ui$Element$Input$renderPlaceholder = F3(
 	function (_v0, forPlaceholder, on) {
@@ -17924,10 +18009,7 @@ var $author$project$Page$Calendar$textInput = F4(
 	function (msg, formtext, placeholder, label) {
 		return A2(
 			$mdgriffith$elm_ui$Element$Input$text,
-			_List_fromArray(
-				[
-					$mdgriffith$elm_ui$Element$spacing(10)
-				]),
+			_List_Nil,
 			{
 				label: A2(
 					$mdgriffith$elm_ui$Element$Input$labelAbove,
@@ -17943,10 +18025,10 @@ var $author$project$Page$Calendar$textInput = F4(
 			});
 	});
 var $author$project$Page$Calendar$successView = F3(
-	function (response, form, addPatientData) {
+	function (response, form, addAgendaData) {
 		var error = function () {
-			if (addPatientData.$ === 'Failure') {
-				var graphqlError = addPatientData.a;
+			if (addAgendaData.$ === 'Failure') {
+				var graphqlError = addAgendaData.a;
 				return $mdgriffith$elm_ui$Element$text(
 					$author$project$Page$Calendar$errorToString(graphqlError));
 			} else {
@@ -17962,30 +18044,60 @@ var $author$project$Page$Calendar$successView = F3(
 					[
 						$mdgriffith$elm_ui$Element$centerX,
 						$mdgriffith$elm_ui$Element$centerY,
-						$mdgriffith$elm_ui$Element$spacing(30)
+						$mdgriffith$elm_ui$Element$Background$color(
+						A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216)),
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
 					]),
 				_List_fromArray(
 					[
-						$author$project$Page$Calendar$patientTable(response),
 						A2(
 						$mdgriffith$elm_ui$Element$row,
 						_List_fromArray(
 							[
-								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-								$mdgriffith$elm_ui$Element$padding(10)
+								$mdgriffith$elm_ui$Element$centerX,
+								$mdgriffith$elm_ui$Element$padding(50)
 							]),
 						_List_fromArray(
 							[
-								A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredPrenom, form.prenom, 'Prénom', 'Prénom'),
-								A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredNom, form.nom, 'Nom', 'Nom'),
-								A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredNumero_de_rue, form.numero_de_rue, 'Numéro de rue', 'Numéro de rue'),
-								A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredRue, form.rue, 'Rue', 'Rue'),
-								A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredCode_postal, form.code_postal, 'Code postal', 'Code postal'),
-								A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredVille, form.ville, 'Ville', 'Ville'),
-								A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredPays, form.pays, 'Pays', 'Pays'),
-								A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredDate_de_naissance, form.date_de_naissance, 'YYYY-MM-DD', 'Date de naissance'),
-								A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredGenre, form.genre, 'Genre', 'Genre'),
-								A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredMoyen_de_decouverte, form.moyen_de_decouverte, 'Moyen de découverte', 'Moyen de découverte')
+								A2(
+								$mdgriffith$elm_ui$Element$image,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$width(
+										A2($mdgriffith$elm_ui$Element$maximum, 80, $mdgriffith$elm_ui$Element$fill))
+									]),
+								{description: 'logo', src: 'logo.png'}),
+								A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$Font$color(
+										A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
+										$mdgriffith$elm_ui$Element$Font$size(80)
+									]),
+								$mdgriffith$elm_ui$Element$text('Votre liste de patients')),
+								A2(
+								$mdgriffith$elm_ui$Element$image,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$width(
+										A2($mdgriffith$elm_ui$Element$maximum, 80, $mdgriffith$elm_ui$Element$fill))
+									]),
+								{description: 'logo', src: 'logo.png'})
+							])),
+						$author$project$Page$Calendar$agendaTable(response),
+						A2(
+						$mdgriffith$elm_ui$Element$row,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$centerX,
+								$mdgriffith$elm_ui$Element$padding(30)
+							]),
+						_List_fromArray(
+							[
+								A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredDate, form.date, 'AAAA-MM-JJ', 'Date'),
+								A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredHeure, form.heure, 'HH:MM:SS+TZ', 'Heure')
 							])),
 						A2(
 						$mdgriffith$elm_ui$Element$Input$button,
@@ -17997,16 +18109,36 @@ var $author$project$Page$Calendar$successView = F3(
 								_List_fromArray(
 									[
 										$mdgriffith$elm_ui$Element$padding(30),
-										$mdgriffith$elm_ui$Element$Border$width(1),
-										$mdgriffith$elm_ui$Element$Border$rounded(5)
+										$mdgriffith$elm_ui$Element$Border$rounded(5),
+										$mdgriffith$elm_ui$Element$Background$color(
+										A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
+										$mdgriffith$elm_ui$Element$mouseOver(
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$Background$color(
+												A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
+											])),
+										$mdgriffith$elm_ui$Element$focused(
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$Background$color(
+												A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61)),
+												$mdgriffith$elm_ui$Element$Font$color(
+												A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216))
+											]))
 									]),
-								$mdgriffith$elm_ui$Element$text('Add a new Patient')),
-							onPress: $elm$core$Maybe$Just($author$project$Page$Calendar$AddPatient)
+								$mdgriffith$elm_ui$Element$text('Ajouter un nouvel agenda')),
+							onPress: $elm$core$Maybe$Just($author$project$Page$Calendar$AddAgenda)
 						}),
 						A2(
 						$mdgriffith$elm_ui$Element$el,
 						_List_fromArray(
-							[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+							[
+								$mdgriffith$elm_ui$Element$centerX,
+								$mdgriffith$elm_ui$Element$centerY,
+								$mdgriffith$elm_ui$Element$Font$color(
+								A3($mdgriffith$elm_ui$Element$rgb255, 200, 30, 30))
+							]),
 						error)
 					])));
 	});
@@ -18019,7 +18151,7 @@ var $author$project$Page$Calendar$view = function (model) {
 					var datamodel = model.a;
 					return datamodel;
 				}();
-				var _v0 = data.getPatientsData;
+				var _v0 = data.getAgendaData;
 				switch (_v0.$) {
 					case 'NotAsked':
 						return A2(
@@ -18029,7 +18161,7 @@ var $author$project$Page$Calendar$view = function (model) {
 								$mdgriffith$elm_ui$Element$el,
 								_List_fromArray(
 									[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-								$mdgriffith$elm_ui$Element$text('The request was not made :/')));
+								$mdgriffith$elm_ui$Element$text('La requête n\'a pas abouti :/')));
 					case 'Loading':
 						return A2(
 							$mdgriffith$elm_ui$Element$layout,
@@ -18038,10 +18170,10 @@ var $author$project$Page$Calendar$view = function (model) {
 								$mdgriffith$elm_ui$Element$el,
 								_List_fromArray(
 									[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-								$mdgriffith$elm_ui$Element$text('A proper expression')));
+								$mdgriffith$elm_ui$Element$text('Nous importons vos données, merci de patienter.')));
 					case 'Success':
 						var response = _v0.a;
-						return A3($author$project$Page$Calendar$successView, response, data.form, data.addPatientData);
+						return A3($author$project$Page$Calendar$successView, response, data.form, data.addAgendaData);
 					default:
 						var error = _v0.a;
 						return $author$project$Page$Calendar$failureView(error);
@@ -18133,8 +18265,12 @@ var $author$project$Page$Patients$tableField = function (data) {
 			[
 				$mdgriffith$elm_ui$Element$centerX,
 				$mdgriffith$elm_ui$Element$centerY,
-				$mdgriffith$elm_ui$Element$padding(25),
-				$mdgriffith$elm_ui$Element$Border$width(1)
+				$mdgriffith$elm_ui$Element$padding(23),
+				$mdgriffith$elm_ui$Element$Border$width(1),
+				$mdgriffith$elm_ui$Element$Background$color(
+				A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196)),
+				$mdgriffith$elm_ui$Element$Border$color(
+				A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61))
 			]),
 		$mdgriffith$elm_ui$Element$text(data));
 };
@@ -18145,7 +18281,9 @@ var $author$project$Page$Patients$patientTable = function (response) {
 			[
 				$mdgriffith$elm_ui$Element$centerX,
 				$mdgriffith$elm_ui$Element$centerY,
-				$mdgriffith$elm_ui$Element$padding(10)
+				$mdgriffith$elm_ui$Element$padding(30),
+				$mdgriffith$elm_ui$Element$Background$color(
+				A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166))
 			]),
 		{
 			columns: _List_fromArray(
@@ -18234,7 +18372,9 @@ var $author$project$Page$Patients$patientTable = function (response) {
 							$mdgriffith$elm_ui$Element$Input$button,
 							_List_fromArray(
 								[
-									$mdgriffith$elm_ui$Element$Border$width(1)
+									$mdgriffith$elm_ui$Element$Border$width(1),
+									$mdgriffith$elm_ui$Element$Background$color(
+									A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
 								]),
 							{
 								label: A2(
@@ -18243,7 +18383,21 @@ var $author$project$Page$Patients$patientTable = function (response) {
 										[
 											$mdgriffith$elm_ui$Element$centerX,
 											$mdgriffith$elm_ui$Element$centerY,
-											$mdgriffith$elm_ui$Element$padding(25)
+											$mdgriffith$elm_ui$Element$padding(23),
+											$mdgriffith$elm_ui$Element$Font$color(
+											A3($mdgriffith$elm_ui$Element$rgb255, 255, 50, 50)),
+											$mdgriffith$elm_ui$Element$mouseOver(
+											_List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$Font$color(
+													A3($mdgriffith$elm_ui$Element$rgb255, 200, 30, 30))
+												])),
+											$mdgriffith$elm_ui$Element$focused(
+											_List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$Font$color(
+													A3($mdgriffith$elm_ui$Element$rgb255, 100, 10, 10))
+												]))
 										]),
 									$mdgriffith$elm_ui$Element$text('X')),
 								onPress: $elm$core$Maybe$Just(
@@ -18298,17 +18452,54 @@ var $author$project$Page$Patients$successView = F3(
 					[
 						$mdgriffith$elm_ui$Element$centerX,
 						$mdgriffith$elm_ui$Element$centerY,
-						$mdgriffith$elm_ui$Element$spacing(30)
+						$mdgriffith$elm_ui$Element$Background$color(
+						A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216)),
+						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
 					]),
 				_List_fromArray(
 					[
+						A2(
+						$mdgriffith$elm_ui$Element$row,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$centerX,
+								$mdgriffith$elm_ui$Element$padding(50)
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$mdgriffith$elm_ui$Element$image,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$width(
+										A2($mdgriffith$elm_ui$Element$maximum, 80, $mdgriffith$elm_ui$Element$fill))
+									]),
+								{description: 'logo', src: 'logo.png'}),
+								A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$Font$color(
+										A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
+										$mdgriffith$elm_ui$Element$Font$size(80)
+									]),
+								$mdgriffith$elm_ui$Element$text('Votre liste de patients')),
+								A2(
+								$mdgriffith$elm_ui$Element$image,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$width(
+										A2($mdgriffith$elm_ui$Element$maximum, 80, $mdgriffith$elm_ui$Element$fill))
+									]),
+								{description: 'logo', src: 'logo.png'})
+							])),
 						$author$project$Page$Patients$patientTable(response),
 						A2(
 						$mdgriffith$elm_ui$Element$row,
 						_List_fromArray(
 							[
 								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-								$mdgriffith$elm_ui$Element$padding(10)
+								$mdgriffith$elm_ui$Element$padding(30)
 							]),
 						_List_fromArray(
 							[
@@ -18319,7 +18510,7 @@ var $author$project$Page$Patients$successView = F3(
 								A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredCode_postal, form.code_postal, 'Code postal', 'Code postal'),
 								A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredVille, form.ville, 'Ville', 'Ville'),
 								A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredPays, form.pays, 'Pays', 'Pays'),
-								A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredDate_de_naissance, form.date_de_naissance, 'YYYY-MM-DD', 'Date de naissance'),
+								A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredDate_de_naissance, form.date_de_naissance, 'AAAA-MM-JJ', 'Date de naissance'),
 								A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredGenre, form.genre, 'Genre', 'Genre'),
 								A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredMoyen_de_decouverte, form.moyen_de_decouverte, 'Moyen de découverte', 'Moyen de découverte')
 							])),
@@ -18333,16 +18524,36 @@ var $author$project$Page$Patients$successView = F3(
 								_List_fromArray(
 									[
 										$mdgriffith$elm_ui$Element$padding(30),
-										$mdgriffith$elm_ui$Element$Border$width(1),
-										$mdgriffith$elm_ui$Element$Border$rounded(5)
+										$mdgriffith$elm_ui$Element$Border$rounded(5),
+										$mdgriffith$elm_ui$Element$Background$color(
+										A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
+										$mdgriffith$elm_ui$Element$mouseOver(
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$Background$color(
+												A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
+											])),
+										$mdgriffith$elm_ui$Element$focused(
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$Background$color(
+												A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61)),
+												$mdgriffith$elm_ui$Element$Font$color(
+												A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216))
+											]))
 									]),
-								$mdgriffith$elm_ui$Element$text('Add a new Patient')),
+								$mdgriffith$elm_ui$Element$text('Ajouter un nouveau patient')),
 							onPress: $elm$core$Maybe$Just($author$project$Page$Patients$AddPatient)
 						}),
 						A2(
 						$mdgriffith$elm_ui$Element$el,
 						_List_fromArray(
-							[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+							[
+								$mdgriffith$elm_ui$Element$centerX,
+								$mdgriffith$elm_ui$Element$centerY,
+								$mdgriffith$elm_ui$Element$Font$color(
+								A3($mdgriffith$elm_ui$Element$rgb255, 200, 30, 30))
+							]),
 						error)
 					])));
 	});
@@ -18365,7 +18576,7 @@ var $author$project$Page$Patients$view = function (model) {
 								$mdgriffith$elm_ui$Element$el,
 								_List_fromArray(
 									[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-								$mdgriffith$elm_ui$Element$text('The request was not made :/')));
+								$mdgriffith$elm_ui$Element$text('La requête n\'a pas abouti')));
 					case 'Loading':
 						return A2(
 							$mdgriffith$elm_ui$Element$layout,
@@ -18374,7 +18585,7 @@ var $author$project$Page$Patients$view = function (model) {
 								$mdgriffith$elm_ui$Element$el,
 								_List_fromArray(
 									[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-								$mdgriffith$elm_ui$Element$text('A proper expression')));
+								$mdgriffith$elm_ui$Element$text('Nous importons vos données, merci de patienter')));
 					case 'Success':
 						var response = _v0.a;
 						return A3($author$project$Page$Patients$successView, response, data.form, data.addPatientData);

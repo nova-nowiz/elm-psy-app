@@ -141,11 +141,10 @@ update msg model =
                         Nothing ->
                             ( Model { data | addAgendaData = addAgendaData }, Cmd.none )
 
-
                 Failure error ->
                     ( Model { data | addAgendaData = addAgendaData }, Cmd.none )
 
-         DeleteAgendaResponse deleteAgendaData ->
+        DeleteAgendaResponse deleteAgendaData ->
             case deleteAgendaData of
                 NotAsked ->
                     ( model, Cmd.none )
@@ -175,7 +174,7 @@ update msg model =
 
                 Failure error ->
                     ( Model { data | deleteAgendaData = deleteAgendaData }, Cmd.none )
-                    
+
         AddAgenda ->
             ( model, addAgendaRequest data.form )
 
@@ -232,9 +231,9 @@ view model =
     }
 
 
-successView : List Agenda -> Form -> AddAgendaData-> Html Msg
+successView : List Agenda -> Form -> AddAgendaData -> Html Msg
 successView response form addAgendaData =
-     let
+    let
         error =
             case addAgendaData of
                 Failure graphqlError ->
@@ -246,26 +245,30 @@ successView response form addAgendaData =
                     text ""
     in
     layout [] <|
-        column [ centerX, centerY,  Background.color (rgb255 214 217 216), height fill,width fill]
-            [ row[ centerX,padding 50]
-                [image [ width (fill |> maximum 80)] {src ="logo.png", description = "logo"}
-                ,el [ Font.color (rgb255 111 144 166), Font.size (80)] (text "Votre liste de patients")
-                ,image [ width (fill |> maximum 80)] {src ="logo.png", description = "logo"}
+        column [ centerX, centerY, Background.color (rgb255 214 217 216), height fill, width fill ]
+            [ row [ centerX, padding 50 ]
+                [ image [ width (fill |> maximum 80) ] { src = "logo.png", description = "logo" }
+                , el [ Font.color (rgb255 111 144 166), Font.size 80 ] (text "Votre liste de patients")
+                , image [ width (fill |> maximum 80) ] { src = "logo.png", description = "logo" }
                 ]
-            ,agendaTable response
+            , agendaTable response
             , row [ centerX, padding 30 ]
                 [ textInput EnteredDate form.date "AAAA-MM-JJ" "Date"
                 , textInput EnteredHeure form.heure "HH:MM:SS+TZ" "Heure"
                 ]
             , Input.button [ centerX, centerY ]
                 { label =
-                    el [ padding 30,  Border.rounded 5, Background.color (rgb255 111 144 166) 
-                        ,mouseOver [Background.color (rgb255 140 179 196)],
-                        Element.focused [ Background.color (rgb255 24 52 61), Font.color(rgb255 214 217 216)]]
+                    el
+                        [ padding 30
+                        , Border.rounded 5
+                        , Background.color (rgb255 111 144 166)
+                        , mouseOver [ Background.color (rgb255 140 179 196) ]
+                        , Element.focused [ Background.color (rgb255 24 52 61), Font.color (rgb255 214 217 216) ]
+                        ]
                         (text "Ajouter un nouvel agenda")
                 , onPress = Just AddAgenda
                 }
-            , el [ centerX, centerY ,Font.color(rgb255 200 30 30)]
+            , el [ centerX, centerY, Font.color (rgb255 200 30 30) ]
                 error
             ]
 
@@ -289,7 +292,7 @@ agendaTable response =
         timeToString =
             \(Timetz string) -> string
     in
-    table [ centerX, centerY, padding 30, Background.color (rgb255  111 144 166)]
+    table [ centerX, centerY, padding 30, Background.color (rgb255 111 144 166) ]
         { data = response
         , columns =
             [ { header = tableField "Date"
@@ -299,27 +302,41 @@ agendaTable response =
             , { header = tableField "Heure"
               , width = fill
               , view = \agenda -> tableField (timeToString agenda.heure)
-              }, { header = tableField "Supprimer agenda"
+              }
+            , { header = tableField "Supprimer agenda"
               , width = fill
               , view =
                     \agenda ->
-                        Input.button [ Border.width 1, Background.color (rgb255 140 179 196) ] --X background X
+                        Input.button [ Border.width 1, Background.color (rgb255 140 179 196) ]
+                            --X background X
                             { onPress = Just (DeleteAgenda agenda)
-                            , label = el [ centerX, centerY, padding 23
-                            , Font.color (rgb255 255 50 50) 
-                            ,mouseOver [Font.color (rgb255 200 30 30)]
-                            ,Element.focused [ Font.color (rgb255 100 10 10)] ] (text "X")
+                            , label =
+                                el
+                                    [ centerX
+                                    , centerY
+                                    , padding 23
+                                    , Font.color (rgb255 255 50 50)
+                                    , mouseOver [ Font.color (rgb255 200 30 30) ]
+                                    , Element.focused [ Font.color (rgb255 100 10 10) ]
+                                    ]
+                                    (text "X")
                             }
               }
-            
             ]
         }
 
 
 tableField : String -> Element Msg
 tableField data =
-    el [ centerX, centerY, padding 23, Border.width 1, Background.color (rgb255 140 179 196) 
-    ,Border.color(rgb255 24 52 61)]  (text data)
+    el
+        [ centerX
+        , centerY
+        , padding 23
+        , Border.width 1
+        , Background.color (rgb255 140 179 196)
+        , Border.color (rgb255 24 52 61)
+        ]
+        (text data)
 
 
 failureView : Graphql.Http.Error parsedData -> Html Msg
@@ -475,8 +492,9 @@ deleteAgendaRequest agenda =
         |> Graphql.Http.mutationRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
         |> Graphql.Http.withHeader "x-hasura-admin-secret" "Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU"
         |> Graphql.Http.send (RemoteData.fromResult >> DeleteAgendaResponse)
-        
-        
+
+
+
 -- EXPORT
 
 
