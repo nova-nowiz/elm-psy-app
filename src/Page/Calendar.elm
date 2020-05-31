@@ -201,7 +201,7 @@ subscriptions model =
 -- VIEW
 
 
-view : Model -> Document Msg
+view : Model -> { title : String, body : List (Element Msg) }
 view model =
     { title = "Calendar"
     , body =
@@ -213,14 +213,12 @@ view model =
           in
           case data.getAgendaData of
             NotAsked ->
-                layout [] <|
-                    el [ centerX, centerY ]
-                        (text "La requête n'a pas abouti :/")
+                el [ centerX, centerY ]
+                    (text "La requête n'a pas abouti :/")
 
             Loading ->
-                layout [] <|
-                    el [ centerX, centerY ]
-                        (text "Nous importons vos données, merci de patienter.")
+                el [ centerX, centerY ]
+                    (text "Nous importons vos données, merci de patienter.")
 
             Success response ->
                 successView response data.form data.addAgendaData
@@ -231,7 +229,7 @@ view model =
     }
 
 
-successView : List Agenda -> Form -> AddAgendaData -> Html Msg
+successView : List Agenda -> Form -> AddAgendaData -> Element Msg
 successView response form addAgendaData =
     let
         error =
@@ -244,33 +242,32 @@ successView response form addAgendaData =
                 _ ->
                     text ""
     in
-    layout [] <|
-        column [ centerX, centerY, Background.color (rgb255 214 217 216), height fill, width fill ]
-            [ row [ centerX, padding 50 ]
-                [ image [ width (fill |> maximum 80) ] { src = "logo.png", description = "logo" }
-                , el [ Font.color (rgb255 111 144 166), Font.size 80 ] (text "Votre liste de patients")
-                , image [ width (fill |> maximum 80) ] { src = "logo.png", description = "logo" }
-                ]
-            , agendaTable response
-            , row [ centerX, padding 30 ]
-                [ textInput EnteredDate form.date "AAAA-MM-JJ" "Date"
-                , textInput EnteredHeure form.heure "HH:MM:SS+TZ" "Heure"
-                ]
-            , Input.button [ centerX, centerY ]
-                { label =
-                    el
-                        [ padding 30
-                        , Border.rounded 5
-                        , Background.color (rgb255 111 144 166)
-                        , mouseOver [ Background.color (rgb255 140 179 196) ]
-                        , Element.focused [ Background.color (rgb255 24 52 61), Font.color (rgb255 214 217 216) ]
-                        ]
-                        (text "Ajouter un nouvel agenda")
-                , onPress = Just AddAgenda
-                }
-            , el [ centerX, centerY, Font.color (rgb255 200 30 30) ]
-                error
+    column [ centerX, centerY, Background.color (rgb255 214 217 216), height fill, width fill ]
+        [ row [ centerX, padding 50 ]
+            [ image [ width (fill |> maximum 80) ] { src = "logo.png", description = "logo" }
+            , el [ Font.color (rgb255 111 144 166), Font.size 80 ] (text "Votre liste de patients")
+            , image [ width (fill |> maximum 80) ] { src = "logo.png", description = "logo" }
             ]
+        , agendaTable response
+        , row [ centerX, padding 30 ]
+            [ textInput EnteredDate form.date "AAAA-MM-JJ" "Date"
+            , textInput EnteredHeure form.heure "HH:MM:SS+TZ" "Heure"
+            ]
+        , Input.button [ centerX, centerY ]
+            { label =
+                el
+                    [ padding 30
+                    , Border.rounded 5
+                    , Background.color (rgb255 111 144 166)
+                    , mouseOver [ Background.color (rgb255 140 179 196) ]
+                    , Element.focused [ Background.color (rgb255 24 52 61), Font.color (rgb255 214 217 216) ]
+                    ]
+                    (text "Ajouter un nouvel agenda")
+            , onPress = Just AddAgenda
+            }
+        , el [ centerX, centerY, Font.color (rgb255 200 30 30) ]
+            error
+        ]
 
 
 textInput : (String -> Msg) -> String -> String -> String -> Element Msg
@@ -339,14 +336,13 @@ tableField data =
         (text data)
 
 
-failureView : Graphql.Http.Error parsedData -> Html Msg
+failureView : Graphql.Http.Error parsedData -> Element Msg
 failureView error =
-    layout [] <|
-        el [ centerX, centerY ]
-            (error
-                |> errorToString
-                |> text
-            )
+    el [ centerX, centerY ]
+        (error
+            |> errorToString
+            |> text
+        )
 
 
 errorToString : Graphql.Http.Error parsedData -> String

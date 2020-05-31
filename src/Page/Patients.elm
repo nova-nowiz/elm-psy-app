@@ -249,7 +249,7 @@ subscriptions model =
 -- VIEW
 
 
-view : Model -> Document Msg
+view : Model -> { title : String, body : List (Element Msg) }
 view model =
     { title = "Patients"
     , body =
@@ -261,14 +261,12 @@ view model =
           in
           case data.getPatientsData of
             NotAsked ->
-                layout [] <|
-                    el [ centerX, centerY ]
-                        (text "The request was not made :/")
+                el [ centerX, centerY ]
+                    (text "La requête n'a pas abouti")
 
             Loading ->
-                layout [] <|
-                    el [ centerX, centerY ]
-                        (text "A proper expression")
+                el [ centerX, centerY ]
+                    (text "Nous importons vos données, merci de patienter")
 
             Success response ->
                 successView response data.form data.addPatientData
@@ -279,7 +277,7 @@ view model =
     }
 
 
-successView : List Patient -> Form -> AddPatientData -> Html Msg
+successView : List Patient -> Form -> AddPatientData -> Element Msg
 successView response form addPatientData =
     let
         error =
@@ -292,30 +290,42 @@ successView response form addPatientData =
                 _ ->
                     text ""
     in
-    layout [] <|
-        column [ centerX, centerY, spacing 30 ]
-            [ patientTable response
-            , row [ width fill, padding 10 ]
-                [ textInput EnteredPrenom form.prenom "Prénom" "Prénom"
-                , textInput EnteredNom form.nom "Nom" "Nom"
-                , textInput EnteredNumero_de_rue form.numero_de_rue "Numéro de rue" "Numéro de rue"
-                , textInput EnteredRue form.rue "Rue" "Rue"
-                , textInput EnteredCode_postal form.code_postal "Code postal" "Code postal"
-                , textInput EnteredVille form.ville "Ville" "Ville"
-                , textInput EnteredPays form.pays "Pays" "Pays"
-                , textInput EnteredDate_de_naissance form.date_de_naissance "YYYY-MM-DD" "Date de naissance"
-                , textInput EnteredGenre form.genre "Genre" "Genre"
-                , textInput EnteredMoyen_de_decouverte form.moyen_de_decouverte "Moyen de découverte" "Moyen de découverte"
-                ]
-            , Input.button [ centerX, centerY ]
-                { label =
-                    el [ padding 30, Border.width 1, Border.rounded 5 ]
-                        (text "Add a new Patient")
-                , onPress = Just AddPatient
-                }
-            , el [ centerX, centerY ]
-                error
+    column [ centerX, centerY, Background.color (rgb255 214 217 216), height fill ]
+        --behind form
+        [ row [ centerX, padding 50 ]
+            [ image [ width (fill |> maximum 80) ] { src = "logo.png", description = "logo" }
+            , el [ Font.color (rgb255 111 144 166), Font.size 80 ] (text "Votre liste de patients")
+            , image [ width (fill |> maximum 80) ] { src = "logo.png", description = "logo" }
             ]
+        , patientTable response
+        , row [ width fill, padding 30 ]
+            --form
+            [ textInput EnteredPrenom form.prenom "Prénom" "Prénom"
+            , textInput EnteredNom form.nom "Nom" "Nom"
+            , textInput EnteredNumero_de_rue form.numero_de_rue "Numéro de rue" "Numéro de rue"
+            , textInput EnteredRue form.rue "Rue" "Rue"
+            , textInput EnteredCode_postal form.code_postal "Code postal" "Code postal"
+            , textInput EnteredVille form.ville "Ville" "Ville"
+            , textInput EnteredPays form.pays "Pays" "Pays"
+            , textInput EnteredDate_de_naissance form.date_de_naissance "AAAA-MM-JJ" "Date de naissance"
+            , textInput EnteredGenre form.genre "Genre" "Genre"
+            , textInput EnteredMoyen_de_decouverte form.moyen_de_decouverte "Moyen de découverte" "Moyen de découverte"
+            ]
+        , Input.button [ centerX, centerY ]
+            { label =
+                el
+                    [ padding 30
+                    , Border.rounded 5
+                    , Background.color (rgb255 111 144 166)
+                    , mouseOver [ Background.color (rgb255 140 179 196) ]
+                    , Element.focused [ Background.color (rgb255 24 52 61), Font.color (rgb255 214 217 216) ]
+                    ]
+                    (text "Ajouter un nouveau patient")
+            , onPress = Just AddPatient
+            }
+        , el [ centerX, centerY, Font.color (rgb255 200 30 30) ]
+            error
+        ]
 
 
 textInput : (String -> Msg) -> String -> String -> String -> Element Msg
@@ -330,7 +340,8 @@ textInput msg formtext placeholder label =
 
 patientTable : List Patient -> Element Msg
 patientTable response =
-    table [ centerX, centerY, padding 10 ]
+    table [ centerX, centerY, padding 30, Background.color (rgb255 111 144 166) ]
+        --color behind table
         { data = response
         , columns =
             [ { header = tableField "Prénom"
@@ -383,9 +394,19 @@ patientTable response =
               , width = fill
               , view =
                     \patient ->
-                        Input.button [ Border.width 1 ]
+                        Input.button [ Border.width 1, Background.color (rgb255 140 179 196) ]
+                            --X background X
                             { onPress = Just (DeletePatient patient)
-                            , label = el [ centerX, centerY, padding 25 ] (text "X")
+                            , label =
+                                el
+                                    [ centerX
+                                    , centerY
+                                    , padding 23
+                                    , Font.color (rgb255 255 50 50)
+                                    , mouseOver [ Font.color (rgb255 200 30 30) ]
+                                    , Element.focused [ Font.color (rgb255 100 10 10) ]
+                                    ]
+                                    (text "X")
                             }
               }
             ]
@@ -394,17 +415,28 @@ patientTable response =
 
 tableField : String -> Element Msg
 tableField data =
-    el [ centerX, centerY, padding 25, Border.width 1 ] (text data)
+    el
+        [ centerX
+        , centerY
+        , padding 23
+        , Border.width 1
+        , Background.color (rgb255 140 179 196)
+        , Border.color (rgb255 24 52 61)
+        ]
+        (text data)
 
 
-failureView : Graphql.Http.Error parsedData -> Html Msg
+
+--color table
+
+
+failureView : Graphql.Http.Error parsedData -> Element Msg
 failureView error =
-    layout [] <|
-        el [ centerX, centerY ]
-            (error
-                |> errorToString
-                |> text
-            )
+    el [ centerX, centerY ]
+        (error
+            |> errorToString
+            |> text
+        )
 
 
 errorToString : Graphql.Http.Error parsedData -> String

@@ -15932,6 +15932,30 @@ var $mdgriffith$elm_ui$Element$el = F2(
 				_List_fromArray(
 					[child])));
 	});
+var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
+var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
+var $mdgriffith$elm_ui$Internal$Model$FontSize = function (a) {
+	return {$: 'FontSize', a: a};
+};
+var $mdgriffith$elm_ui$Internal$Model$StyleClass = F2(
+	function (a, b) {
+		return {$: 'StyleClass', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$fontSize = $mdgriffith$elm_ui$Internal$Flag$flag(4);
+var $mdgriffith$elm_ui$Element$Font$size = function (i) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$fontSize,
+		$mdgriffith$elm_ui$Internal$Model$FontSize(i));
+};
+var $mdgriffith$elm_ui$Internal$Model$Text = function (a) {
+	return {$: 'Text', a: a};
+};
+var $mdgriffith$elm_ui$Element$text = function (content) {
+	return $mdgriffith$elm_ui$Internal$Model$Text(content);
+};
+var $mdgriffith$elm_ui$Internal$Model$AsColumn = {$: 'AsColumn'};
+var $mdgriffith$elm_ui$Internal$Model$asColumn = $mdgriffith$elm_ui$Internal$Model$AsColumn;
 var $mdgriffith$elm_ui$Internal$Model$Attr = function (a) {
 	return {$: 'Attr', a: a};
 };
@@ -15939,6 +15963,28 @@ var $mdgriffith$elm_ui$Internal$Model$htmlClass = function (cls) {
 	return $mdgriffith$elm_ui$Internal$Model$Attr(
 		$elm$html$Html$Attributes$class(cls));
 };
+var $mdgriffith$elm_ui$Element$column = F2(
+	function (attrs, children) {
+		return A4(
+			$mdgriffith$elm_ui$Internal$Model$element,
+			$mdgriffith$elm_ui$Internal$Model$asColumn,
+			$mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				$elm$core$List$cons,
+				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentTop + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentLeft)),
+				A2(
+					$elm$core$List$cons,
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
+					A2(
+						$elm$core$List$cons,
+						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
+						attrs))),
+			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
+	});
+var $mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
+	return {$: 'Fill', a: a};
+};
+var $mdgriffith$elm_ui$Element$fill = $mdgriffith$elm_ui$Internal$Model$Fill(1);
 var $mdgriffith$elm_ui$Internal$Model$OnlyDynamic = F2(
 	function (a, b) {
 		return {$: 'OnlyDynamic', a: a, b: b};
@@ -16095,21 +16141,13 @@ var $mdgriffith$elm_ui$Internal$Model$FontFamily = F2(
 	function (a, b) {
 		return {$: 'FontFamily', a: a, b: b};
 	});
-var $mdgriffith$elm_ui$Internal$Model$FontSize = function (a) {
-	return {$: 'FontSize', a: a};
-};
 var $mdgriffith$elm_ui$Internal$Model$SansSerif = {$: 'SansSerif'};
-var $mdgriffith$elm_ui$Internal$Model$StyleClass = F2(
-	function (a, b) {
-		return {$: 'StyleClass', a: a, b: b};
-	});
 var $mdgriffith$elm_ui$Internal$Model$Typeface = function (a) {
 	return {$: 'Typeface', a: a};
 };
 var $mdgriffith$elm_ui$Internal$Flag$bgColor = $mdgriffith$elm_ui$Internal$Flag$flag(8);
 var $mdgriffith$elm_ui$Internal$Flag$fontColor = $mdgriffith$elm_ui$Internal$Flag$flag(14);
 var $mdgriffith$elm_ui$Internal$Flag$fontFamily = $mdgriffith$elm_ui$Internal$Flag$flag(5);
-var $mdgriffith$elm_ui$Internal$Flag$fontSize = $mdgriffith$elm_ui$Internal$Flag$flag(4);
 var $mdgriffith$elm_ui$Internal$Model$formatColorClass = function (_v0) {
 	var red = _v0.a;
 	var green = _v0.b;
@@ -16216,39 +16254,35 @@ var $mdgriffith$elm_ui$Element$layoutWith = F3(
 	});
 var $mdgriffith$elm_ui$Element$layout = $mdgriffith$elm_ui$Element$layoutWith(
 	{options: _List_Nil});
-var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
-var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
-var $mdgriffith$elm_ui$Element$Font$size = function (i) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$fontSize,
-		$mdgriffith$elm_ui$Internal$Model$FontSize(i));
-};
-var $mdgriffith$elm_ui$Internal$Model$Text = function (a) {
-	return {$: 'Text', a: a};
-};
-var $mdgriffith$elm_ui$Element$text = function (content) {
-	return $mdgriffith$elm_ui$Internal$Model$Text(content);
-};
 var $author$project$Page$viewHeader = F2(
 	function (page, maybeCred) {
 		return A2(
-			$mdgriffith$elm_ui$Element$layout,
+			$mdgriffith$elm_ui$Element$el,
 			_List_Nil,
-			A2(
-				$mdgriffith$elm_ui$Element$el,
-				_List_Nil,
-				$mdgriffith$elm_ui$Element$text('Todo: Here, there should be one or two buttons depending on if the user is a psy or not')));
+			$mdgriffith$elm_ui$Element$text('Todo: Here, there should be one or two buttons depending on if the user is a psy or not'));
 	});
 var $author$project$Page$view = F3(
 	function (maybeCred, page, _v0) {
 		var title = _v0.title;
 		var body = _v0.body;
 		return {
-			body: A2(
-				$elm$core$List$cons,
-				A2($author$project$Page$viewHeader, page, maybeCred),
-				body),
+			body: _List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$layout,
+					_List_Nil,
+					A2(
+						$mdgriffith$elm_ui$Element$column,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+								$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+							]),
+						A2(
+							$elm$core$List$cons,
+							A2($author$project$Page$viewHeader, page, maybeCred),
+							body)))
+				]),
 			title: title + ' - PsyApp'
 		};
 	});
@@ -16284,14 +16318,11 @@ var $author$project$Page$Calendar$errorToString = function (errorData) {
 };
 var $author$project$Page$Calendar$failureView = function (error) {
 	return A2(
-		$mdgriffith$elm_ui$Element$layout,
-		_List_Nil,
-		A2(
-			$mdgriffith$elm_ui$Element$el,
-			_List_fromArray(
-				[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-			$mdgriffith$elm_ui$Element$text(
-				$author$project$Page$Calendar$errorToString(error))));
+		$mdgriffith$elm_ui$Element$el,
+		_List_fromArray(
+			[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+		$mdgriffith$elm_ui$Element$text(
+			$author$project$Page$Calendar$errorToString(error)));
 };
 var $author$project$Page$Calendar$AddAgenda = {$: 'AddAgenda'};
 var $author$project$Page$Calendar$EnteredDate = function (a) {
@@ -16465,10 +16496,6 @@ var $mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
 			'color',
 			fontColor));
 };
-var $mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
-	return {$: 'Fill', a: a};
-};
-var $mdgriffith$elm_ui$Element$fill = $mdgriffith$elm_ui$Internal$Model$Fill(1);
 var $mdgriffith$elm_ui$Internal$Model$Focus = {$: 'Focus'};
 var $mdgriffith$elm_ui$Internal$Model$PseudoSelector = F2(
 	function (a, b) {
@@ -16992,26 +17019,6 @@ var $author$project$Page$Calendar$agendaTable = function (response) {
 			data: response
 		});
 };
-var $mdgriffith$elm_ui$Internal$Model$AsColumn = {$: 'AsColumn'};
-var $mdgriffith$elm_ui$Internal$Model$asColumn = $mdgriffith$elm_ui$Internal$Model$AsColumn;
-var $mdgriffith$elm_ui$Element$column = F2(
-	function (attrs, children) {
-		return A4(
-			$mdgriffith$elm_ui$Internal$Model$element,
-			$mdgriffith$elm_ui$Internal$Model$asColumn,
-			$mdgriffith$elm_ui$Internal$Model$div,
-			A2(
-				$elm$core$List$cons,
-				$mdgriffith$elm_ui$Internal$Model$htmlClass($mdgriffith$elm_ui$Internal$Style$classes.contentTop + (' ' + $mdgriffith$elm_ui$Internal$Style$classes.contentLeft)),
-				A2(
-					$elm$core$List$cons,
-					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$shrink),
-					A2(
-						$elm$core$List$cons,
-						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$shrink),
-						attrs))),
-			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
-	});
 var $elm$html$Html$Attributes$alt = $elm$html$Html$Attributes$stringProperty('alt');
 var $elm$html$Html$Attributes$src = function (url) {
 	return A2(
@@ -18036,111 +18043,108 @@ var $author$project$Page$Calendar$successView = F3(
 			}
 		}();
 		return A2(
-			$mdgriffith$elm_ui$Element$layout,
-			_List_Nil,
-			A2(
-				$mdgriffith$elm_ui$Element$column,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$centerX,
-						$mdgriffith$elm_ui$Element$centerY,
-						$mdgriffith$elm_ui$Element$Background$color(
-						A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216)),
-						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
-						$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$mdgriffith$elm_ui$Element$row,
-						_List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$centerX,
-								$mdgriffith$elm_ui$Element$padding(50)
-							]),
-						_List_fromArray(
-							[
-								A2(
-								$mdgriffith$elm_ui$Element$image,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$width(
-										A2($mdgriffith$elm_ui$Element$maximum, 80, $mdgriffith$elm_ui$Element$fill))
-									]),
-								{description: 'logo', src: 'logo.png'}),
-								A2(
-								$mdgriffith$elm_ui$Element$el,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$Font$color(
-										A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
-										$mdgriffith$elm_ui$Element$Font$size(80)
-									]),
-								$mdgriffith$elm_ui$Element$text('Votre liste de patients')),
-								A2(
-								$mdgriffith$elm_ui$Element$image,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$width(
-										A2($mdgriffith$elm_ui$Element$maximum, 80, $mdgriffith$elm_ui$Element$fill))
-									]),
-								{description: 'logo', src: 'logo.png'})
-							])),
-						$author$project$Page$Calendar$agendaTable(response),
-						A2(
-						$mdgriffith$elm_ui$Element$row,
-						_List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$centerX,
-								$mdgriffith$elm_ui$Element$padding(30)
-							]),
-						_List_fromArray(
-							[
-								A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredDate, form.date, 'AAAA-MM-JJ', 'Date'),
-								A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredHeure, form.heure, 'HH:MM:SS+TZ', 'Heure')
-							])),
-						A2(
-						$mdgriffith$elm_ui$Element$Input$button,
-						_List_fromArray(
-							[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-						{
-							label: A2(
-								$mdgriffith$elm_ui$Element$el,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$padding(30),
-										$mdgriffith$elm_ui$Element$Border$rounded(5),
-										$mdgriffith$elm_ui$Element$Background$color(
-										A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
-										$mdgriffith$elm_ui$Element$mouseOver(
-										_List_fromArray(
-											[
-												$mdgriffith$elm_ui$Element$Background$color(
-												A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
-											])),
-										$mdgriffith$elm_ui$Element$focused(
-										_List_fromArray(
-											[
-												$mdgriffith$elm_ui$Element$Background$color(
-												A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61)),
-												$mdgriffith$elm_ui$Element$Font$color(
-												A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216))
-											]))
-									]),
-								$mdgriffith$elm_ui$Element$text('Ajouter un nouvel agenda')),
-							onPress: $elm$core$Maybe$Just($author$project$Page$Calendar$AddAgenda)
-						}),
-						A2(
-						$mdgriffith$elm_ui$Element$el,
-						_List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$centerX,
-								$mdgriffith$elm_ui$Element$centerY,
-								$mdgriffith$elm_ui$Element$Font$color(
-								A3($mdgriffith$elm_ui$Element$rgb255, 200, 30, 30))
-							]),
-						error)
-					])));
+			$mdgriffith$elm_ui$Element$column,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$centerX,
+					$mdgriffith$elm_ui$Element$centerY,
+					$mdgriffith$elm_ui$Element$Background$color(
+					A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216)),
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$centerX,
+							$mdgriffith$elm_ui$Element$padding(50)
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$mdgriffith$elm_ui$Element$image,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width(
+									A2($mdgriffith$elm_ui$Element$maximum, 80, $mdgriffith$elm_ui$Element$fill))
+								]),
+							{description: 'logo', src: 'logo.png'}),
+							A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$Font$color(
+									A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
+									$mdgriffith$elm_ui$Element$Font$size(80)
+								]),
+							$mdgriffith$elm_ui$Element$text('Votre liste de patients')),
+							A2(
+							$mdgriffith$elm_ui$Element$image,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width(
+									A2($mdgriffith$elm_ui$Element$maximum, 80, $mdgriffith$elm_ui$Element$fill))
+								]),
+							{description: 'logo', src: 'logo.png'})
+						])),
+					$author$project$Page$Calendar$agendaTable(response),
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$centerX,
+							$mdgriffith$elm_ui$Element$padding(30)
+						]),
+					_List_fromArray(
+						[
+							A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredDate, form.date, 'AAAA-MM-JJ', 'Date'),
+							A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredHeure, form.heure, 'HH:MM:SS+TZ', 'Heure')
+						])),
+					A2(
+					$mdgriffith$elm_ui$Element$Input$button,
+					_List_fromArray(
+						[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+					{
+						label: A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$padding(30),
+									$mdgriffith$elm_ui$Element$Border$rounded(5),
+									$mdgriffith$elm_ui$Element$Background$color(
+									A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
+									$mdgriffith$elm_ui$Element$mouseOver(
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$Background$color(
+											A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
+										])),
+									$mdgriffith$elm_ui$Element$focused(
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$Background$color(
+											A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61)),
+											$mdgriffith$elm_ui$Element$Font$color(
+											A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216))
+										]))
+								]),
+							$mdgriffith$elm_ui$Element$text('Ajouter un nouvel agenda')),
+						onPress: $elm$core$Maybe$Just($author$project$Page$Calendar$AddAgenda)
+					}),
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$centerX,
+							$mdgriffith$elm_ui$Element$centerY,
+							$mdgriffith$elm_ui$Element$Font$color(
+							A3($mdgriffith$elm_ui$Element$rgb255, 200, 30, 30))
+						]),
+					error)
+				]));
 	});
 var $author$project$Page$Calendar$view = function (model) {
 	return {
@@ -18155,22 +18159,16 @@ var $author$project$Page$Calendar$view = function (model) {
 				switch (_v0.$) {
 					case 'NotAsked':
 						return A2(
-							$mdgriffith$elm_ui$Element$layout,
-							_List_Nil,
-							A2(
-								$mdgriffith$elm_ui$Element$el,
-								_List_fromArray(
-									[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-								$mdgriffith$elm_ui$Element$text('La requête n\'a pas abouti :/')));
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+							$mdgriffith$elm_ui$Element$text('La requête n\'a pas abouti :/'));
 					case 'Loading':
 						return A2(
-							$mdgriffith$elm_ui$Element$layout,
-							_List_Nil,
-							A2(
-								$mdgriffith$elm_ui$Element$el,
-								_List_fromArray(
-									[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-								$mdgriffith$elm_ui$Element$text('Nous importons vos données, merci de patienter.')));
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+							$mdgriffith$elm_ui$Element$text('Nous importons vos données, merci de patienter.'));
 					case 'Success':
 						var response = _v0.a;
 						return A3($author$project$Page$Calendar$successView, response, data.form, data.addAgendaData);
@@ -18215,14 +18213,11 @@ var $author$project$Page$Patients$errorToString = function (errorData) {
 };
 var $author$project$Page$Patients$failureView = function (error) {
 	return A2(
-		$mdgriffith$elm_ui$Element$layout,
-		_List_Nil,
-		A2(
-			$mdgriffith$elm_ui$Element$el,
-			_List_fromArray(
-				[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-			$mdgriffith$elm_ui$Element$text(
-				$author$project$Page$Patients$errorToString(error))));
+		$mdgriffith$elm_ui$Element$el,
+		_List_fromArray(
+			[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+		$mdgriffith$elm_ui$Element$text(
+			$author$project$Page$Patients$errorToString(error)));
 };
 var $author$project$Page$Patients$AddPatient = {$: 'AddPatient'};
 var $author$project$Page$Patients$EnteredCode_postal = function (a) {
@@ -18444,118 +18439,115 @@ var $author$project$Page$Patients$successView = F3(
 			}
 		}();
 		return A2(
-			$mdgriffith$elm_ui$Element$layout,
-			_List_Nil,
-			A2(
-				$mdgriffith$elm_ui$Element$column,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$centerX,
-						$mdgriffith$elm_ui$Element$centerY,
-						$mdgriffith$elm_ui$Element$Background$color(
-						A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216)),
-						$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$mdgriffith$elm_ui$Element$row,
-						_List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$centerX,
-								$mdgriffith$elm_ui$Element$padding(50)
-							]),
-						_List_fromArray(
-							[
-								A2(
-								$mdgriffith$elm_ui$Element$image,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$width(
-										A2($mdgriffith$elm_ui$Element$maximum, 80, $mdgriffith$elm_ui$Element$fill))
-									]),
-								{description: 'logo', src: 'logo.png'}),
-								A2(
-								$mdgriffith$elm_ui$Element$el,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$Font$color(
-										A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
-										$mdgriffith$elm_ui$Element$Font$size(80)
-									]),
-								$mdgriffith$elm_ui$Element$text('Votre liste de patients')),
-								A2(
-								$mdgriffith$elm_ui$Element$image,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$width(
-										A2($mdgriffith$elm_ui$Element$maximum, 80, $mdgriffith$elm_ui$Element$fill))
-									]),
-								{description: 'logo', src: 'logo.png'})
-							])),
-						$author$project$Page$Patients$patientTable(response),
-						A2(
-						$mdgriffith$elm_ui$Element$row,
-						_List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-								$mdgriffith$elm_ui$Element$padding(30)
-							]),
-						_List_fromArray(
-							[
-								A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredPrenom, form.prenom, 'Prénom', 'Prénom'),
-								A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredNom, form.nom, 'Nom', 'Nom'),
-								A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredNumero_de_rue, form.numero_de_rue, 'Numéro de rue', 'Numéro de rue'),
-								A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredRue, form.rue, 'Rue', 'Rue'),
-								A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredCode_postal, form.code_postal, 'Code postal', 'Code postal'),
-								A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredVille, form.ville, 'Ville', 'Ville'),
-								A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredPays, form.pays, 'Pays', 'Pays'),
-								A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredDate_de_naissance, form.date_de_naissance, 'AAAA-MM-JJ', 'Date de naissance'),
-								A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredGenre, form.genre, 'Genre', 'Genre'),
-								A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredMoyen_de_decouverte, form.moyen_de_decouverte, 'Moyen de découverte', 'Moyen de découverte')
-							])),
-						A2(
-						$mdgriffith$elm_ui$Element$Input$button,
-						_List_fromArray(
-							[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-						{
-							label: A2(
-								$mdgriffith$elm_ui$Element$el,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$padding(30),
-										$mdgriffith$elm_ui$Element$Border$rounded(5),
-										$mdgriffith$elm_ui$Element$Background$color(
-										A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
-										$mdgriffith$elm_ui$Element$mouseOver(
-										_List_fromArray(
-											[
-												$mdgriffith$elm_ui$Element$Background$color(
-												A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
-											])),
-										$mdgriffith$elm_ui$Element$focused(
-										_List_fromArray(
-											[
-												$mdgriffith$elm_ui$Element$Background$color(
-												A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61)),
-												$mdgriffith$elm_ui$Element$Font$color(
-												A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216))
-											]))
-									]),
-								$mdgriffith$elm_ui$Element$text('Ajouter un nouveau patient')),
-							onPress: $elm$core$Maybe$Just($author$project$Page$Patients$AddPatient)
-						}),
-						A2(
-						$mdgriffith$elm_ui$Element$el,
-						_List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$centerX,
-								$mdgriffith$elm_ui$Element$centerY,
-								$mdgriffith$elm_ui$Element$Font$color(
-								A3($mdgriffith$elm_ui$Element$rgb255, 200, 30, 30))
-							]),
-						error)
-					])));
+			$mdgriffith$elm_ui$Element$column,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$centerX,
+					$mdgriffith$elm_ui$Element$centerY,
+					$mdgriffith$elm_ui$Element$Background$color(
+					A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216)),
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill)
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$centerX,
+							$mdgriffith$elm_ui$Element$padding(50)
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$mdgriffith$elm_ui$Element$image,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width(
+									A2($mdgriffith$elm_ui$Element$maximum, 80, $mdgriffith$elm_ui$Element$fill))
+								]),
+							{description: 'logo', src: 'logo.png'}),
+							A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$Font$color(
+									A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
+									$mdgriffith$elm_ui$Element$Font$size(80)
+								]),
+							$mdgriffith$elm_ui$Element$text('Votre liste de patients')),
+							A2(
+							$mdgriffith$elm_ui$Element$image,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width(
+									A2($mdgriffith$elm_ui$Element$maximum, 80, $mdgriffith$elm_ui$Element$fill))
+								]),
+							{description: 'logo', src: 'logo.png'})
+						])),
+					$author$project$Page$Patients$patientTable(response),
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+							$mdgriffith$elm_ui$Element$padding(30)
+						]),
+					_List_fromArray(
+						[
+							A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredPrenom, form.prenom, 'Prénom', 'Prénom'),
+							A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredNom, form.nom, 'Nom', 'Nom'),
+							A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredNumero_de_rue, form.numero_de_rue, 'Numéro de rue', 'Numéro de rue'),
+							A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredRue, form.rue, 'Rue', 'Rue'),
+							A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredCode_postal, form.code_postal, 'Code postal', 'Code postal'),
+							A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredVille, form.ville, 'Ville', 'Ville'),
+							A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredPays, form.pays, 'Pays', 'Pays'),
+							A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredDate_de_naissance, form.date_de_naissance, 'AAAA-MM-JJ', 'Date de naissance'),
+							A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredGenre, form.genre, 'Genre', 'Genre'),
+							A4($author$project$Page$Patients$textInput, $author$project$Page$Patients$EnteredMoyen_de_decouverte, form.moyen_de_decouverte, 'Moyen de découverte', 'Moyen de découverte')
+						])),
+					A2(
+					$mdgriffith$elm_ui$Element$Input$button,
+					_List_fromArray(
+						[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+					{
+						label: A2(
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$padding(30),
+									$mdgriffith$elm_ui$Element$Border$rounded(5),
+									$mdgriffith$elm_ui$Element$Background$color(
+									A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
+									$mdgriffith$elm_ui$Element$mouseOver(
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$Background$color(
+											A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
+										])),
+									$mdgriffith$elm_ui$Element$focused(
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$Background$color(
+											A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61)),
+											$mdgriffith$elm_ui$Element$Font$color(
+											A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216))
+										]))
+								]),
+							$mdgriffith$elm_ui$Element$text('Ajouter un nouveau patient')),
+						onPress: $elm$core$Maybe$Just($author$project$Page$Patients$AddPatient)
+					}),
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$centerX,
+							$mdgriffith$elm_ui$Element$centerY,
+							$mdgriffith$elm_ui$Element$Font$color(
+							A3($mdgriffith$elm_ui$Element$rgb255, 200, 30, 30))
+						]),
+					error)
+				]));
 	});
 var $author$project$Page$Patients$view = function (model) {
 	return {
@@ -18570,22 +18562,16 @@ var $author$project$Page$Patients$view = function (model) {
 				switch (_v0.$) {
 					case 'NotAsked':
 						return A2(
-							$mdgriffith$elm_ui$Element$layout,
-							_List_Nil,
-							A2(
-								$mdgriffith$elm_ui$Element$el,
-								_List_fromArray(
-									[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-								$mdgriffith$elm_ui$Element$text('La requête n\'a pas abouti')));
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+							$mdgriffith$elm_ui$Element$text('La requête n\'a pas abouti'));
 					case 'Loading':
 						return A2(
-							$mdgriffith$elm_ui$Element$layout,
-							_List_Nil,
-							A2(
-								$mdgriffith$elm_ui$Element$el,
-								_List_fromArray(
-									[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-								$mdgriffith$elm_ui$Element$text('Nous importons vos données, merci de patienter')));
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+							$mdgriffith$elm_ui$Element$text('Nous importons vos données, merci de patienter'));
 					case 'Success':
 						var response = _v0.a;
 						return A3($author$project$Page$Patients$successView, response, data.form, data.addPatientData);
@@ -18623,10 +18609,7 @@ var $author$project$Main$view = function (model) {
 				{
 					body: _List_fromArray(
 						[
-							A2(
-							$mdgriffith$elm_ui$Element$layout,
-							_List_Nil,
-							$mdgriffith$elm_ui$Element$text(''))
+							$mdgriffith$elm_ui$Element$text('')
 						]),
 					title: ''
 				});
@@ -18639,17 +18622,14 @@ var $author$project$Main$view = function (model) {
 					body: _List_fromArray(
 						[
 							A2(
-							$mdgriffith$elm_ui$Element$layout,
-							_List_Nil,
-							A2(
-								$mdgriffith$elm_ui$Element$el,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$centerX,
-										$mdgriffith$elm_ui$Element$centerY,
-										$mdgriffith$elm_ui$Element$Font$size(30)
-									]),
-								$mdgriffith$elm_ui$Element$text('Page not found')))
+							$mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$centerX,
+									$mdgriffith$elm_ui$Element$centerY,
+									$mdgriffith$elm_ui$Element$Font$size(30)
+								]),
+							$mdgriffith$elm_ui$Element$text('Page not found'))
 						]),
 					title: ''
 				});

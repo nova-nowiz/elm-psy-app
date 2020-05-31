@@ -1,84 +1,73 @@
-module Main exposing (..)
+module Main exposing (main)
 
-import Api.InputObject exposing (..)
-import Api.Mutation as Mutation exposing (..)
-import Api.Object exposing (..)
-import Api.Object.Profession
-import Api.Object.Profession_mutation_response
-import Api.Query as Query exposing (..)
-import Api.Scalar exposing (..)
-import Api.ScalarCodecs
-import Browser
+import Api exposing (Cred)
+import Browser exposing (Document)
+import Browser.Navigation as Nav
+import Debug exposing (log)
 import Element exposing (..)
-import Element.Background as Background
-import Element.Border as Border
 import Element.Font as Font
-import Element.Input as Input
-import Element.Region as Region
-import Graphql.Http exposing (HttpError(..))
-import Graphql.Http.GraphqlError
-import Graphql.Operation exposing (RootMutation, RootQuery)
-import Graphql.OptionalArgument exposing (OptionalArgument(..))
-import Graphql.SelectionSet as SelectionSet exposing (SelectionSet, with)
 import Html exposing (Html)
-import Http
-import Json.Decode exposing (Decoder, field, string)
-import RemoteData exposing (RemoteData(..))
+import Json.Decode as Decode exposing (Value)
+import Page exposing (Page)
+import Page.Calendar as Calendar
+import Page.Patients as Patients
+import Route exposing (Route)
+import Session exposing (Session)
+import Url exposing (Url)
 
 
-
--- MAIN
-
-
-main =
-    Browser.element
-        { init = init
-        , update = update
-        , subscriptions = subscriptions
-        , view = view
-        }
+type Model
+    = Redirect Session
+    | NotFound Session
+    | Calendar Calendar.Model
+    | Patients Patients.Model
 
 
 
 -- MODEL
 
 
-type Model
-    = Model RawModel
+init : Maybe Cred -> Url -> Nav.Key -> ( Model, Cmd Msg )
+init maybeCred url navKey =
+    let
+        session =
+            Session.fromCred navKey maybeCred
+    in
+    changeRouteTo (Route.fromUrl url)
+        (Redirect session)
 
 
-type alias RawModel =
-    { getProfessionData : GetProfessionData
-    , addProfessionData : AddProfessionData
-    , form : Form
-    }
+
+-- VIEW
 
 
-type alias Form =
-    { profession : String
-    }
+view : Model -> Document Msg
+view model =
+    let
+        cred =
+            Session.cred (toSession model)
 
+        viewPage page toMsg config =
+            let
+                { title, body } =
+                    Page.view cred page config
+            in
+            { title = title
+            , body = List.map (Html.map toMsg) body
+            }
+    in
+    case model of
+        Redirect _ ->
+            Page.view cred Page.Other { title = "", body = [ text "" ] }
 
-emptyForm : Form
-emptyForm =
-    { profession = ""
-    }
+        NotFound _ ->
+            Page.view cred Page.Other { title = "", body = [ el [ centerX, centerY, Font.size 30 ] (text "Page not found") ] }
 
+        Calendar calendar ->
+            viewPage Page.Calendar GotCalendarMsg (Calendar.view calendar)
 
-updateForm : (Form -> Form) -> RawModel -> ( Model, Cmd Msg )
-updateForm transform data =
-    ( Model { data | form = transform data.form }, Cmd.none )
-
-
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( Model
-        { getProfessionData = Loading
-        , addProfessionData = NotAsked
-        , form = emptyForm
-        }
-    , getProfessionRequest
-    )
+        Patients patients ->
+            viewPage Page.Patients GotPatientsMsg (Patients.view patients)
 
 
 
@@ -86,56 +75,116 @@ init _ =
 
 
 type Msg
-    = GetProfessionResponse GetProfessionData
-    | AddProfessionResponse AddProfessionData
-    | AddProfession
-      -- Form Inputs
-    | EnteredDate String
+    = ChangedUrl Url
+    | ClickedLink Browser.UrlRequest
+    | GotCalendarMsg Calendar.Msg
+    | GotPatientsMsg Patients.Msg
+    | GotSession Session
 
+
+toSession : Model -> Session
+toSession page =
+    case page of
+        Redirect session ->
+            session
+
+        NotFound session ->
+            session
+
+        Calendar calendar ->
+            Calendar.toSession calendar
+
+        Patients patients ->
+            Patients.toSession patients
+
+
+changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
+changeRouteTo maybeRoute model =
+    let
+        session =
+            toSession model
+
+        cred =
+            Session.cred session
+    in
+    case cred of
+        Just _ ->
+            case log "maybeRoute (l112)" maybeRoute of
+                Nothing ->
+                    ( NotFound session, Cmd.none )
+
+                Just Route.Calendar ->
+                    Calendar.init session
+                        |> updateWith Calendar GotCalendarMsg
+
+                Just Route.Patients ->
+                    Patients.init session
+                        |> updateWith Patients GotPatientsMsg
+
+                Just _ ->
+                    -- Redirects root to calendar page,
+                    -- I could have deleted it and in route.elm I could
+                    -- have put the Parser.top as a Route.Calendar
+                    -- but this is way clearer
+                    ( Redirect session, Route.replaceUrl (Session.navKey session) Route.Calendar )
+
+        Nothing ->
+            case maybeRoute of
+                Just (Route.Root maybeCallbackInfo) ->
+                    case maybeCallbackInfo of
+                        Just callbackInfo ->
+                            ( Redirect session, Api.storeCredFromAuth callbackInfo )
+
+                        Nothing ->
+                            -- Redirects to login page if the expression is malformed
+                            ( Redirect session, Nav.load "https://psy-app.eu.auth0.com/login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf&protocol=oauth2&response_type=token%20id_token&redirect_uri=http://localhost:8000&scope=openid%20profile" )
+
+                _ ->
+                    -- Redirects to login page if there are no credentials
+                    ( Redirect session, Nav.load "https://psy-app.eu.auth0.com/login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf&protocol=oauth2&response_type=token%20id_token&redirect_uri=http://localhost:8000&scope=openid%20profile" )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    let
-        data =
-            case model of
-                Model datamodel ->
-                    datamodel
-    in
-    case msg of
-        GetProfessionResponse getProfessionData ->
-            case getProfessionData of
-                NotAsked ->
-                    ( model, Cmd.none )
+    case ( msg, model ) of
+        ( ClickedLink urlRequest, _ ) ->
+            case urlRequest of
+                Browser.Internal url ->
+                    ( model
+                    , Nav.pushUrl (Session.navKey (toSession model)) (Url.toString url)
+                    )
 
-                Loading ->
-                    ( model, Cmd.none )
+                Browser.External href ->
+                    ( model
+                    , Nav.load href
+                    )
 
-                Success response ->
-                    ( Model { data | getProfessionData = getProfessionData }, Cmd.none )
+        ( ChangedUrl url, _ ) ->
+            changeRouteTo (Route.fromUrl url) model
 
-                Failure error ->
-                    ( Model { data | getProfessionData = getProfessionData }, Cmd.none )
+        ( GotCalendarMsg subMsg, Calendar calendar ) ->
+            Calendar.update subMsg calendar
+                |> updateWith Calendar GotCalendarMsg
 
-        AddProfessionResponse addProfessionData ->
-            case addProfessionData of
-                NotAsked ->
-                    ( model, Cmd.none )
+        ( GotPatientsMsg subMsg, Patients patients ) ->
+            Patients.update subMsg patients
+                |> updateWith Patients GotPatientsMsg
 
-                Loading ->
-                    ( model, Cmd.none )
+        ( GotSession session, Redirect _ ) ->
+            ( Redirect session
+            , Route.replaceUrl (Session.navKey session) Route.Calendar
+            )
 
-                Success response ->
-                    ( Model { data | addProfessionData = addProfessionData }, Cmd.none )
+        ( _, _ ) ->
+            -- Disregard messages that arrived for the wrong page.
+            ( model, Cmd.none )
 
-                Failure error ->
-                    ( Model { data | addProfessionData = addProfessionData }, Cmd.none )
 
-        AddProfession ->
-            ( model, addProfessionRequest data.form )
-
-        EnteredDate text ->
-            updateForm (\form -> { form | profession = text }) data
+updateWith : (subModel -> Model) -> (subMsg -> Msg) -> ( subModel, Cmd subMsg ) -> ( Model, Cmd Msg )
+updateWith toModel toMsg ( subModel, subCmd ) =
+    ( toModel subModel
+    , Cmd.map toMsg subCmd
+    )
 
 
 
@@ -144,203 +193,31 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    case model of
+        NotFound _ ->
+            Sub.none
+
+        Redirect _ ->
+            Session.changes GotSession (Session.navKey (toSession model))
+
+        Calendar calendar ->
+            Sub.map GotCalendarMsg (Calendar.subscriptions calendar)
+
+        Patients patients ->
+            Sub.map GotPatientsMsg (Patients.subscriptions patients)
 
 
 
--- VIEW
+-- MAIN
 
 
-view : Model -> Html Msg
-view model =
-    let
-        data =
-            case model of
-                Model datamodel ->
-                    datamodel
-    in
-    case data.getProfessionData of
-        NotAsked ->
-            layout [] <|
-                el [ centerX, centerY ]
-                    (text "The request was not made :/")
-
-        Loading ->
-            layout [] <|
-                el [ centerX, centerY ]
-                    (text "A proper expression")
-
-        Success response ->
-            successView response data.form
-
-        Failure error ->
-            failureView error
-
-
-successView : List Profession -> Form -> Html Msg
-successView response form =
-    layout [] <|
-        column [ centerX, centerY, Background.color (rgb255 214 217 216), height fill, width fill]
-            [ row[ centerX,padding 50]
-                [image [ width (fill |> maximum 80)] {src ="logo.png", description = "logo"}
-                ,el [ Font.color (rgb255 111 144 166), Font.size (80)] (text "Votre liste de professions")
-                ,image [ width (fill |> maximum 80)] {src ="logo.png", description = "logo"}
-                ]
-            , professionTable response
-            , row [ centerX, padding 30 ]
-                [ textInput EnteredDate form.profession "Profession" "Profession"
-                ]
-            , Input.button [ centerX, centerY ]
-                { label =
-                    el [ padding 30,  Border.rounded 5, Background.color (rgb255 111 144 166) 
-                        ,mouseOver [Background.color (rgb255 140 179 196)],
-                        Element.focused [ Background.color (rgb255 24 52 61), Font.color(rgb255 214 217 216)]]
-                        (text "Ajouter une profession")
-                , onPress = Just AddProfession
-                }
-            ]
-
-
-textInput : (String -> Msg) -> String -> String -> String -> Element Msg
-textInput msg formtext placeholder label =
-    Input.text []
-        { onChange = msg
-        , text = formtext
-        , placeholder = Just (Input.placeholder [] (text placeholder))
-        , label = Input.labelAbove [] (text label)
+main : Program Value Model Msg
+main =
+    Api.application
+        { init = init
+        , onUrlChange = ChangedUrl
+        , onUrlRequest = ClickedLink
+        , subscriptions = subscriptions
+        , update = update
+        , view = view
         }
-
-
-professionTable : List Profession -> Element Msg
-professionTable response =
-    table [ centerX, centerY, padding 30, Background.color (rgb255  111 144 166)] 
-        { data = response
-        , columns =
-            [ { header = tableField "Profession"
-              , width = fill
-              , view = \profession -> tableField profession.profession
-              }
-            ]
-        }
-
-
-tableField : String -> Element Msg
-tableField data =
-    el [ centerX, centerY, padding 23, Border.width 1, Background.color (rgb255 140 179 196) 
-    ,Border.color(rgb255 24 52 61) ] (text data)
-
-
-failureView : Graphql.Http.Error parsedData -> Html Msg
-failureView error =
-    layout [] <|
-        el [ centerX, centerY ]
-            (error
-                |> errorToString
-                |> text
-            )
-
-
-errorToString : Graphql.Http.Error parsedData -> String
-errorToString errorData =
-    case errorData of
-        Graphql.Http.GraphqlError _ graphqlErrors ->
-            graphqlErrors
-                |> List.map graphqlErrorToString
-                |> String.join "\n"
-
-        Graphql.Http.HttpError httpError ->
-            case httpError of
-                BadUrl error ->
-                    error
-
-                Timeout ->
-                    "There was a timeout"
-
-                NetworkError ->
-                    "There was a network error"
-
-                BadStatus metadata error ->
-                    error
-
-                BadPayload jsonDecodeError ->
-                    "There was a bad payload"
-
-
-graphqlErrorToString : Graphql.Http.GraphqlError.GraphqlError -> String
-graphqlErrorToString error =
-    error.message
-
-
-
--- GRAPHQL
-
-
-type alias Profession =
-    { profession : String
-    }
-
-
-type alias GetProfessionData =
-    RemoteData (Graphql.Http.Error (List Profession)) (List Profession)
-
-
-getProfession : SelectionSet Profession Api.Object.Profession
-getProfession =
-    -- Profession is the type alias and thus the constructor of a record
-    -- it will thus take all of these parameters as input
-    SelectionSet.succeed Profession
-        |> with Api.Object.Profession.profession
-
-
-getProfessionQuery : SelectionSet (List Profession) RootQuery
-getProfessionQuery =
-    Query.profession identity getProfession
-
-
-getProfessionRequest : Cmd Msg
-getProfessionRequest =
-    getProfessionQuery
-        |> Graphql.Http.queryRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
-        |> Graphql.Http.withHeader "x-hasura-admin-secret" "Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU"
-        |> Graphql.Http.send (RemoteData.fromResult >> GetProfessionResponse)
-
-
-type alias AddProfessionData =
-    RemoteData (Graphql.Http.Error (Maybe (List Profession))) (Maybe (List Profession))
-
-
-getProfessionMutation : SelectionSet (List Profession) Api.Object.Profession_mutation_response
-getProfessionMutation =
-    Api.Object.Profession_mutation_response.returning getProfession
-
-
-addProfession : Form -> SelectionSet (Maybe (List Profession)) RootMutation
-addProfession form =
-    let
-        professioninsert =
-            { patient_Professions = Absent
-            , profession = Present form.profession
-            , id_profession = Absent
-            }
-
-        reqArgs : InsertProfessionRequiredArguments
-        reqArgs =
-            InsertProfessionRequiredArguments
-                [ Profession_insert_input professioninsert ]
-    in
-    Mutation.insert_Profession (\optionals -> optionals)
-        reqArgs
-        getProfessionMutation
-
-
-
--- Profession is the type alias and thus the constructor of a record
--- it will thus take all of these parameters as input
-
-
-addProfessionRequest : Form -> Cmd Msg
-addProfessionRequest form =
-    addProfession form
-        |> Graphql.Http.mutationRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
-        |> Graphql.Http.withHeader "x-hasura-admin-secret" "Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU"
-        |> Graphql.Http.send (RemoteData.fromResult >> AddProfessionResponse)
