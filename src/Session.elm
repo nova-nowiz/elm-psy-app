@@ -1,6 +1,6 @@
-module Session exposing (Session, changes, cred, fromCred, navKey)
+module Session exposing (Session, changes, cred, fromCred, navKey, role)
 
-import Api exposing (Cred)
+import Api exposing (Cred, Role)
 import Browser.Navigation as Nav
 
 
@@ -35,6 +35,15 @@ navKey session =
 
         Guest key ->
             key
+
+
+role : Session -> Role
+role session =
+    let
+        credval =
+            cred session
+    in
+    Api.getRoleFromMaybeCred credval
 
 
 

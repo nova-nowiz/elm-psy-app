@@ -1,4 +1,4 @@
-port module Api exposing (Cred, application, credChanges, credHeader, logout, storeCred, storeCredFromAuth)
+port module Api exposing (Cred, Role, application, credChanges, credHeader, getRoleFromMaybeCred, logout, storeCred, storeCredFromAuth)
 
 {-| This module is responsible for communicating to the Conduit API.
 It exposes an opaque Endpoint type which is guaranteed to point to the correct URL.
@@ -12,6 +12,7 @@ import Http exposing (Body, Expect)
 import Json.Decode as Decode exposing (Decoder, Value, decodeString, field, string)
 import Json.Decode.Pipeline as Pipeline exposing (optional, required)
 import Json.Encode as Encode
+import Jwt
 import Url exposing (Url)
 
 
@@ -131,14 +132,36 @@ application config =
 
 
 
--- LOCALSTORAGE KEYS
+-- Token
 
 
-cacheStorageKey : String
-cacheStorageKey =
-    "cache"
+type Role
+    = Psy
+    | User
+    | None
 
 
-credStorageKey : String
-credStorageKey =
-    "cred"
+getRoleFromMaybeCred : Maybe Cred -> Role
+getRoleFromMaybeCred maybecred =
+    case maybecred of
+        Just (Cred token) ->
+            Jwt.decodeToken getRole token |> Result.withDefault None
+
+        Nothing ->
+            None
+
+
+getRole : Decoder Role
+getRole =
+    Decode.at [ "https://hasura.io/jwt/claims", "x-hasura-allowed-roles" ] (Decode.index 0 Decode.string)
+        |> Decode.map
+            (\string ->
+                if string == "Psy" then
+                    Psy
+
+                else if string == "user" then
+                    User
+
+                else
+                    None
+            )
