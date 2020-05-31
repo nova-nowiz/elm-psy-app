@@ -1,15 +1,9 @@
 module Route exposing (Route(..), fromUrl, replaceUrl)
 
-import Auth0.UrlParser
-    exposing
-        ( Auth0CallbackError
-        , Auth0CallbackInfo
-        , unauthorizedUrlParser
-        )
+import Auth0.UrlParser exposing (Auth0CallbackInfo)
 import Browser.Navigation as Nav
 import Debug exposing (log)
-import Html exposing (Attribute)
-import Html.Attributes as Attr
+import Html
 import Url exposing (Url)
 import Url.Parser as Parser exposing ((</>), Parser, oneOf, s, string)
 
