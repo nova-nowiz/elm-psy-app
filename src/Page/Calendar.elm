@@ -122,7 +122,25 @@ update msg model =
                     ( model, Cmd.none )
 
                 Success response ->
-                    ( Model { data | addAgendaData = addAgendaData }, Cmd.none )
+                    case response of
+                        Just agenda ->
+                            ( Model
+                                { data
+                                    | addAgendaData = addAgendaData
+                                    , getAgendaData =
+                                        case data.getAgendaData of
+                                            Success agendadata ->
+                                                Success (agendadata ++ agenda)
+
+                                            meh ->
+                                                meh
+                                }
+                            , Cmd.none
+                            )
+
+                        Nothing ->
+                            ( Model { data | addAgendaData = addAgendaData }, Cmd.none )
+
 
                 Failure error ->
                     ( Model { data | addAgendaData = addAgendaData }, Cmd.none )
@@ -206,7 +224,7 @@ view model =
                         (text "Nous importons vos données, merci de patienter.")
 
             Success response ->
-                successView response data.form
+                successView response data.form data.addAgendaData
 
             Failure error ->
                 failureView error
@@ -214,8 +232,19 @@ view model =
     }
 
 
-successView : List Agenda -> Form -> Html Msg
-successView response form =
+successView : List Agenda -> Form -> AddAgendaData-> Html Msg
+successView response form addAgendaData =
+     let
+        error =
+            case addAgendaData of
+                Failure graphqlError ->
+                    graphqlError
+                        |> errorToString
+                        |> text
+
+                _ ->
+                    text ""
+    in
     layout [] <|
         column [ centerX, centerY,  Background.color (rgb255 214 217 216), height fill,width fill]
             [ row[ centerX,padding 50]
@@ -226,7 +255,7 @@ successView response form =
             ,agendaTable response
             , row [ centerX, padding 30 ]
                 [ textInput EnteredDate form.date "AAAA-MM-JJ" "Date"
-                , textInput EnteredHeure form.heure "HH:MM:SS" "Heure"
+                , textInput EnteredHeure form.heure "HH:MM:SS+TZ" "Heure"
                 ]
             , Input.button [ centerX, centerY ]
                 { label =
@@ -236,8 +265,8 @@ successView response form =
                         (text "Ajouter un nouvel agenda")
                 , onPress = Just AddAgenda
                 }
-            {-, el [ centerX, centerY ,Font.color(rgb255 200 30 30)]
-                error-}
+            , el [ centerX, centerY ,Font.color(rgb255 200 30 30)]
+                error
             ]
 
 
