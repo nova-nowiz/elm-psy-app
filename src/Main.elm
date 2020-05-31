@@ -143,11 +143,11 @@ changeRouteTo maybeRoute model =
 
                         Nothing ->
                             -- Redirects to login page if the expression is malformed
-                            ( Redirect session, Nav.load "https://psy-app.eu.auth0.com/login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf&protocol=oauth2&response_type=token%20id_token&redirect_uri=http://localhost:8000&scope=openid%20profile" )
+                            ( Redirect session, Nav.load "https://psy-app.eu.auth0.com/login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf&protocol=oauth2&response_type=token%20id_token&scope=openid%20profile" )
 
                 _ ->
                     -- Redirects to login page if there are no credentials
-                    ( Redirect session, Nav.load "https://psy-app.eu.auth0.com/login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf&protocol=oauth2&response_type=token%20id_token&redirect_uri=http://localhost:8000&scope=openid%20profile" )
+                    ( Redirect session, Nav.load "https://psy-app.eu.auth0.com/login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf&protocol=oauth2&response_type=token%20id_token&scope=openid%20profile" )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

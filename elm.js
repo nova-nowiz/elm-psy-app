@@ -8815,12 +8815,12 @@ var $author$project$Main$changeRouteTo = F2(
 				} else {
 					return _Utils_Tuple2(
 						$author$project$Main$Redirect(session),
-						$elm$browser$Browser$Navigation$load('https://psy-app.eu.auth0.com/login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf&protocol=oauth2&response_type=token%20id_token&redirect_uri=http://localhost:8000&scope=openid%20profile'));
+						$elm$browser$Browser$Navigation$load('https://psy-app.eu.auth0.com/login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf&protocol=oauth2&response_type=token%20id_token&scope=openid%20profile'));
 				}
 			} else {
 				return _Utils_Tuple2(
 					$author$project$Main$Redirect(session),
-					$elm$browser$Browser$Navigation$load('https://psy-app.eu.auth0.com/login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf&protocol=oauth2&response_type=token%20id_token&redirect_uri=http://localhost:8000&scope=openid%20profile'));
+					$elm$browser$Browser$Navigation$load('https://psy-app.eu.auth0.com/login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf&protocol=oauth2&response_type=token%20id_token&scope=openid%20profile'));
 			}
 		}
 	});
