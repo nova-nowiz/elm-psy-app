@@ -1,18 +1,17 @@
-port module Api exposing (Cred, Role, application, credChanges, credHeader, getRoleFromMaybeCred, logout, storeCred, storeCredFromAuth)
-
-{-| This module is responsible for communicating to the Conduit API.
-It exposes an opaque Endpoint type which is guaranteed to point to the correct URL.
--}
+port module Api exposing (Cred, Role, application, credChanges, credHeader, getRoleFromMaybeCred, logout, makeMutation, makeQuery, storeCred, storeCredFromAuth)
 
 import Auth0.UrlParser exposing (Auth0CallbackInfo)
 import Browser
 import Browser.Navigation as Nav
 import Graphql.Http exposing (Request)
+import Graphql.Operation exposing (RootMutation, RootQuery)
+import Graphql.SelectionSet exposing (SelectionSet)
 import Http exposing (Body, Expect)
 import Json.Decode as Decode exposing (Decoder, Value, decodeString, field, string)
 import Json.Decode.Pipeline as Pipeline exposing (optional, required)
 import Json.Encode as Encode
 import Jwt
+import RemoteData exposing (RemoteData)
 import Url exposing (Url)
 
 
@@ -37,11 +36,16 @@ type Cred
 
 
 credHeader :
-    Cred
+    Maybe Cred
     -> Request decodesTo
     -> Request decodesTo -- Returns a function for pipeline syntax
-credHeader (Cred str) =
-    Graphql.Http.withHeader "Authorization" ("Bearer " ++ str)
+credHeader maybeCred =
+    case maybeCred of
+        Just (Cred str) ->
+            Graphql.Http.withHeader "Authorization" ("Bearer " ++ str)
+
+        Nothing ->
+            identity
 
 
 credDecoder : Decoder Cred
@@ -165,3 +169,23 @@ getRole =
                 else
                     None
             )
+
+
+
+-- Graphql
+
+
+makeQuery : SelectionSet decodesTo RootQuery -> (RemoteData (Graphql.Http.Error decodesTo) decodesTo -> msg) -> Maybe Cred -> Cmd msg
+makeQuery selectionSet msg cred =
+    selectionSet
+        |> Graphql.Http.queryRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
+        |> credHeader cred
+        |> Graphql.Http.send (RemoteData.fromResult >> msg)
+
+
+makeMutation : SelectionSet decodesTo RootMutation -> (RemoteData (Graphql.Http.Error decodesTo) decodesTo -> msg) -> Maybe Cred -> Cmd msg
+makeMutation selectionSet msg cred =
+    selectionSet
+        |> Graphql.Http.mutationRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
+        |> credHeader cred
+        |> Graphql.Http.send (RemoteData.fromResult >> msg)

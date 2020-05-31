@@ -5567,27 +5567,12 @@ var $author$project$Page$Calendar$emptyForm = {date: '', heure: ''};
 var $author$project$Page$Calendar$GetAgendaResponse = function (a) {
 	return {$: 'GetAgendaResponse', a: a};
 };
+var $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent = {$: 'Absent'};
 var $elm$core$Basics$composeR = F3(
 	function (f, g, x) {
 		return g(
 			f(x));
 	});
-var $krisajenkins$remotedata$RemoteData$Failure = function (a) {
-	return {$: 'Failure', a: a};
-};
-var $krisajenkins$remotedata$RemoteData$Success = function (a) {
-	return {$: 'Success', a: a};
-};
-var $krisajenkins$remotedata$RemoteData$fromResult = function (result) {
-	if (result.$ === 'Err') {
-		var e = result.a;
-		return $krisajenkins$remotedata$RemoteData$Failure(e);
-	} else {
-		var x = result.a;
-		return $krisajenkins$remotedata$RemoteData$Success(x);
-	}
-};
-var $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent = {$: 'Absent'};
 var $dillonkearns$elm_graphql$Graphql$Internal$Encode$Json = function (a) {
 	return {$: 'Json', a: a};
 };
@@ -6902,13 +6887,54 @@ var $author$project$Page$Calendar$getAgenda = A2(
 		$author$project$Api$Object$Agenda$date,
 		$dillonkearns$elm_graphql$Graphql$SelectionSet$succeed($author$project$Page$Calendar$Agenda)));
 var $author$project$Page$Calendar$getAgendaQuery = A2($author$project$Api$Query$agenda, $elm$core$Basics$identity, $author$project$Page$Calendar$getAgenda);
+var $dillonkearns$elm_graphql$Graphql$Http$Request = function (a) {
+	return {$: 'Request', a: a};
+};
+var $elm$http$Http$Header = F2(
+	function (a, b) {
+		return {$: 'Header', a: a, b: b};
+	});
+var $elm$http$Http$header = $elm$http$Http$Header;
+var $dillonkearns$elm_graphql$Graphql$Http$withHeader = F3(
+	function (key, value, _v0) {
+		var request = _v0.a;
+		return $dillonkearns$elm_graphql$Graphql$Http$Request(
+			_Utils_update(
+				request,
+				{
+					headers: A2(
+						$elm$core$List$cons,
+						A2($elm$http$Http$header, key, value),
+						request.headers)
+				}));
+	});
+var $author$project$Api$credHeader = function (maybeCred) {
+	if (maybeCred.$ === 'Just') {
+		var str = maybeCred.a.a;
+		return A2($dillonkearns$elm_graphql$Graphql$Http$withHeader, 'Authorization', 'Bearer ' + str);
+	} else {
+		return $elm$core$Basics$identity;
+	}
+};
+var $krisajenkins$remotedata$RemoteData$Failure = function (a) {
+	return {$: 'Failure', a: a};
+};
+var $krisajenkins$remotedata$RemoteData$Success = function (a) {
+	return {$: 'Success', a: a};
+};
+var $krisajenkins$remotedata$RemoteData$fromResult = function (result) {
+	if (result.$ === 'Err') {
+		var e = result.a;
+		return $krisajenkins$remotedata$RemoteData$Failure(e);
+	} else {
+		var x = result.a;
+		return $krisajenkins$remotedata$RemoteData$Success(x);
+	}
+};
 var $dillonkearns$elm_graphql$Graphql$Http$Query = F2(
 	function (a, b) {
 		return {$: 'Query', a: a, b: b};
 	});
-var $dillonkearns$elm_graphql$Graphql$Http$Request = function (a) {
-	return {$: 'Request', a: a};
-};
 var $dillonkearns$elm_graphql$Graphql$Document$decoder = function (_v0) {
 	var fields = _v0.a;
 	var decoder_ = _v0.b;
@@ -8320,37 +8346,25 @@ var $dillonkearns$elm_graphql$Graphql$Http$send = F2(
 		return (request.withCredentials ? $elm$http$Http$riskyRequest : $elm$http$Http$request)(
 			A2($dillonkearns$elm_graphql$Graphql$Http$toHttpRequestRecord, resultToMessage, fullRequest));
 	});
-var $elm$http$Http$Header = F2(
-	function (a, b) {
-		return {$: 'Header', a: a, b: b};
+var $author$project$Api$makeQuery = F3(
+	function (selectionSet, msg, cred) {
+		return A2(
+			$dillonkearns$elm_graphql$Graphql$Http$send,
+			A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, msg),
+			A2(
+				$author$project$Api$credHeader,
+				cred,
+				A2($dillonkearns$elm_graphql$Graphql$Http$queryRequest, 'https://bdd-psy-app.herokuapp.com/v1/graphql', selectionSet)));
 	});
-var $elm$http$Http$header = $elm$http$Http$Header;
-var $dillonkearns$elm_graphql$Graphql$Http$withHeader = F3(
-	function (key, value, _v0) {
-		var request = _v0.a;
-		return $dillonkearns$elm_graphql$Graphql$Http$Request(
-			_Utils_update(
-				request,
-				{
-					headers: A2(
-						$elm$core$List$cons,
-						A2($elm$http$Http$header, key, value),
-						request.headers)
-				}));
-	});
-var $author$project$Page$Calendar$getAgendaRequest = A2(
-	$dillonkearns$elm_graphql$Graphql$Http$send,
-	A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$Calendar$GetAgendaResponse),
-	A3(
-		$dillonkearns$elm_graphql$Graphql$Http$withHeader,
-		'x-hasura-admin-secret',
-		'Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU',
-		A2($dillonkearns$elm_graphql$Graphql$Http$queryRequest, 'https://bdd-psy-app.herokuapp.com/v1/graphql', $author$project$Page$Calendar$getAgendaQuery)));
+var $author$project$Page$Calendar$getAgendaRequest = function (cred) {
+	return A3($author$project$Api$makeQuery, $author$project$Page$Calendar$getAgendaQuery, $author$project$Page$Calendar$GetAgendaResponse, cred);
+};
 var $author$project$Page$Calendar$init = function (session) {
 	return _Utils_Tuple2(
 		$author$project$Page$Calendar$Model(
 			{addAgendaData: $krisajenkins$remotedata$RemoteData$NotAsked, deleteAgendaData: $krisajenkins$remotedata$RemoteData$NotAsked, form: $author$project$Page$Calendar$emptyForm, getAgendaData: $krisajenkins$remotedata$RemoteData$Loading, session: session}),
-		$author$project$Page$Calendar$getAgendaRequest);
+		$author$project$Page$Calendar$getAgendaRequest(
+			$author$project$Session$cred(session)));
 };
 var $author$project$Page$Patients$Model = function (a) {
 	return {$: 'Model', a: a};
@@ -8556,19 +8570,15 @@ var $author$project$Api$Query$patient = F2(
 			A2($elm$core$Basics$composeR, $elm$core$Basics$identity, $elm$json$Json$Decode$list));
 	});
 var $author$project$Page$Patients$getPatientsQuery = A2($author$project$Api$Query$patient, $elm$core$Basics$identity, $author$project$Page$Patients$getPatient);
-var $author$project$Page$Patients$getPatientsRequest = A2(
-	$dillonkearns$elm_graphql$Graphql$Http$send,
-	A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$Patients$GetPatientsResponse),
-	A3(
-		$dillonkearns$elm_graphql$Graphql$Http$withHeader,
-		'x-hasura-admin-secret',
-		'Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU',
-		A2($dillonkearns$elm_graphql$Graphql$Http$queryRequest, 'https://bdd-psy-app.herokuapp.com/v1/graphql', $author$project$Page$Patients$getPatientsQuery)));
+var $author$project$Page$Patients$getPatientsRequest = function (cred) {
+	return A3($author$project$Api$makeQuery, $author$project$Page$Patients$getPatientsQuery, $author$project$Page$Patients$GetPatientsResponse, cred);
+};
 var $author$project$Page$Patients$init = function (session) {
 	return _Utils_Tuple2(
 		$author$project$Page$Patients$Model(
 			{addPatientData: $krisajenkins$remotedata$RemoteData$NotAsked, deletePatientData: $krisajenkins$remotedata$RemoteData$NotAsked, form: $author$project$Page$Patients$emptyForm, getPatientsData: $krisajenkins$remotedata$RemoteData$Loading, session: session}),
-		$author$project$Page$Patients$getPatientsRequest);
+		$author$project$Page$Patients$getPatientsRequest(
+			$author$project$Session$cred(session)));
 };
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$core$Debug$log = _Debug_log;
@@ -9738,19 +9748,24 @@ var $dillonkearns$elm_graphql$Graphql$Http$mutationRequest = F2(
 				withCredentials: false
 			});
 	});
-var $author$project$Page$Calendar$addAgendaRequest = function (form) {
-	return A2(
-		$dillonkearns$elm_graphql$Graphql$Http$send,
-		A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$Calendar$AddAgendaResponse),
-		A3(
-			$dillonkearns$elm_graphql$Graphql$Http$withHeader,
-			'x-hasura-admin-secret',
-			'Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU',
+var $author$project$Api$makeMutation = F3(
+	function (selectionSet, msg, cred) {
+		return A2(
+			$dillonkearns$elm_graphql$Graphql$Http$send,
+			A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, msg),
 			A2(
-				$dillonkearns$elm_graphql$Graphql$Http$mutationRequest,
-				'https://bdd-psy-app.herokuapp.com/v1/graphql',
-				$author$project$Page$Calendar$addAgenda(form))));
-};
+				$author$project$Api$credHeader,
+				cred,
+				A2($dillonkearns$elm_graphql$Graphql$Http$mutationRequest, 'https://bdd-psy-app.herokuapp.com/v1/graphql', selectionSet)));
+	});
+var $author$project$Page$Calendar$addAgendaRequest = F2(
+	function (form, cred) {
+		return A3(
+			$author$project$Api$makeMutation,
+			$author$project$Page$Calendar$addAgenda(form),
+			$author$project$Page$Calendar$AddAgendaResponse,
+			cred);
+	});
 var $author$project$Page$Calendar$DeleteAgendaResponse = function (a) {
 	return {$: 'DeleteAgendaResponse', a: a};
 };
@@ -9817,19 +9832,14 @@ var $author$project$Page$Calendar$deleteAgenda = function (agenda) {
 			}));
 	return A2($author$project$Api$Mutation$delete_Agenda, reqArgs, $author$project$Page$Calendar$getAgendaMutation);
 };
-var $author$project$Page$Calendar$deleteAgendaRequest = function (agenda) {
-	return A2(
-		$dillonkearns$elm_graphql$Graphql$Http$send,
-		A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$Calendar$DeleteAgendaResponse),
-		A3(
-			$dillonkearns$elm_graphql$Graphql$Http$withHeader,
-			'x-hasura-admin-secret',
-			'Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU',
-			A2(
-				$dillonkearns$elm_graphql$Graphql$Http$mutationRequest,
-				'https://bdd-psy-app.herokuapp.com/v1/graphql',
-				$author$project$Page$Calendar$deleteAgenda(agenda))));
-};
+var $author$project$Page$Calendar$deleteAgendaRequest = F2(
+	function (agenda, cred) {
+		return A3(
+			$author$project$Api$makeMutation,
+			$author$project$Page$Calendar$deleteAgenda(agenda),
+			$author$project$Page$Calendar$DeleteAgendaResponse,
+			cred);
+	});
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -10016,12 +10026,20 @@ var $author$project$Page$Calendar$update = F2(
 			case 'AddAgenda':
 				return _Utils_Tuple2(
 					model,
-					$author$project$Page$Calendar$addAgendaRequest(data.form));
+					A2(
+						$author$project$Page$Calendar$addAgendaRequest,
+						data.form,
+						$author$project$Session$cred(
+							$author$project$Page$Calendar$toSession(model))));
 			case 'DeleteAgenda':
 				var agenda = msg.a;
 				return _Utils_Tuple2(
 					model,
-					$author$project$Page$Calendar$deleteAgendaRequest(agenda));
+					A2(
+						$author$project$Page$Calendar$deleteAgendaRequest,
+						agenda,
+						$author$project$Session$cred(
+							$author$project$Page$Calendar$toSession(model))));
 			case 'EnteredDate':
 				var text = msg.a;
 				return A2(
@@ -10127,19 +10145,14 @@ var $author$project$Page$Patients$addPatient = function (form) {
 		reqArgs,
 		$author$project$Page$Patients$getPatientsMutation);
 };
-var $author$project$Page$Patients$addPatientRequest = function (form) {
-	return A2(
-		$dillonkearns$elm_graphql$Graphql$Http$send,
-		A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$Patients$AddPatientResponse),
-		A3(
-			$dillonkearns$elm_graphql$Graphql$Http$withHeader,
-			'x-hasura-admin-secret',
-			'Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU',
-			A2(
-				$dillonkearns$elm_graphql$Graphql$Http$mutationRequest,
-				'https://bdd-psy-app.herokuapp.com/v1/graphql',
-				$author$project$Page$Patients$addPatient(form))));
-};
+var $author$project$Page$Patients$addPatientRequest = F2(
+	function (form, cred) {
+		return A3(
+			$author$project$Api$makeMutation,
+			$author$project$Page$Patients$addPatient(form),
+			$author$project$Page$Patients$AddPatientResponse,
+			cred);
+	});
 var $author$project$Page$Patients$DeletePatientResponse = function (a) {
 	return {$: 'DeletePatientResponse', a: a};
 };
@@ -10278,19 +10291,14 @@ var $author$project$Page$Patients$deletePatient = function (patient) {
 			}));
 	return A2($author$project$Api$Mutation$delete_Patient, reqArgs, $author$project$Page$Patients$getPatientsMutation);
 };
-var $author$project$Page$Patients$deletePatientRequest = function (patient) {
-	return A2(
-		$dillonkearns$elm_graphql$Graphql$Http$send,
-		A2($elm$core$Basics$composeR, $krisajenkins$remotedata$RemoteData$fromResult, $author$project$Page$Patients$DeletePatientResponse),
-		A3(
-			$dillonkearns$elm_graphql$Graphql$Http$withHeader,
-			'x-hasura-admin-secret',
-			'Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU',
-			A2(
-				$dillonkearns$elm_graphql$Graphql$Http$mutationRequest,
-				'https://bdd-psy-app.herokuapp.com/v1/graphql',
-				$author$project$Page$Patients$deletePatient(patient))));
-};
+var $author$project$Page$Patients$deletePatientRequest = F2(
+	function (patient, cred) {
+		return A3(
+			$author$project$Api$makeMutation,
+			$author$project$Page$Patients$deletePatient(patient),
+			$author$project$Page$Patients$DeletePatientResponse,
+			cred);
+	});
 var $author$project$Page$Patients$updateForm = F2(
 	function (transform, data) {
 		return _Utils_Tuple2(
@@ -10435,12 +10443,20 @@ var $author$project$Page$Patients$update = F2(
 			case 'AddPatient':
 				return _Utils_Tuple2(
 					model,
-					$author$project$Page$Patients$addPatientRequest(data.form));
+					A2(
+						$author$project$Page$Patients$addPatientRequest,
+						data.form,
+						$author$project$Session$cred(
+							$author$project$Page$Patients$toSession(model))));
 			case 'DeletePatient':
 				var patient = msg.a;
 				return _Utils_Tuple2(
 					model,
-					$author$project$Page$Patients$deletePatientRequest(patient));
+					A2(
+						$author$project$Page$Patients$deletePatientRequest,
+						patient,
+						$author$project$Session$cred(
+							$author$project$Page$Patients$toSession(model))));
 			case 'EnteredPrenom':
 				var text = msg.a;
 				return A2(

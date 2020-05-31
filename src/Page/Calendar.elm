@@ -1,5 +1,6 @@
 module Page.Calendar exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
+import Api exposing (Cred)
 import Api.InputObject exposing (..)
 import Api.Mutation as Mutation exposing (..)
 import Api.Object exposing (..)
@@ -71,7 +72,7 @@ init session =
         , deleteAgendaData = NotAsked
         , form = emptyForm
         }
-    , getAgendaRequest
+    , getAgendaRequest <| Session.cred <| session
     )
 
 
@@ -176,10 +177,10 @@ update msg model =
                     ( Model { data | deleteAgendaData = deleteAgendaData }, Cmd.none )
 
         AddAgenda ->
-            ( model, addAgendaRequest data.form )
+            ( model, addAgendaRequest data.form <| Session.cred <| toSession model )
 
         DeleteAgenda agenda ->
-            ( model, deleteAgendaRequest agenda )
+            ( model, deleteAgendaRequest agenda <| Session.cred <| toSession model )
 
         EnteredDate text ->
             updateForm (\form -> { form | date = text }) data
@@ -406,12 +407,9 @@ getAgendaQuery =
     Query.agenda identity getAgenda
 
 
-getAgendaRequest : Cmd Msg
-getAgendaRequest =
-    getAgendaQuery
-        |> Graphql.Http.queryRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
-        |> Graphql.Http.withHeader "x-hasura-admin-secret" "Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU"
-        |> Graphql.Http.send (RemoteData.fromResult >> GetAgendaResponse)
+getAgendaRequest : Maybe Cred -> Cmd Msg
+getAgendaRequest cred =
+    Api.makeQuery getAgendaQuery GetAgendaResponse cred
 
 
 type alias AddAgendaData =
@@ -450,12 +448,9 @@ addAgenda form =
 -- it will thus take all of these parameters as input
 
 
-addAgendaRequest : Form -> Cmd Msg
-addAgendaRequest form =
-    addAgenda form
-        |> Graphql.Http.mutationRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
-        |> Graphql.Http.withHeader "x-hasura-admin-secret" "Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU"
-        |> Graphql.Http.send (RemoteData.fromResult >> AddAgendaResponse)
+addAgendaRequest : Form -> Maybe Cred -> Cmd Msg
+addAgendaRequest form cred =
+    Api.makeMutation (addAgenda form) AddAgendaResponse cred
 
 
 type alias DeleteAgendaData =
@@ -482,12 +477,9 @@ deleteAgenda agenda =
         getAgendaMutation
 
 
-deleteAgendaRequest : Agenda -> Cmd Msg
-deleteAgendaRequest agenda =
-    deleteAgenda agenda
-        |> Graphql.Http.mutationRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
-        |> Graphql.Http.withHeader "x-hasura-admin-secret" "Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU"
-        |> Graphql.Http.send (RemoteData.fromResult >> DeleteAgendaResponse)
+deleteAgendaRequest : Agenda -> Maybe Cred -> Cmd Msg
+deleteAgendaRequest agenda cred =
+    Api.makeMutation (deleteAgenda agenda) DeleteAgendaResponse cred
 
 
 

@@ -1,5 +1,6 @@
 module Page.Patients exposing (Model, Msg, init, subscriptions, toSession, update, view)
 
+import Api exposing (Cred)
 import Api.InputObject exposing (..)
 import Api.Mutation as Mutation exposing (..)
 import Api.Object exposing (..)
@@ -87,7 +88,7 @@ init session =
         , deletePatientData = NotAsked
         , form = emptyForm
         }
-    , getPatientsRequest
+    , getPatientsRequest <| Session.cred <| session
     )
 
 
@@ -200,10 +201,10 @@ update msg model =
                     ( Model { data | deletePatientData = deletePatientData }, Cmd.none )
 
         AddPatient ->
-            ( model, addPatientRequest data.form )
+            ( model, addPatientRequest data.form <| Session.cred <| toSession model )
 
         DeletePatient patient ->
-            ( model, deletePatientRequest patient )
+            ( model, deletePatientRequest patient <| Session.cred <| toSession model )
 
         EnteredPrenom text ->
             updateForm (\form -> { form | prenom = text }) data
@@ -514,12 +515,9 @@ getPatientsQuery =
     Query.patient identity getPatient
 
 
-getPatientsRequest : Cmd Msg
-getPatientsRequest =
-    getPatientsQuery
-        |> Graphql.Http.queryRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
-        |> Graphql.Http.withHeader "x-hasura-admin-secret" "Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU"
-        |> Graphql.Http.send (RemoteData.fromResult >> GetPatientsResponse)
+getPatientsRequest : Maybe Cred -> Cmd Msg
+getPatientsRequest cred =
+    Api.makeQuery getPatientsQuery GetPatientsResponse cred
 
 
 type alias AddPatientData =
@@ -565,12 +563,9 @@ addPatient form =
 -- it will thus take all of these parameters as input
 
 
-addPatientRequest : Form -> Cmd Msg
-addPatientRequest form =
-    addPatient form
-        |> Graphql.Http.mutationRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
-        |> Graphql.Http.withHeader "x-hasura-admin-secret" "Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU"
-        |> Graphql.Http.send (RemoteData.fromResult >> AddPatientResponse)
+addPatientRequest : Form -> Maybe Cred -> Cmd Msg
+addPatientRequest form cred =
+    Api.makeMutation (addPatient form) AddPatientResponse cred
 
 
 type alias DeletePatientData =
@@ -610,12 +605,9 @@ deletePatient patient =
 -- it will thus take all of these parameters as input
 
 
-deletePatientRequest : Patient -> Cmd Msg
-deletePatientRequest patient =
-    deletePatient patient
-        |> Graphql.Http.mutationRequest "https://bdd-psy-app.herokuapp.com/v1/graphql"
-        |> Graphql.Http.withHeader "x-hasura-admin-secret" "Dq4LwJ7PzeKTo4XYa6CoaqoQbPXtTZ9qEMHmgC46m78jTdVJvU"
-        |> Graphql.Http.send (RemoteData.fromResult >> DeletePatientResponse)
+deletePatientRequest : Patient -> Maybe Cred -> Cmd Msg
+deletePatientRequest patient cred =
+    Api.makeMutation (deletePatient patient) DeletePatientResponse cred
 
 
 
