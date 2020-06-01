@@ -9027,7 +9027,7 @@ var $author$project$Page$Patients$init = function (session) {
 };
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$core$Debug$log = _Debug_log;
-var $author$project$Main$loginUrl = 'https://psy-app.eu.auth0.com/' + ('login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf' + ('&protocol=oauth2' + ('&response_type=token%20id_token' + ('&redirect_uri=http://localhost:8000' + '&scope=openid%20profile'))));
+var $author$project$Main$loginUrl = 'https://psy-app.eu.auth0.com/' + ('login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf' + ('&protocol=oauth2' + ('&response_type=token%20id_token' + ('&redirect_uri=https://elm-psy-app.herokuapp.com' + '&scope=openid%20profile'))));
 var $elm$core$Maybe$destruct = F3(
 	function (_default, func, maybe) {
 		if (maybe.$ === 'Just') {

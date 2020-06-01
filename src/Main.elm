@@ -162,7 +162,7 @@ loginUrl =
         ++ "login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf"
         ++ "&protocol=oauth2"
         ++ "&response_type=token%20id_token"
-        ++ "&redirect_uri=http://localhost:8000"
+        ++ "&redirect_uri=https://elm-psy-app.herokuapp.com"
         ++ "&scope=openid%20profile"
 
 
