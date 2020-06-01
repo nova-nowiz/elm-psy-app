@@ -124,8 +124,14 @@ changeRouteTo maybeRoute model =
                         |> updateWith Calendar GotCalendarMsg
 
                 Just Route.Patients ->
-                    Patients.init session
-                        |> updateWith Patients GotPatientsMsg
+                    case Api.getRoleFromMaybeCred cred of
+                        Api.Psy ->
+                            Patients.init session
+                                |> updateWith Patients GotPatientsMsg
+
+                        _ ->
+                            -- Redirect user to Calendar if he is not a psy
+                            ( Redirect session, Cmd.batch [ Route.replaceUrl (Session.navKey session) Route.Calendar, Task.perform CheckToken Time.now ] )
 
                 Just _ ->
                     -- Redirects root to calendar page,
@@ -143,11 +149,21 @@ changeRouteTo maybeRoute model =
 
                         Nothing ->
                             -- Redirects to login page if the expression is malformed
-                            ( Redirect session, Nav.load "https://psy-app.eu.auth0.com/login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf&protocol=oauth2&response_type=token%20id_token&scope=openid%20profile" )
+                            ( Redirect session, Nav.load loginUrl )
 
                 _ ->
                     -- Redirects to login page if there are no credentials
-                    ( Redirect session, Nav.load "https://psy-app.eu.auth0.com/login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf&protocol=oauth2&response_type=token%20id_token&scope=openid%20profile" )
+                    ( Redirect session, Nav.load loginUrl )
+
+
+loginUrl : String
+loginUrl =
+    "https://psy-app.eu.auth0.com/"
+        ++ "login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf"
+        ++ "&protocol=oauth2"
+        ++ "&response_type=token%20id_token"
+        ++ "&redirect_uri=http://localhost:8000"
+        ++ "&scope=openid%20profile"
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

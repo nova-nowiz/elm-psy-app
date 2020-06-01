@@ -4394,6 +4394,107 @@ var _Bitwise_shiftRightZfBy = F2(function(offset, a)
 });
 
 
+// CREATE
+
+var _Regex_never = /.^/;
+
+var _Regex_fromStringWith = F2(function(options, string)
+{
+	var flags = 'g';
+	if (options.multiline) { flags += 'm'; }
+	if (options.caseInsensitive) { flags += 'i'; }
+
+	try
+	{
+		return $elm$core$Maybe$Just(new RegExp(string, flags));
+	}
+	catch(error)
+	{
+		return $elm$core$Maybe$Nothing;
+	}
+});
+
+
+// USE
+
+var _Regex_contains = F2(function(re, string)
+{
+	return string.match(re) !== null;
+});
+
+
+var _Regex_findAtMost = F3(function(n, re, str)
+{
+	var out = [];
+	var number = 0;
+	var string = str;
+	var lastIndex = re.lastIndex;
+	var prevLastIndex = -1;
+	var result;
+	while (number++ < n && (result = re.exec(string)))
+	{
+		if (prevLastIndex == re.lastIndex) break;
+		var i = result.length - 1;
+		var subs = new Array(i);
+		while (i > 0)
+		{
+			var submatch = result[i];
+			subs[--i] = submatch
+				? $elm$core$Maybe$Just(submatch)
+				: $elm$core$Maybe$Nothing;
+		}
+		out.push(A4($elm$regex$Regex$Match, result[0], result.index, number, _List_fromArray(subs)));
+		prevLastIndex = re.lastIndex;
+	}
+	re.lastIndex = lastIndex;
+	return _List_fromArray(out);
+});
+
+
+var _Regex_replaceAtMost = F4(function(n, re, replacer, string)
+{
+	var count = 0;
+	function jsReplacer(match)
+	{
+		if (count++ >= n)
+		{
+			return match;
+		}
+		var i = arguments.length - 3;
+		var submatches = new Array(i);
+		while (i > 0)
+		{
+			var submatch = arguments[i];
+			submatches[--i] = submatch
+				? $elm$core$Maybe$Just(submatch)
+				: $elm$core$Maybe$Nothing;
+		}
+		return replacer(A4($elm$regex$Regex$Match, match, arguments[arguments.length - 2], count, _List_fromArray(submatches)));
+	}
+	return string.replace(re, jsReplacer);
+});
+
+var _Regex_splitAtMost = F3(function(n, re, str)
+{
+	var string = str;
+	var out = [];
+	var start = re.lastIndex;
+	var restoreLastIndex = re.lastIndex;
+	while (n--)
+	{
+		var result = re.exec(string);
+		if (!result) break;
+		out.push(string.slice(start, result.index));
+		start = re.lastIndex;
+	}
+	out.push(string.slice(start));
+	re.lastIndex = restoreLastIndex;
+	return _List_fromArray(out);
+});
+
+var _Regex_infinity = Infinity;
+
+
 
 // SEND REQUEST
 
@@ -4568,107 +4669,6 @@ function _Http_track(router, xhr, tracker)
 		}))));
 	});
 }
-
-// CREATE
-
-var _Regex_never = /.^/;
-
-var _Regex_fromStringWith = F2(function(options, string)
-{
-	var flags = 'g';
-	if (options.multiline) { flags += 'm'; }
-	if (options.caseInsensitive) { flags += 'i'; }
-
-	try
-	{
-		return $elm$core$Maybe$Just(new RegExp(string, flags));
-	}
-	catch(error)
-	{
-		return $elm$core$Maybe$Nothing;
-	}
-});
-
-
-// USE
-
-var _Regex_contains = F2(function(re, string)
-{
-	return string.match(re) !== null;
-});
-
-
-var _Regex_findAtMost = F3(function(n, re, str)
-{
-	var out = [];
-	var number = 0;
-	var string = str;
-	var lastIndex = re.lastIndex;
-	var prevLastIndex = -1;
-	var result;
-	while (number++ < n && (result = re.exec(string)))
-	{
-		if (prevLastIndex == re.lastIndex) break;
-		var i = result.length - 1;
-		var subs = new Array(i);
-		while (i > 0)
-		{
-			var submatch = result[i];
-			subs[--i] = submatch
-				? $elm$core$Maybe$Just(submatch)
-				: $elm$core$Maybe$Nothing;
-		}
-		out.push(A4($elm$regex$Regex$Match, result[0], result.index, number, _List_fromArray(subs)));
-		prevLastIndex = re.lastIndex;
-	}
-	re.lastIndex = lastIndex;
-	return _List_fromArray(out);
-});
-
-
-var _Regex_replaceAtMost = F4(function(n, re, replacer, string)
-{
-	var count = 0;
-	function jsReplacer(match)
-	{
-		if (count++ >= n)
-		{
-			return match;
-		}
-		var i = arguments.length - 3;
-		var submatches = new Array(i);
-		while (i > 0)
-		{
-			var submatch = arguments[i];
-			submatches[--i] = submatch
-				? $elm$core$Maybe$Just(submatch)
-				: $elm$core$Maybe$Nothing;
-		}
-		return replacer(A4($elm$regex$Regex$Match, match, arguments[arguments.length - 2], count, _List_fromArray(submatches)));
-	}
-	return string.replace(re, jsReplacer);
-});
-
-var _Regex_splitAtMost = F3(function(n, re, str)
-{
-	var string = str;
-	var out = [];
-	var start = re.lastIndex;
-	var restoreLastIndex = re.lastIndex;
-	while (n--)
-	{
-		var result = re.exec(string);
-		if (!result) break;
-		out.push(string.slice(start, result.index));
-		start = re.lastIndex;
-	}
-	out.push(string.slice(start));
-	re.lastIndex = restoreLastIndex;
-	return _List_fromArray(out);
-});
-
-var _Regex_infinity = Infinity;
-
 
 function _Url_percentEncode(string)
 {
@@ -5608,6 +5608,442 @@ var $author$project$Session$cred = function (session) {
 		return $elm$core$Maybe$Nothing;
 	}
 };
+var $author$project$Api$None = {$: 'None'};
+var $JonRowe$elm_jwt$Jwt$TokenDecodeError = function (a) {
+	return {$: 'TokenDecodeError', a: a};
+};
+var $JonRowe$elm_jwt$Jwt$TokenProcessingError = function (a) {
+	return {$: 'TokenProcessingError', a: a};
+};
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
+var $truqu$elm_base64$Base64$Decode$pad = function (input) {
+	var _v0 = $elm$core$String$length(input) % 4;
+	switch (_v0) {
+		case 3:
+			return input + '=';
+		case 2:
+			return input + '==';
+		default:
+			return input;
+	}
+};
+var $truqu$elm_base64$Base64$Decode$charToInt = function (_char) {
+	switch (_char.valueOf()) {
+		case 'A':
+			return 0;
+		case 'B':
+			return 1;
+		case 'C':
+			return 2;
+		case 'D':
+			return 3;
+		case 'E':
+			return 4;
+		case 'F':
+			return 5;
+		case 'G':
+			return 6;
+		case 'H':
+			return 7;
+		case 'I':
+			return 8;
+		case 'J':
+			return 9;
+		case 'K':
+			return 10;
+		case 'L':
+			return 11;
+		case 'M':
+			return 12;
+		case 'N':
+			return 13;
+		case 'O':
+			return 14;
+		case 'P':
+			return 15;
+		case 'Q':
+			return 16;
+		case 'R':
+			return 17;
+		case 'S':
+			return 18;
+		case 'T':
+			return 19;
+		case 'U':
+			return 20;
+		case 'V':
+			return 21;
+		case 'W':
+			return 22;
+		case 'X':
+			return 23;
+		case 'Y':
+			return 24;
+		case 'Z':
+			return 25;
+		case 'a':
+			return 26;
+		case 'b':
+			return 27;
+		case 'c':
+			return 28;
+		case 'd':
+			return 29;
+		case 'e':
+			return 30;
+		case 'f':
+			return 31;
+		case 'g':
+			return 32;
+		case 'h':
+			return 33;
+		case 'i':
+			return 34;
+		case 'j':
+			return 35;
+		case 'k':
+			return 36;
+		case 'l':
+			return 37;
+		case 'm':
+			return 38;
+		case 'n':
+			return 39;
+		case 'o':
+			return 40;
+		case 'p':
+			return 41;
+		case 'q':
+			return 42;
+		case 'r':
+			return 43;
+		case 's':
+			return 44;
+		case 't':
+			return 45;
+		case 'u':
+			return 46;
+		case 'v':
+			return 47;
+		case 'w':
+			return 48;
+		case 'x':
+			return 49;
+		case 'y':
+			return 50;
+		case 'z':
+			return 51;
+		case '0':
+			return 52;
+		case '1':
+			return 53;
+		case '2':
+			return 54;
+		case '3':
+			return 55;
+		case '4':
+			return 56;
+		case '5':
+			return 57;
+		case '6':
+			return 58;
+		case '7':
+			return 59;
+		case '8':
+			return 60;
+		case '9':
+			return 61;
+		case '+':
+			return 62;
+		case '/':
+			return 63;
+		default:
+			return 0;
+	}
+};
+var $elm$core$Bitwise$or = _Bitwise_or;
+var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
+var $elm$core$Bitwise$and = _Bitwise_and;
+var $elm$core$String$cons = _String_cons;
+var $elm$core$String$fromChar = function (_char) {
+	return A2($elm$core$String$cons, _char, '');
+};
+var $elm$core$Char$fromCode = _Char_fromCode;
+var $truqu$elm_base64$Base64$Decode$intToString = A2($elm$core$Basics$composeR, $elm$core$Char$fromCode, $elm$core$String$fromChar);
+var $truqu$elm_base64$Base64$Decode$add = F2(
+	function (_char, _v0) {
+		var curr = _v0.a;
+		var need = _v0.b;
+		var res = _v0.c;
+		var shiftAndAdd = function (_int) {
+			return (63 & _int) | (curr << 6);
+		};
+		return (!need) ? ((!(128 & _char)) ? _Utils_Tuple3(
+			0,
+			0,
+			_Utils_ap(
+				res,
+				$truqu$elm_base64$Base64$Decode$intToString(_char))) : (((224 & _char) === 192) ? _Utils_Tuple3(31 & _char, 1, res) : (((240 & _char) === 224) ? _Utils_Tuple3(15 & _char, 2, res) : _Utils_Tuple3(7 & _char, 3, res)))) : ((need === 1) ? _Utils_Tuple3(
+			0,
+			0,
+			_Utils_ap(
+				res,
+				$truqu$elm_base64$Base64$Decode$intToString(
+					shiftAndAdd(_char)))) : _Utils_Tuple3(
+			shiftAndAdd(_char),
+			need - 1,
+			res));
+	});
+var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
+var $truqu$elm_base64$Base64$Decode$toUTF16 = F2(
+	function (_char, acc) {
+		return _Utils_Tuple3(
+			0,
+			0,
+			A2(
+				$truqu$elm_base64$Base64$Decode$add,
+				255 & (_char >>> 0),
+				A2(
+					$truqu$elm_base64$Base64$Decode$add,
+					255 & (_char >>> 8),
+					A2($truqu$elm_base64$Base64$Decode$add, 255 & (_char >>> 16), acc))));
+	});
+var $truqu$elm_base64$Base64$Decode$chomp = F2(
+	function (char_, _v0) {
+		var curr = _v0.a;
+		var cnt = _v0.b;
+		var utf8ToUtf16 = _v0.c;
+		var _char = $truqu$elm_base64$Base64$Decode$charToInt(char_);
+		if (cnt === 3) {
+			return A2($truqu$elm_base64$Base64$Decode$toUTF16, curr | _char, utf8ToUtf16);
+		} else {
+			return _Utils_Tuple3((_char << ((3 - cnt) * 6)) | curr, cnt + 1, utf8ToUtf16);
+		}
+	});
+var $elm$core$String$foldl = _String_foldl;
+var $truqu$elm_base64$Base64$Decode$initial = _Utils_Tuple3(
+	0,
+	0,
+	_Utils_Tuple3(0, 0, ''));
+var $elm$core$Result$map = F2(
+	function (func, ra) {
+		if (ra.$ === 'Ok') {
+			var a = ra.a;
+			return $elm$core$Result$Ok(
+				func(a));
+		} else {
+			var e = ra.a;
+			return $elm$core$Result$Err(e);
+		}
+	});
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var $elm$core$String$dropRight = F2(
+	function (n, string) {
+		return (n < 1) ? string : A3($elm$core$String$slice, 0, -n, string);
+	});
+var $elm$core$String$endsWith = _String_endsWith;
+var $truqu$elm_base64$Base64$Decode$stripNulls = F2(
+	function (input, output) {
+		return A2($elm$core$String$endsWith, '==', input) ? A2($elm$core$String$dropRight, 2, output) : (A2($elm$core$String$endsWith, '=', input) ? A2($elm$core$String$dropRight, 1, output) : output);
+	});
+var $elm$regex$Regex$Match = F4(
+	function (match, index, number, submatches) {
+		return {index: index, match: match, number: number, submatches: submatches};
+	});
+var $elm$regex$Regex$contains = _Regex_contains;
+var $elm$regex$Regex$fromStringWith = _Regex_fromStringWith;
+var $elm$regex$Regex$fromString = function (string) {
+	return A2(
+		$elm$regex$Regex$fromStringWith,
+		{caseInsensitive: false, multiline: false},
+		string);
+};
+var $elm$regex$Regex$never = _Regex_never;
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $truqu$elm_base64$Base64$Decode$validBase64Regex = A2(
+	$elm$core$Maybe$withDefault,
+	$elm$regex$Regex$never,
+	$elm$regex$Regex$fromString('^([A-Za-z0-9\\/+]{4})*([A-Za-z0-9\\/+]{2}[A-Za-z0-9\\/+=]{2})?$'));
+var $truqu$elm_base64$Base64$Decode$validate = function (input) {
+	return A2($elm$regex$Regex$contains, $truqu$elm_base64$Base64$Decode$validBase64Regex, input) ? $elm$core$Result$Ok(input) : $elm$core$Result$Err('Invalid base64');
+};
+var $truqu$elm_base64$Base64$Decode$wrapUp = function (_v0) {
+	var _v1 = _v0.c;
+	var need = _v1.b;
+	var res = _v1.c;
+	return (need > 0) ? $elm$core$Result$Err('Invalid UTF-16') : $elm$core$Result$Ok(res);
+};
+var $truqu$elm_base64$Base64$Decode$validateAndDecode = function (input) {
+	return A2(
+		$elm$core$Result$map,
+		$truqu$elm_base64$Base64$Decode$stripNulls(input),
+		A2(
+			$elm$core$Result$andThen,
+			A2(
+				$elm$core$Basics$composeR,
+				A2($elm$core$String$foldl, $truqu$elm_base64$Base64$Decode$chomp, $truqu$elm_base64$Base64$Decode$initial),
+				$truqu$elm_base64$Base64$Decode$wrapUp),
+			$truqu$elm_base64$Base64$Decode$validate(input)));
+};
+var $truqu$elm_base64$Base64$Decode$decode = A2($elm$core$Basics$composeR, $truqu$elm_base64$Base64$Decode$pad, $truqu$elm_base64$Base64$Decode$validateAndDecode);
+var $truqu$elm_base64$Base64$decode = $truqu$elm_base64$Base64$Decode$decode;
+var $elm$core$String$concat = function (strings) {
+	return A2($elm$core$String$join, '', strings);
+};
+var $elm$core$Basics$modBy = _Basics_modBy;
+var $JonRowe$elm_jwt$Jwt$fixlength = function (s) {
+	var _v0 = A2(
+		$elm$core$Basics$modBy,
+		4,
+		$elm$core$String$length(s));
+	switch (_v0) {
+		case 0:
+			return $elm$core$Result$Ok(s);
+		case 2:
+			return $elm$core$Result$Ok(
+				$elm$core$String$concat(
+					_List_fromArray(
+						[s, '=='])));
+		case 3:
+			return $elm$core$Result$Ok(
+				$elm$core$String$concat(
+					_List_fromArray(
+						[s, '='])));
+		default:
+			return $elm$core$Result$Err(
+				$JonRowe$elm_jwt$Jwt$TokenProcessingError('Wrong length'));
+	}
+};
+var $elm$core$String$map = _String_map;
+var $JonRowe$elm_jwt$Jwt$unurl = function () {
+	var fix = function (c) {
+		switch (c.valueOf()) {
+			case '-':
+				return _Utils_chr('+');
+			case '_':
+				return _Utils_chr('/');
+			default:
+				return c;
+		}
+	};
+	return $elm$core$String$map(fix);
+}();
+var $JonRowe$elm_jwt$Jwt$getTokenBody = function (token) {
+	var processor = A2(
+		$elm$core$Basics$composeR,
+		$JonRowe$elm_jwt$Jwt$unurl,
+		A2(
+			$elm$core$Basics$composeR,
+			$elm$core$String$split('.'),
+			$elm$core$List$map($JonRowe$elm_jwt$Jwt$fixlength)));
+	var _v0 = processor(token);
+	_v0$2:
+	while (true) {
+		if (_v0.b && _v0.b.b) {
+			if (_v0.b.a.$ === 'Err') {
+				if (_v0.b.b.b && (!_v0.b.b.b.b)) {
+					var _v1 = _v0.b;
+					var e = _v1.a.a;
+					var _v2 = _v1.b;
+					return $elm$core$Result$Err(e);
+				} else {
+					break _v0$2;
+				}
+			} else {
+				if (_v0.b.b.b && (!_v0.b.b.b.b)) {
+					var _v3 = _v0.b;
+					var encBody = _v3.a.a;
+					var _v4 = _v3.b;
+					return $elm$core$Result$Ok(encBody);
+				} else {
+					break _v0$2;
+				}
+			}
+		} else {
+			break _v0$2;
+		}
+	}
+	return $elm$core$Result$Err(
+		$JonRowe$elm_jwt$Jwt$TokenProcessingError('Token has invalid shape'));
+};
+var $elm$core$Result$mapError = F2(
+	function (f, result) {
+		if (result.$ === 'Ok') {
+			var v = result.a;
+			return $elm$core$Result$Ok(v);
+		} else {
+			var e = result.a;
+			return $elm$core$Result$Err(
+				f(e));
+		}
+	});
+var $JonRowe$elm_jwt$Jwt$decodeToken = function (dec) {
+	return A2(
+		$elm$core$Basics$composeR,
+		$JonRowe$elm_jwt$Jwt$getTokenBody,
+		A2(
+			$elm$core$Basics$composeR,
+			$elm$core$Result$andThen(
+				A2(
+					$elm$core$Basics$composeR,
+					$truqu$elm_base64$Base64$decode,
+					$elm$core$Result$mapError($JonRowe$elm_jwt$Jwt$TokenProcessingError))),
+			$elm$core$Result$andThen(
+				A2(
+					$elm$core$Basics$composeR,
+					$elm$json$Json$Decode$decodeString(dec),
+					$elm$core$Result$mapError($JonRowe$elm_jwt$Jwt$TokenDecodeError)))));
+};
+var $author$project$Api$Psy = {$: 'Psy'};
+var $author$project$Api$User = {$: 'User'};
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $author$project$Api$getRole = A2(
+	$elm$json$Json$Decode$map,
+	function (string) {
+		return (string === 'Psy') ? $author$project$Api$Psy : ((string === 'user') ? $author$project$Api$User : $author$project$Api$None);
+	},
+	A2(
+		$elm$json$Json$Decode$at,
+		_List_fromArray(
+			['https://hasura.io/jwt/claims', 'x-hasura-default-role']),
+		$elm$json$Json$Decode$string));
+var $elm$core$Result$withDefault = F2(
+	function (def, result) {
+		if (result.$ === 'Ok') {
+			var a = result.a;
+			return a;
+		} else {
+			return def;
+		}
+	});
+var $author$project$Api$getRoleFromMaybeCred = function (maybecred) {
+	if (maybecred.$ === 'Just') {
+		var token = maybecred.a.a;
+		return A2(
+			$elm$core$Result$withDefault,
+			$author$project$Api$None,
+			A2($JonRowe$elm_jwt$Jwt$decodeToken, $author$project$Api$getRole, token));
+	} else {
+		return $author$project$Api$None;
+	}
+};
 var $krisajenkins$remotedata$RemoteData$Loading = {$: 'Loading'};
 var $author$project$Page$Calendar$Model = function (a) {
 	return {$: 'Model', a: a};
@@ -5618,11 +6054,6 @@ var $author$project$Page$Calendar$GetAgendaResponse = function (a) {
 	return {$: 'GetAgendaResponse', a: a};
 };
 var $dillonkearns$elm_graphql$Graphql$OptionalArgument$Absent = {$: 'Absent'};
-var $elm$core$Basics$composeR = F3(
-	function (f, g, x) {
-		return g(
-			f(x));
-	});
 var $dillonkearns$elm_graphql$Graphql$Internal$Encode$Json = function (a) {
 	return {$: 'Json', a: a};
 };
@@ -6297,15 +6728,6 @@ var $elm$core$Maybe$map = F2(
 			return $elm$core$Maybe$Nothing;
 		}
 	});
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
 var $dillonkearns$elm_graphql$Graphql$Internal$Encode$maybe = function (encoder) {
 	return A2(
 		$elm$core$Basics$composeR,
@@ -6624,24 +7046,17 @@ var $elm$core$List$append = F2(
 			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
 		}
 	});
-var $elm$core$String$concat = function (strings) {
-	return A2($elm$core$String$join, '', strings);
-};
 var $Skinney$murmur3$Murmur3$HashData = F4(
 	function (shift, seed, hash, charsProcessed) {
 		return {charsProcessed: charsProcessed, hash: hash, seed: seed, shift: shift};
 	});
 var $Skinney$murmur3$Murmur3$c1 = 3432918353;
 var $Skinney$murmur3$Murmur3$c2 = 461845907;
-var $elm$core$Bitwise$and = _Bitwise_and;
-var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
-var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
 var $Skinney$murmur3$Murmur3$multiplyBy = F2(
 	function (b, a) {
 		return ((a & 65535) * b) + ((((a >>> 16) * b) & 65535) << 16);
 	});
 var $elm$core$Basics$neq = _Utils_notEqual;
-var $elm$core$Bitwise$or = _Bitwise_or;
 var $Skinney$murmur3$Murmur3$rotlBy = F2(
 	function (b, a) {
 		return (a << b) | (a >>> (32 - b));
@@ -6660,7 +7075,6 @@ var $Skinney$murmur3$Murmur3$finalize = function (data) {
 	var h2 = A2($Skinney$murmur3$Murmur3$multiplyBy, 3266489909, h1 ^ (h1 >>> 13));
 	return (h2 ^ (h2 >>> 16)) >>> 0;
 };
-var $elm$core$String$foldl = _String_foldl;
 var $Skinney$murmur3$Murmur3$mix = F2(
 	function (h1, k1) {
 		return A2(
@@ -7820,13 +8234,6 @@ var $elm$core$Basics$composeL = F3(
 		return g(
 			f(x));
 	});
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
-var $elm$core$String$dropRight = F2(
-	function (n, string) {
-		return (n < 1) ? string : A3($elm$core$String$slice, 0, -n, string);
-	});
 var $elm$core$Array$bitMask = 4294967295 >>> (32 - $elm$core$Array$shiftStep);
 var $elm$core$Elm$JsArray$unsafeGet = _JsArray_unsafeGet;
 var $elm$core$Array$getHelp = F3(
@@ -7917,18 +8324,6 @@ var $elm$core$Array$fromList = function (list) {
 		return A3($elm$core$Array$fromListHelp, list, _List_Nil, 0);
 	}
 };
-var $elm$regex$Regex$Match = F4(
-	function (match, index, number, submatches) {
-		return {index: index, match: match, number: number, submatches: submatches};
-	});
-var $elm$regex$Regex$fromStringWith = _Regex_fromStringWith;
-var $elm$regex$Regex$fromString = function (string) {
-	return A2(
-		$elm$regex$Regex$fromStringWith,
-		{caseInsensitive: false, multiline: false},
-		string);
-};
-var $elm$regex$Regex$never = _Regex_never;
 var $lukewestby$elm_string_interpolate$String$Interpolate$interpolationRegex = A2(
 	$elm$core$Maybe$withDefault,
 	$elm$regex$Regex$never,
@@ -8632,6 +9027,7 @@ var $author$project$Page$Patients$init = function (session) {
 };
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$core$Debug$log = _Debug_log;
+var $author$project$Main$loginUrl = 'https://psy-app.eu.auth0.com/' + ('login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf' + ('&protocol=oauth2' + ('&response_type=token%20id_token' + ('&redirect_uri=http://localhost:8000' + '&scope=openid%20profile'))));
 var $elm$core$Maybe$destruct = F3(
 	function (_default, func, maybe) {
 		if (maybe.$ === 'Just') {
@@ -8785,11 +9181,26 @@ var $author$project$Main$changeRouteTo = F2(
 							$author$project$Page$Calendar$init(session));
 					case 'Patients':
 						var _v4 = _v1.a;
-						return A3(
-							$author$project$Main$updateWith,
-							$author$project$Main$Patients,
-							$author$project$Main$GotPatientsMsg,
-							$author$project$Page$Patients$init(session));
+						var _v5 = $author$project$Api$getRoleFromMaybeCred(cred);
+						if (_v5.$ === 'Psy') {
+							return A3(
+								$author$project$Main$updateWith,
+								$author$project$Main$Patients,
+								$author$project$Main$GotPatientsMsg,
+								$author$project$Page$Patients$init(session));
+						} else {
+							return _Utils_Tuple2(
+								$author$project$Main$Redirect(session),
+								$elm$core$Platform$Cmd$batch(
+									_List_fromArray(
+										[
+											A2(
+											$author$project$Route$replaceUrl,
+											$author$project$Session$navKey(session),
+											$author$project$Route$Calendar),
+											A2($elm$core$Task$perform, $author$project$Main$CheckToken, $elm$time$Time$now)
+										])));
+						}
 					default:
 						return _Utils_Tuple2(
 							$author$project$Main$Redirect(session),
@@ -8815,12 +9226,12 @@ var $author$project$Main$changeRouteTo = F2(
 				} else {
 					return _Utils_Tuple2(
 						$author$project$Main$Redirect(session),
-						$elm$browser$Browser$Navigation$load('https://psy-app.eu.auth0.com/login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf&protocol=oauth2&response_type=token%20id_token&scope=openid%20profile'));
+						$elm$browser$Browser$Navigation$load($author$project$Main$loginUrl));
 				}
 			} else {
 				return _Utils_Tuple2(
 					$author$project$Main$Redirect(session),
-					$elm$browser$Browser$Navigation$load('https://psy-app.eu.auth0.com/login?client=rcd2TG98zW4rEN4mq3PgxEe3hMQfPDWf&protocol=oauth2&response_type=token%20id_token&scope=openid%20profile'));
+					$elm$browser$Browser$Navigation$load($author$project$Main$loginUrl));
 			}
 		}
 	});
@@ -9490,364 +9901,6 @@ var $JonRowe$elm_jwt$Jwt$decodeExp = $elm$json$Json$Decode$oneOf(
 			$elm$json$Json$Decode$int,
 			A2($elm$json$Json$Decode$map, $elm$core$Basics$round, $elm$json$Json$Decode$float)
 		]));
-var $JonRowe$elm_jwt$Jwt$TokenDecodeError = function (a) {
-	return {$: 'TokenDecodeError', a: a};
-};
-var $JonRowe$elm_jwt$Jwt$TokenProcessingError = function (a) {
-	return {$: 'TokenProcessingError', a: a};
-};
-var $truqu$elm_base64$Base64$Decode$pad = function (input) {
-	var _v0 = $elm$core$String$length(input) % 4;
-	switch (_v0) {
-		case 3:
-			return input + '=';
-		case 2:
-			return input + '==';
-		default:
-			return input;
-	}
-};
-var $truqu$elm_base64$Base64$Decode$charToInt = function (_char) {
-	switch (_char.valueOf()) {
-		case 'A':
-			return 0;
-		case 'B':
-			return 1;
-		case 'C':
-			return 2;
-		case 'D':
-			return 3;
-		case 'E':
-			return 4;
-		case 'F':
-			return 5;
-		case 'G':
-			return 6;
-		case 'H':
-			return 7;
-		case 'I':
-			return 8;
-		case 'J':
-			return 9;
-		case 'K':
-			return 10;
-		case 'L':
-			return 11;
-		case 'M':
-			return 12;
-		case 'N':
-			return 13;
-		case 'O':
-			return 14;
-		case 'P':
-			return 15;
-		case 'Q':
-			return 16;
-		case 'R':
-			return 17;
-		case 'S':
-			return 18;
-		case 'T':
-			return 19;
-		case 'U':
-			return 20;
-		case 'V':
-			return 21;
-		case 'W':
-			return 22;
-		case 'X':
-			return 23;
-		case 'Y':
-			return 24;
-		case 'Z':
-			return 25;
-		case 'a':
-			return 26;
-		case 'b':
-			return 27;
-		case 'c':
-			return 28;
-		case 'd':
-			return 29;
-		case 'e':
-			return 30;
-		case 'f':
-			return 31;
-		case 'g':
-			return 32;
-		case 'h':
-			return 33;
-		case 'i':
-			return 34;
-		case 'j':
-			return 35;
-		case 'k':
-			return 36;
-		case 'l':
-			return 37;
-		case 'm':
-			return 38;
-		case 'n':
-			return 39;
-		case 'o':
-			return 40;
-		case 'p':
-			return 41;
-		case 'q':
-			return 42;
-		case 'r':
-			return 43;
-		case 's':
-			return 44;
-		case 't':
-			return 45;
-		case 'u':
-			return 46;
-		case 'v':
-			return 47;
-		case 'w':
-			return 48;
-		case 'x':
-			return 49;
-		case 'y':
-			return 50;
-		case 'z':
-			return 51;
-		case '0':
-			return 52;
-		case '1':
-			return 53;
-		case '2':
-			return 54;
-		case '3':
-			return 55;
-		case '4':
-			return 56;
-		case '5':
-			return 57;
-		case '6':
-			return 58;
-		case '7':
-			return 59;
-		case '8':
-			return 60;
-		case '9':
-			return 61;
-		case '+':
-			return 62;
-		case '/':
-			return 63;
-		default:
-			return 0;
-	}
-};
-var $elm$core$String$cons = _String_cons;
-var $elm$core$String$fromChar = function (_char) {
-	return A2($elm$core$String$cons, _char, '');
-};
-var $elm$core$Char$fromCode = _Char_fromCode;
-var $truqu$elm_base64$Base64$Decode$intToString = A2($elm$core$Basics$composeR, $elm$core$Char$fromCode, $elm$core$String$fromChar);
-var $truqu$elm_base64$Base64$Decode$add = F2(
-	function (_char, _v0) {
-		var curr = _v0.a;
-		var need = _v0.b;
-		var res = _v0.c;
-		var shiftAndAdd = function (_int) {
-			return (63 & _int) | (curr << 6);
-		};
-		return (!need) ? ((!(128 & _char)) ? _Utils_Tuple3(
-			0,
-			0,
-			_Utils_ap(
-				res,
-				$truqu$elm_base64$Base64$Decode$intToString(_char))) : (((224 & _char) === 192) ? _Utils_Tuple3(31 & _char, 1, res) : (((240 & _char) === 224) ? _Utils_Tuple3(15 & _char, 2, res) : _Utils_Tuple3(7 & _char, 3, res)))) : ((need === 1) ? _Utils_Tuple3(
-			0,
-			0,
-			_Utils_ap(
-				res,
-				$truqu$elm_base64$Base64$Decode$intToString(
-					shiftAndAdd(_char)))) : _Utils_Tuple3(
-			shiftAndAdd(_char),
-			need - 1,
-			res));
-	});
-var $truqu$elm_base64$Base64$Decode$toUTF16 = F2(
-	function (_char, acc) {
-		return _Utils_Tuple3(
-			0,
-			0,
-			A2(
-				$truqu$elm_base64$Base64$Decode$add,
-				255 & (_char >>> 0),
-				A2(
-					$truqu$elm_base64$Base64$Decode$add,
-					255 & (_char >>> 8),
-					A2($truqu$elm_base64$Base64$Decode$add, 255 & (_char >>> 16), acc))));
-	});
-var $truqu$elm_base64$Base64$Decode$chomp = F2(
-	function (char_, _v0) {
-		var curr = _v0.a;
-		var cnt = _v0.b;
-		var utf8ToUtf16 = _v0.c;
-		var _char = $truqu$elm_base64$Base64$Decode$charToInt(char_);
-		if (cnt === 3) {
-			return A2($truqu$elm_base64$Base64$Decode$toUTF16, curr | _char, utf8ToUtf16);
-		} else {
-			return _Utils_Tuple3((_char << ((3 - cnt) * 6)) | curr, cnt + 1, utf8ToUtf16);
-		}
-	});
-var $truqu$elm_base64$Base64$Decode$initial = _Utils_Tuple3(
-	0,
-	0,
-	_Utils_Tuple3(0, 0, ''));
-var $elm$core$Result$map = F2(
-	function (func, ra) {
-		if (ra.$ === 'Ok') {
-			var a = ra.a;
-			return $elm$core$Result$Ok(
-				func(a));
-		} else {
-			var e = ra.a;
-			return $elm$core$Result$Err(e);
-		}
-	});
-var $elm$core$String$endsWith = _String_endsWith;
-var $truqu$elm_base64$Base64$Decode$stripNulls = F2(
-	function (input, output) {
-		return A2($elm$core$String$endsWith, '==', input) ? A2($elm$core$String$dropRight, 2, output) : (A2($elm$core$String$endsWith, '=', input) ? A2($elm$core$String$dropRight, 1, output) : output);
-	});
-var $elm$regex$Regex$contains = _Regex_contains;
-var $truqu$elm_base64$Base64$Decode$validBase64Regex = A2(
-	$elm$core$Maybe$withDefault,
-	$elm$regex$Regex$never,
-	$elm$regex$Regex$fromString('^([A-Za-z0-9\\/+]{4})*([A-Za-z0-9\\/+]{2}[A-Za-z0-9\\/+=]{2})?$'));
-var $truqu$elm_base64$Base64$Decode$validate = function (input) {
-	return A2($elm$regex$Regex$contains, $truqu$elm_base64$Base64$Decode$validBase64Regex, input) ? $elm$core$Result$Ok(input) : $elm$core$Result$Err('Invalid base64');
-};
-var $truqu$elm_base64$Base64$Decode$wrapUp = function (_v0) {
-	var _v1 = _v0.c;
-	var need = _v1.b;
-	var res = _v1.c;
-	return (need > 0) ? $elm$core$Result$Err('Invalid UTF-16') : $elm$core$Result$Ok(res);
-};
-var $truqu$elm_base64$Base64$Decode$validateAndDecode = function (input) {
-	return A2(
-		$elm$core$Result$map,
-		$truqu$elm_base64$Base64$Decode$stripNulls(input),
-		A2(
-			$elm$core$Result$andThen,
-			A2(
-				$elm$core$Basics$composeR,
-				A2($elm$core$String$foldl, $truqu$elm_base64$Base64$Decode$chomp, $truqu$elm_base64$Base64$Decode$initial),
-				$truqu$elm_base64$Base64$Decode$wrapUp),
-			$truqu$elm_base64$Base64$Decode$validate(input)));
-};
-var $truqu$elm_base64$Base64$Decode$decode = A2($elm$core$Basics$composeR, $truqu$elm_base64$Base64$Decode$pad, $truqu$elm_base64$Base64$Decode$validateAndDecode);
-var $truqu$elm_base64$Base64$decode = $truqu$elm_base64$Base64$Decode$decode;
-var $elm$core$Basics$modBy = _Basics_modBy;
-var $JonRowe$elm_jwt$Jwt$fixlength = function (s) {
-	var _v0 = A2(
-		$elm$core$Basics$modBy,
-		4,
-		$elm$core$String$length(s));
-	switch (_v0) {
-		case 0:
-			return $elm$core$Result$Ok(s);
-		case 2:
-			return $elm$core$Result$Ok(
-				$elm$core$String$concat(
-					_List_fromArray(
-						[s, '=='])));
-		case 3:
-			return $elm$core$Result$Ok(
-				$elm$core$String$concat(
-					_List_fromArray(
-						[s, '='])));
-		default:
-			return $elm$core$Result$Err(
-				$JonRowe$elm_jwt$Jwt$TokenProcessingError('Wrong length'));
-	}
-};
-var $elm$core$String$map = _String_map;
-var $JonRowe$elm_jwt$Jwt$unurl = function () {
-	var fix = function (c) {
-		switch (c.valueOf()) {
-			case '-':
-				return _Utils_chr('+');
-			case '_':
-				return _Utils_chr('/');
-			default:
-				return c;
-		}
-	};
-	return $elm$core$String$map(fix);
-}();
-var $JonRowe$elm_jwt$Jwt$getTokenBody = function (token) {
-	var processor = A2(
-		$elm$core$Basics$composeR,
-		$JonRowe$elm_jwt$Jwt$unurl,
-		A2(
-			$elm$core$Basics$composeR,
-			$elm$core$String$split('.'),
-			$elm$core$List$map($JonRowe$elm_jwt$Jwt$fixlength)));
-	var _v0 = processor(token);
-	_v0$2:
-	while (true) {
-		if (_v0.b && _v0.b.b) {
-			if (_v0.b.a.$ === 'Err') {
-				if (_v0.b.b.b && (!_v0.b.b.b.b)) {
-					var _v1 = _v0.b;
-					var e = _v1.a.a;
-					var _v2 = _v1.b;
-					return $elm$core$Result$Err(e);
-				} else {
-					break _v0$2;
-				}
-			} else {
-				if (_v0.b.b.b && (!_v0.b.b.b.b)) {
-					var _v3 = _v0.b;
-					var encBody = _v3.a.a;
-					var _v4 = _v3.b;
-					return $elm$core$Result$Ok(encBody);
-				} else {
-					break _v0$2;
-				}
-			}
-		} else {
-			break _v0$2;
-		}
-	}
-	return $elm$core$Result$Err(
-		$JonRowe$elm_jwt$Jwt$TokenProcessingError('Token has invalid shape'));
-};
-var $elm$core$Result$mapError = F2(
-	function (f, result) {
-		if (result.$ === 'Ok') {
-			var v = result.a;
-			return $elm$core$Result$Ok(v);
-		} else {
-			var e = result.a;
-			return $elm$core$Result$Err(
-				f(e));
-		}
-	});
-var $JonRowe$elm_jwt$Jwt$decodeToken = function (dec) {
-	return A2(
-		$elm$core$Basics$composeR,
-		$JonRowe$elm_jwt$Jwt$getTokenBody,
-		A2(
-			$elm$core$Basics$composeR,
-			$elm$core$Result$andThen(
-				A2(
-					$elm$core$Basics$composeR,
-					$truqu$elm_base64$Base64$decode,
-					$elm$core$Result$mapError($JonRowe$elm_jwt$Jwt$TokenProcessingError))),
-			$elm$core$Result$andThen(
-				A2(
-					$elm$core$Basics$composeR,
-					$elm$json$Json$Decode$decodeString(dec),
-					$elm$core$Result$mapError($JonRowe$elm_jwt$Jwt$TokenDecodeError)))));
-};
 var $elm$time$Time$posixToMillis = function (_v0) {
 	var millis = _v0.a;
 	return millis;
@@ -9882,15 +9935,6 @@ var $author$project$Session$isExpired = F2(
 	function (time, session) {
 		var credval = $author$project$Session$cred(session);
 		return A2($author$project$Api$isExpired, time, credval);
-	});
-var $elm$core$Result$withDefault = F2(
-	function (def, result) {
-		if (result.$ === 'Ok') {
-			var a = result.a;
-			return a;
-		} else {
-			return def;
-		}
 	});
 var $author$project$Main$checkToken = F2(
 	function (time, model) {
@@ -17201,35 +17245,6 @@ var $mdgriffith$elm_ui$Element$focused = function (decs) {
 			$mdgriffith$elm_ui$Internal$Model$Focus,
 			$mdgriffith$elm_ui$Internal$Model$unwrapDecorations(decs)));
 };
-var $author$project$Api$None = {$: 'None'};
-var $author$project$Api$Psy = {$: 'Psy'};
-var $author$project$Api$User = {$: 'User'};
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
-	});
-var $elm$json$Json$Decode$index = _Json_decodeIndex;
-var $author$project$Api$getRole = A2(
-	$elm$json$Json$Decode$map,
-	function (string) {
-		return (string === 'Psy') ? $author$project$Api$Psy : ((string === 'user') ? $author$project$Api$User : $author$project$Api$None);
-	},
-	A2(
-		$elm$json$Json$Decode$at,
-		_List_fromArray(
-			['https://hasura.io/jwt/claims', 'x-hasura-allowed-roles']),
-		A2($elm$json$Json$Decode$index, 0, $elm$json$Json$Decode$string)));
-var $author$project$Api$getRoleFromMaybeCred = function (maybecred) {
-	if (maybecred.$ === 'Just') {
-		var token = maybecred.a.a;
-		return A2(
-			$elm$core$Result$withDefault,
-			$author$project$Api$None,
-			A2($JonRowe$elm_jwt$Jwt$decodeToken, $author$project$Api$getRole, token));
-	} else {
-		return $author$project$Api$None;
-	}
-};
 var $elm$html$Html$Attributes$href = function (url) {
 	return A2(
 		$elm$html$Html$Attributes$stringProperty,
@@ -17331,130 +17346,91 @@ var $author$project$Page$viewHeader = function (maybeCred) {
 			]),
 		_Utils_ap(
 			function () {
-				var _v0 = $author$project$Api$getRoleFromMaybeCred(maybeCred);
-				switch (_v0.$) {
-					case 'Psy':
-						return _List_fromArray(
-							[
-								A2(
-								$mdgriffith$elm_ui$Element$link,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-									]),
-								{
-									label: A2(
+				var _v0 = A2(
+					$elm$core$Debug$log,
+					'Role',
+					$author$project$Api$getRoleFromMaybeCred(maybeCred));
+				if (_v0.$ === 'Psy') {
+					return _List_fromArray(
+						[
+							A2(
+							$mdgriffith$elm_ui$Element$link,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+								]),
+							{
+								label: A2(
+									$mdgriffith$elm_ui$Element$el,
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+											$mdgriffith$elm_ui$Element$padding(30),
+											$mdgriffith$elm_ui$Element$Background$color(
+											A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
+											$mdgriffith$elm_ui$Element$mouseOver(
+											_List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$Background$color(
+													A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
+												])),
+											$mdgriffith$elm_ui$Element$focused(
+											_List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$Background$color(
+													A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61)),
+													$mdgriffith$elm_ui$Element$Font$color(
+													A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216))
+												]))
+										]),
+									A2(
 										$mdgriffith$elm_ui$Element$el,
 										_List_fromArray(
-											[
-												$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-												$mdgriffith$elm_ui$Element$padding(30),
-												$mdgriffith$elm_ui$Element$Background$color(
-												A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
-												$mdgriffith$elm_ui$Element$mouseOver(
-												_List_fromArray(
-													[
-														$mdgriffith$elm_ui$Element$Background$color(
-														A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
-													])),
-												$mdgriffith$elm_ui$Element$focused(
-												_List_fromArray(
-													[
-														$mdgriffith$elm_ui$Element$Background$color(
-														A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61)),
-														$mdgriffith$elm_ui$Element$Font$color(
-														A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216))
-													]))
-											]),
-										A2(
-											$mdgriffith$elm_ui$Element$el,
+											[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+										$mdgriffith$elm_ui$Element$text('Patients'))),
+								url: 'patients'
+							}),
+							A2(
+							$mdgriffith$elm_ui$Element$link,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+								]),
+							{
+								label: A2(
+									$mdgriffith$elm_ui$Element$el,
+									_List_fromArray(
+										[
+											$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+											$mdgriffith$elm_ui$Element$padding(30),
+											$mdgriffith$elm_ui$Element$Background$color(
+											A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
+											$mdgriffith$elm_ui$Element$mouseOver(
 											_List_fromArray(
-												[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-											$mdgriffith$elm_ui$Element$text('Patients'))),
-									url: 'patients'
-								}),
-								A2(
-								$mdgriffith$elm_ui$Element$link,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-									]),
-								{
-									label: A2(
+												[
+													$mdgriffith$elm_ui$Element$Background$color(
+													A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
+												])),
+											$mdgriffith$elm_ui$Element$focused(
+											_List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$Background$color(
+													A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61)),
+													$mdgriffith$elm_ui$Element$Font$color(
+													A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216))
+												]))
+										]),
+									A2(
 										$mdgriffith$elm_ui$Element$el,
 										_List_fromArray(
-											[
-												$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-												$mdgriffith$elm_ui$Element$padding(30),
-												$mdgriffith$elm_ui$Element$Background$color(
-												A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
-												$mdgriffith$elm_ui$Element$mouseOver(
-												_List_fromArray(
-													[
-														$mdgriffith$elm_ui$Element$Background$color(
-														A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
-													])),
-												$mdgriffith$elm_ui$Element$focused(
-												_List_fromArray(
-													[
-														$mdgriffith$elm_ui$Element$Background$color(
-														A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61)),
-														$mdgriffith$elm_ui$Element$Font$color(
-														A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216))
-													]))
-											]),
-										A2(
-											$mdgriffith$elm_ui$Element$el,
-											_List_fromArray(
-												[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-											$mdgriffith$elm_ui$Element$text('Calendrier'))),
-									url: 'calendar'
-								})
-							]);
-					case 'User':
-						return _List_fromArray(
-							[
-								A2(
-								$mdgriffith$elm_ui$Element$link,
-								_List_fromArray(
-									[
-										$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
-									]),
-								{
-									label: A2(
-										$mdgriffith$elm_ui$Element$el,
-										_List_fromArray(
-											[
-												$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-												$mdgriffith$elm_ui$Element$padding(30),
-												$mdgriffith$elm_ui$Element$Background$color(
-												A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
-												$mdgriffith$elm_ui$Element$mouseOver(
-												_List_fromArray(
-													[
-														$mdgriffith$elm_ui$Element$Background$color(
-														A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
-													])),
-												$mdgriffith$elm_ui$Element$focused(
-												_List_fromArray(
-													[
-														$mdgriffith$elm_ui$Element$Background$color(
-														A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61)),
-														$mdgriffith$elm_ui$Element$Font$color(
-														A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216))
-													]))
-											]),
-										A2(
-											$mdgriffith$elm_ui$Element$el,
-											_List_fromArray(
-												[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-											$mdgriffith$elm_ui$Element$text('Calendrier'))),
-									url: 'calendar'
-								})
-							]);
-					default:
-						return _List_fromArray(
-							[$mdgriffith$elm_ui$Element$none]);
+											[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+										$mdgriffith$elm_ui$Element$text('Calendrier'))),
+								url: 'calendar'
+							})
+						]);
+				} else {
+					return _List_fromArray(
+						[$mdgriffith$elm_ui$Element$none]);
 				}
 			}(),
 			_List_fromArray(
@@ -17976,89 +17952,104 @@ var $author$project$Page$Calendar$tableField = function (data) {
 			]),
 		$mdgriffith$elm_ui$Element$text(data));
 };
-var $author$project$Page$Calendar$agendaTable = function (response) {
-	var timeToString = function (_v1) {
-		var string = _v1.a;
-		return string;
-	};
-	var dateToString = function (_v0) {
-		var string = _v0.a;
-		return string;
-	};
-	return A2(
-		$mdgriffith$elm_ui$Element$table,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$centerX,
-				$mdgriffith$elm_ui$Element$centerY,
-				$mdgriffith$elm_ui$Element$padding(30),
-				$mdgriffith$elm_ui$Element$Background$color(
-				A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166))
-			]),
-		{
-			columns: _List_fromArray(
+var $author$project$Page$Calendar$agendaTable = F2(
+	function (response, maybeCred) {
+		var timeToString = function (_v2) {
+			var string = _v2.a;
+			return string;
+		};
+		var dateToString = function (_v1) {
+			var string = _v1.a;
+			return string;
+		};
+		return A2(
+			$mdgriffith$elm_ui$Element$table,
+			_List_fromArray(
 				[
-					{
-					header: $author$project$Page$Calendar$tableField('Date'),
-					view: function (agenda) {
-						return $author$project$Page$Calendar$tableField(
-							dateToString(agenda.date));
-					},
-					width: $mdgriffith$elm_ui$Element$fill
-				},
-					{
-					header: $author$project$Page$Calendar$tableField('Heure'),
-					view: function (agenda) {
-						return $author$project$Page$Calendar$tableField(
-							timeToString(agenda.heure));
-					},
-					width: $mdgriffith$elm_ui$Element$fill
-				},
-					{
-					header: $author$project$Page$Calendar$tableField('Supprimer agenda'),
-					view: function (agenda) {
-						return A2(
-							$mdgriffith$elm_ui$Element$Input$button,
-							_List_fromArray(
-								[
-									$mdgriffith$elm_ui$Element$Border$width(1),
-									$mdgriffith$elm_ui$Element$Background$color(
-									A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
-								]),
-							{
-								label: A2(
-									$mdgriffith$elm_ui$Element$el,
-									_List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$centerX,
-											$mdgriffith$elm_ui$Element$centerY,
-											$mdgriffith$elm_ui$Element$padding(23),
-											$mdgriffith$elm_ui$Element$Font$color(
-											A3($mdgriffith$elm_ui$Element$rgb255, 255, 50, 50)),
-											$mdgriffith$elm_ui$Element$mouseOver(
-											_List_fromArray(
-												[
-													$mdgriffith$elm_ui$Element$Font$color(
-													A3($mdgriffith$elm_ui$Element$rgb255, 200, 30, 30))
-												])),
-											$mdgriffith$elm_ui$Element$focused(
-											_List_fromArray(
-												[
-													$mdgriffith$elm_ui$Element$Font$color(
-													A3($mdgriffith$elm_ui$Element$rgb255, 100, 10, 10))
-												]))
-										]),
-									$mdgriffith$elm_ui$Element$text('X')),
-								onPress: $elm$core$Maybe$Just(
-									$author$project$Page$Calendar$DeleteAgenda(agenda))
-							});
-					},
-					width: $mdgriffith$elm_ui$Element$fill
-				}
+					$mdgriffith$elm_ui$Element$centerX,
+					$mdgriffith$elm_ui$Element$centerY,
+					$mdgriffith$elm_ui$Element$padding(30),
+					$mdgriffith$elm_ui$Element$Background$color(
+					A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166))
 				]),
-			data: response
-		});
-};
+			{
+				columns: _Utils_ap(
+					_List_fromArray(
+						[
+							{
+							header: $author$project$Page$Calendar$tableField('Date'),
+							view: function (agenda) {
+								return $author$project$Page$Calendar$tableField(
+									dateToString(agenda.date));
+							},
+							width: $mdgriffith$elm_ui$Element$fill
+						},
+							{
+							header: $author$project$Page$Calendar$tableField('Heure'),
+							view: function (agenda) {
+								return $author$project$Page$Calendar$tableField(
+									timeToString(agenda.heure));
+							},
+							width: $mdgriffith$elm_ui$Element$fill
+						}
+						]),
+					function () {
+						var _v0 = A2(
+							$elm$core$Debug$log,
+							'Role',
+							$author$project$Api$getRoleFromMaybeCred(maybeCred));
+						if (_v0.$ === 'Psy') {
+							return _List_fromArray(
+								[
+									{
+									header: $author$project$Page$Calendar$tableField('Supprimer agenda'),
+									view: function (agenda) {
+										return A2(
+											$mdgriffith$elm_ui$Element$Input$button,
+											_List_fromArray(
+												[
+													$mdgriffith$elm_ui$Element$Border$width(1),
+													$mdgriffith$elm_ui$Element$Background$color(
+													A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
+												]),
+											{
+												label: A2(
+													$mdgriffith$elm_ui$Element$el,
+													_List_fromArray(
+														[
+															$mdgriffith$elm_ui$Element$centerX,
+															$mdgriffith$elm_ui$Element$centerY,
+															$mdgriffith$elm_ui$Element$padding(23),
+															$mdgriffith$elm_ui$Element$Font$color(
+															A3($mdgriffith$elm_ui$Element$rgb255, 255, 50, 50)),
+															$mdgriffith$elm_ui$Element$mouseOver(
+															_List_fromArray(
+																[
+																	$mdgriffith$elm_ui$Element$Font$color(
+																	A3($mdgriffith$elm_ui$Element$rgb255, 200, 30, 30))
+																])),
+															$mdgriffith$elm_ui$Element$focused(
+															_List_fromArray(
+																[
+																	$mdgriffith$elm_ui$Element$Font$color(
+																	A3($mdgriffith$elm_ui$Element$rgb255, 100, 10, 10))
+																]))
+														]),
+													$mdgriffith$elm_ui$Element$text('X')),
+												onPress: $elm$core$Maybe$Just(
+													$author$project$Page$Calendar$DeleteAgenda(agenda))
+											});
+									},
+									width: $mdgriffith$elm_ui$Element$fill
+								}
+								]);
+						} else {
+							return _List_Nil;
+						}
+					}()),
+				data: response
+			});
+	});
 var $elm$html$Html$Attributes$alt = $elm$html$Html$Attributes$stringProperty('alt');
 var $elm$html$Html$Attributes$src = function (url) {
 	return A2(
@@ -19047,8 +19038,8 @@ var $author$project$Page$Calendar$textInput = F4(
 				text: formtext
 			});
 	});
-var $author$project$Page$Calendar$successView = F3(
-	function (response, form, addAgendaData) {
+var $author$project$Page$Calendar$successView = F4(
+	function (response, form, addAgendaData, maybeCred) {
 		var error = function () {
 			if (addAgendaData.$ === 'Failure') {
 				var graphqlError = addAgendaData.a;
@@ -19069,98 +19060,113 @@ var $author$project$Page$Calendar$successView = F3(
 					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
 					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
 				]),
-			_List_fromArray(
-				[
-					A2(
-					$mdgriffith$elm_ui$Element$row,
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$centerX,
-							$mdgriffith$elm_ui$Element$padding(50)
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$mdgriffith$elm_ui$Element$image,
-							_List_fromArray(
-								[
-									$mdgriffith$elm_ui$Element$width(
-									A2($mdgriffith$elm_ui$Element$maximum, 80, $mdgriffith$elm_ui$Element$fill))
-								]),
-							{description: 'logo', src: 'logo.png'}),
-							A2(
-							$mdgriffith$elm_ui$Element$el,
-							_List_fromArray(
-								[
-									$mdgriffith$elm_ui$Element$Font$color(
-									A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
-									$mdgriffith$elm_ui$Element$Font$size(80)
-								]),
-							$mdgriffith$elm_ui$Element$text('Votre liste de rendez-vous')),
-							A2(
-							$mdgriffith$elm_ui$Element$image,
-							_List_fromArray(
-								[
-									$mdgriffith$elm_ui$Element$width(
-									A2($mdgriffith$elm_ui$Element$maximum, 80, $mdgriffith$elm_ui$Element$fill))
-								]),
-							{description: 'logo', src: 'logo.png'})
-						])),
-					$author$project$Page$Calendar$agendaTable(response),
-					A2(
-					$mdgriffith$elm_ui$Element$row,
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$centerX,
-							$mdgriffith$elm_ui$Element$padding(30)
-						]),
-					_List_fromArray(
-						[
-							A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredDate, form.date, 'AAAA-MM-JJ', 'Date'),
-							A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredHeure, form.heure, 'HH:MM:SS+TZ', 'Heure')
-						])),
-					A2(
-					$mdgriffith$elm_ui$Element$Input$button,
-					_List_fromArray(
-						[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
-					{
-						label: A2(
-							$mdgriffith$elm_ui$Element$el,
-							_List_fromArray(
-								[
-									$mdgriffith$elm_ui$Element$padding(30),
-									$mdgriffith$elm_ui$Element$Border$rounded(5),
-									$mdgriffith$elm_ui$Element$Background$color(
-									A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
-									$mdgriffith$elm_ui$Element$mouseOver(
-									_List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$Background$color(
-											A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
-										])),
-									$mdgriffith$elm_ui$Element$focused(
-									_List_fromArray(
-										[
-											$mdgriffith$elm_ui$Element$Background$color(
-											A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61)),
-											$mdgriffith$elm_ui$Element$Font$color(
-											A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216))
-										]))
-								]),
-							$mdgriffith$elm_ui$Element$text('Ajouter un nouvel agenda')),
-						onPress: $elm$core$Maybe$Just($author$project$Page$Calendar$AddAgenda)
-					}),
-					A2(
-					$mdgriffith$elm_ui$Element$el,
-					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$centerX,
-							$mdgriffith$elm_ui$Element$centerY,
-							$mdgriffith$elm_ui$Element$Font$color(
-							A3($mdgriffith$elm_ui$Element$rgb255, 200, 30, 30))
-						]),
-					error)
-				]));
+			_Utils_ap(
+				_List_fromArray(
+					[
+						A2(
+						$mdgriffith$elm_ui$Element$row,
+						_List_fromArray(
+							[
+								$mdgriffith$elm_ui$Element$centerX,
+								$mdgriffith$elm_ui$Element$padding(50)
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$mdgriffith$elm_ui$Element$image,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$width(
+										A2($mdgriffith$elm_ui$Element$maximum, 80, $mdgriffith$elm_ui$Element$fill))
+									]),
+								{description: 'logo', src: 'logo.png'}),
+								A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$Font$color(
+										A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
+										$mdgriffith$elm_ui$Element$Font$size(80)
+									]),
+								$mdgriffith$elm_ui$Element$text('Votre liste de rendez-vous')),
+								A2(
+								$mdgriffith$elm_ui$Element$image,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$width(
+										A2($mdgriffith$elm_ui$Element$maximum, 80, $mdgriffith$elm_ui$Element$fill))
+									]),
+								{description: 'logo', src: 'logo.png'})
+							])),
+						A2($author$project$Page$Calendar$agendaTable, response, maybeCred)
+					]),
+				function () {
+					var _v0 = A2(
+						$elm$core$Debug$log,
+						'Role',
+						$author$project$Api$getRoleFromMaybeCred(maybeCred));
+					if (_v0.$ === 'Psy') {
+						return _List_fromArray(
+							[
+								A2(
+								$mdgriffith$elm_ui$Element$row,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$centerX,
+										$mdgriffith$elm_ui$Element$padding(30)
+									]),
+								_List_fromArray(
+									[
+										A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredDate, form.date, 'AAAA-MM-JJ', 'Date'),
+										A4($author$project$Page$Calendar$textInput, $author$project$Page$Calendar$EnteredHeure, form.heure, 'HH:MM:SS+TZ', 'Heure')
+									])),
+								A2(
+								$mdgriffith$elm_ui$Element$Input$button,
+								_List_fromArray(
+									[$mdgriffith$elm_ui$Element$centerX, $mdgriffith$elm_ui$Element$centerY]),
+								{
+									label: A2(
+										$mdgriffith$elm_ui$Element$el,
+										_List_fromArray(
+											[
+												$mdgriffith$elm_ui$Element$padding(30),
+												$mdgriffith$elm_ui$Element$Border$rounded(5),
+												$mdgriffith$elm_ui$Element$Background$color(
+												A3($mdgriffith$elm_ui$Element$rgb255, 111, 144, 166)),
+												$mdgriffith$elm_ui$Element$mouseOver(
+												_List_fromArray(
+													[
+														$mdgriffith$elm_ui$Element$Background$color(
+														A3($mdgriffith$elm_ui$Element$rgb255, 140, 179, 196))
+													])),
+												$mdgriffith$elm_ui$Element$focused(
+												_List_fromArray(
+													[
+														$mdgriffith$elm_ui$Element$Background$color(
+														A3($mdgriffith$elm_ui$Element$rgb255, 24, 52, 61)),
+														$mdgriffith$elm_ui$Element$Font$color(
+														A3($mdgriffith$elm_ui$Element$rgb255, 214, 217, 216))
+													]))
+											]),
+										$mdgriffith$elm_ui$Element$text('Ajouter un nouvel agenda')),
+									onPress: $elm$core$Maybe$Just($author$project$Page$Calendar$AddAgenda)
+								}),
+								A2(
+								$mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[
+										$mdgriffith$elm_ui$Element$centerX,
+										$mdgriffith$elm_ui$Element$centerY,
+										$mdgriffith$elm_ui$Element$Font$color(
+										A3($mdgriffith$elm_ui$Element$rgb255, 200, 30, 30))
+									]),
+								error)
+							]);
+					} else {
+						return _List_fromArray(
+							[$mdgriffith$elm_ui$Element$none]);
+					}
+				}()));
 	});
 var $author$project$Page$Calendar$view = function (model) {
 	return {
@@ -19187,7 +19193,13 @@ var $author$project$Page$Calendar$view = function (model) {
 							$mdgriffith$elm_ui$Element$text('Nous importons vos données, merci de patienter.'));
 					case 'Success':
 						var response = _v0.a;
-						return A3($author$project$Page$Calendar$successView, response, data.form, data.addAgendaData);
+						return A4(
+							$author$project$Page$Calendar$successView,
+							response,
+							data.form,
+							data.addAgendaData,
+							$author$project$Session$cred(
+								$author$project$Page$Calendar$toSession(model)));
 					default:
 						var error = _v0.a;
 						return $author$project$Page$Calendar$failureView(error);

@@ -167,7 +167,7 @@ getRoleFromMaybeCred maybecred =
 
 getRole : Decoder Role
 getRole =
-    Decode.at [ "https://hasura.io/jwt/claims", "x-hasura-allowed-roles" ] (Decode.index 0 Decode.string)
+    Decode.at [ "https://hasura.io/jwt/claims", "x-hasura-default-role" ] Decode.string
         |> Decode.map
             (\string ->
                 if string == "Psy" then

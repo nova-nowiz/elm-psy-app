@@ -10,6 +10,7 @@ import Api.Query as Query exposing (..)
 import Api.Scalar exposing (..)
 import Api.ScalarCodecs
 import Browser exposing (Document)
+import Debug exposing (log)
 import Element exposing (..)
 import Element.Background as Background
 import Element.Border as Border
@@ -222,7 +223,7 @@ view model =
                     (text "Nous importons vos données, merci de patienter.")
 
             Success response ->
-                successView response data.form data.addAgendaData
+                successView response data.form data.addAgendaData <| Session.cred <| toSession model
 
             Failure error ->
                 failureView error
@@ -230,8 +231,8 @@ view model =
     }
 
 
-successView : List Agenda -> Form -> AddAgendaData -> Element Msg
-successView response form addAgendaData =
+successView : List Agenda -> Form -> AddAgendaData -> Maybe Cred -> Element Msg
+successView response form addAgendaData maybeCred =
     let
         error =
             case addAgendaData of
@@ -243,32 +244,39 @@ successView response form addAgendaData =
                 _ ->
                     text ""
     in
-    column [ centerX, centerY, Background.color (rgb255 214 217 216), height fill, width fill ]
+    column [ centerX, centerY, Background.color (rgb255 214 217 216), height fill, width fill ] <|
         [ row [ centerX, padding 50 ]
             [ image [ width (fill |> maximum 80) ] { src = "logo.png", description = "logo" }
             , el [ Font.color (rgb255 111 144 166), Font.size 80 ] (text "Votre liste de rendez-vous")
             , image [ width (fill |> maximum 80) ] { src = "logo.png", description = "logo" }
             ]
-        , agendaTable response
-        , row [ centerX, padding 30 ]
-            [ textInput EnteredDate form.date "AAAA-MM-JJ" "Date"
-            , textInput EnteredHeure form.heure "HH:MM:SS+TZ" "Heure"
-            ]
-        , Input.button [ centerX, centerY ]
-            { label =
-                el
-                    [ padding 30
-                    , Border.rounded 5
-                    , Background.color (rgb255 111 144 166)
-                    , mouseOver [ Background.color (rgb255 140 179 196) ]
-                    , Element.focused [ Background.color (rgb255 24 52 61), Font.color (rgb255 214 217 216) ]
-                    ]
-                    (text "Ajouter un nouvel agenda")
-            , onPress = Just AddAgenda
-            }
-        , el [ centerX, centerY, Font.color (rgb255 200 30 30) ]
-            error
+        , agendaTable response maybeCred
         ]
+            ++ (case log "Role" (Api.getRoleFromMaybeCred maybeCred) of
+                    Api.Psy ->
+                        [ row [ centerX, padding 30 ]
+                            [ textInput EnteredDate form.date "AAAA-MM-JJ" "Date"
+                            , textInput EnteredHeure form.heure "HH:MM:SS+TZ" "Heure"
+                            ]
+                        , Input.button [ centerX, centerY ]
+                            { label =
+                                el
+                                    [ padding 30
+                                    , Border.rounded 5
+                                    , Background.color (rgb255 111 144 166)
+                                    , mouseOver [ Background.color (rgb255 140 179 196) ]
+                                    , Element.focused [ Background.color (rgb255 24 52 61), Font.color (rgb255 214 217 216) ]
+                                    ]
+                                    (text "Ajouter un nouvel agenda")
+                            , onPress = Just AddAgenda
+                            }
+                        , el [ centerX, centerY, Font.color (rgb255 200 30 30) ]
+                            error
+                        ]
+
+                    _ ->
+                        [ none ]
+               )
 
 
 textInput : (String -> Msg) -> String -> String -> String -> Element Msg
@@ -281,8 +289,8 @@ textInput msg formtext placeholder label =
         }
 
 
-agendaTable : List Agenda -> Element Msg
-agendaTable response =
+agendaTable : List Agenda -> Maybe Cred -> Element Msg
+agendaTable response maybeCred =
     let
         dateToString =
             \(Date string) -> string
@@ -301,26 +309,33 @@ agendaTable response =
               , width = fill
               , view = \agenda -> tableField (timeToString agenda.heure)
               }
-            , { header = tableField "Supprimer agenda"
-              , width = fill
-              , view =
-                    \agenda ->
-                        Input.button [ Border.width 1, Background.color (rgb255 140 179 196) ]
-                            --X background X
-                            { onPress = Just (DeleteAgenda agenda)
-                            , label =
-                                el
-                                    [ centerX
-                                    , centerY
-                                    , padding 23
-                                    , Font.color (rgb255 255 50 50)
-                                    , mouseOver [ Font.color (rgb255 200 30 30) ]
-                                    , Element.focused [ Font.color (rgb255 100 10 10) ]
-                                    ]
-                                    (text "X")
-                            }
-              }
             ]
+                ++ (case log "Role" (Api.getRoleFromMaybeCred maybeCred) of
+                        Api.Psy ->
+                            [ { header = tableField "Supprimer agenda"
+                              , width = fill
+                              , view =
+                                    \agenda ->
+                                        Input.button [ Border.width 1, Background.color (rgb255 140 179 196) ]
+                                            --X background X
+                                            { onPress = Just (DeleteAgenda agenda)
+                                            , label =
+                                                el
+                                                    [ centerX
+                                                    , centerY
+                                                    , padding 23
+                                                    , Font.color (rgb255 255 50 50)
+                                                    , mouseOver [ Font.color (rgb255 200 30 30) ]
+                                                    , Element.focused [ Font.color (rgb255 100 10 10) ]
+                                                    ]
+                                                    (text "X")
+                                            }
+                              }
+                            ]
+
+                        _ ->
+                            []
+                   )
         }
 
 
